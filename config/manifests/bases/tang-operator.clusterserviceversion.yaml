@@ -1,0 +1,55 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+  name: tang-operator.v0.0.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: TangServer is the Schema for the tangservers API
+      displayName: Tang Server
+      kind: TangServer
+      name: tangservers.daemons.sarroutbi
+      version: v1alpha1
+  description: Tang Server Operator
+  displayName: tang
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: null
+    strategy: ""
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - tang
+  - tangd
+  - nbde
+  - server
+  - operator
+  - redhat
+  links:
+  - name: Tang Operator
+    url: https://tang-operator.domain
+  maintainers:
+  - email: sarroutb@redhat.com
+    name: '''Sergio Arroutbi'
+  - email: scorreia@redhat.com'
+    name: Sergio Correia
+  maturity: alpha
+  provider:
+    name: redhat
+    url: redhat.com
+  version: 0.0.0

@@ -1,0 +1,34 @@
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - daemons.sarroutbi
+  resources:
+  - tangservers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - daemons.sarroutbi
+  resources:
+  - tangservers/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - daemons.sarroutbi
+  resources:
+  - tangservers/status
+  verbs:
+  - get
+  - patch
+  - update

@@ -1,0 +1,7 @@
+apiVersion: daemons.sarroutbi/v1alpha1
+kind: TangServer
+metadata:
+  name: tangserver-sample
+spec:
+  # Add fields here
+  foo: bar
