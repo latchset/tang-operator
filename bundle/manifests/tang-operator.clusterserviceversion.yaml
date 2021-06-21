@@ -5,13 +5,14 @@ metadata:
     alm-examples: |-
       [
         {
-          "apiVersion": "daemons.sarroutbi/v1alpha1",
+          "apiVersion": "daemons.redhat/v1alpha1",
           "kind": "TangServer",
           "metadata": {
             "name": "tangserver-sample"
           },
           "spec": {
-            "foo": "bar"
+            "foo": "bar",
+            "keypath": "/var/db"
           }
         }
       ]
@@ -27,7 +28,7 @@ spec:
     - description: TangServer is the Schema for the tangservers API
       displayName: Tang Server
       kind: TangServer
-      name: tangservers.daemons.sarroutbi
+      name: tangservers.daemons.redhat
       version: v1alpha1
   description: Tang Server Operator
   displayName: tang
@@ -39,7 +40,7 @@ spec:
       clusterPermissions:
       - rules:
         - apiGroups:
-          - daemons.sarroutbi
+          - daemons.redhat
           resources:
           - tangservers
           verbs:
@@ -51,13 +52,13 @@ spec:
           - update
           - watch
         - apiGroups:
-          - daemons.sarroutbi
+          - daemons.redhat
           resources:
           - tangservers/finalizers
           verbs:
           - update
         - apiGroups:
-          - daemons.sarroutbi
+          - daemons.redhat
           resources:
           - tangservers/status
           verbs:

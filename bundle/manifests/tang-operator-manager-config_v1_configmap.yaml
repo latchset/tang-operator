@@ -11,7 +11,7 @@ data:
       port: 9443
     leaderElection:
       leaderElect: true
-      resourceName: e44fa0d3.sarroutbi
+      resourceName: e44fa0d3.redhat
 kind: ConfigMap
 metadata:
   name: tang-operator-manager-config

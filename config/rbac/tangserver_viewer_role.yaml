@@ -5,7 +5,7 @@ metadata:
   name: tangserver-viewer-role
 rules:
 - apiGroups:
-  - daemons.sarroutbi
+  - daemons.redhat
   resources:
   - tangservers
   verbs:
@@ -13,7 +13,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - daemons.sarroutbi
+  - daemons.redhat
   resources:
   - tangservers/status
   verbs:

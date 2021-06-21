@@ -7,7 +7,7 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - daemons.sarroutbi
+  - daemons.redhat
   resources:
   - tangservers
   verbs:
@@ -19,13 +19,13 @@ rules:
   - update
   - watch
 - apiGroups:
-  - daemons.sarroutbi
+  - daemons.redhat
   resources:
   - tangservers/finalizers
   verbs:
   - update
 - apiGroups:
-  - daemons.sarroutbi
+  - daemons.redhat
   resources:
   - tangservers/status
   verbs:
