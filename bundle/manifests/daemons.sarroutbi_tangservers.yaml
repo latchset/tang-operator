@@ -38,6 +38,10 @@ spec:
                 description: Foo is an example field of TangServer. Edit tangserver_types.go
                   to remove/update
                 type: string
+              keypath:
+                description: KeyPath is field of TangServer. It allows to specify
+                  the path where keys will be generated
+                type: string
             type: object
           status:
             description: TangServerStatus defines the observed state of TangServer

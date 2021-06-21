@@ -30,6 +30,9 @@ type TangServerSpec struct {
 
 	// Foo is an example field of TangServer. Edit tangserver_types.go to remove/update
 	Foo string `json:"foo,omitempty"`
+
+	// KeyPath is field of TangServer. It allows to specify the path where keys will be generated
+	KeyPath string `json:"keypath,omitempty"`
 }
 
 // TangServerStatus defines the observed state of TangServer
