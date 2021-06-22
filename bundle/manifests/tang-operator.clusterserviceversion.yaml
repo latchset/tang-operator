@@ -13,7 +13,8 @@ metadata:
           "spec": {
             "foo": "bar",
             "keyamount": 2,
-            "keypath": "/var/db"
+            "keypath": "/var/db",
+            "size": 3
           }
         }
       ]

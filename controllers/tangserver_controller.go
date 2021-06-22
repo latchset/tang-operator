@@ -25,6 +25,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
+	appsv1 "k8s.io/api/apps/v1"
 )
 
 // TangServerReconciler reconciles a TangServer object
@@ -46,17 +47,26 @@ type TangServerReconciler struct {
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.8.3/pkg/reconcile
+//+kubebuilder:rbac:groups=daemons.redhat,resources=tangservers,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=daemons.redhat,resources=tangservers/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=daemons.redhat,resources=tangservers/finalizers,verbs=update
+//+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;
 func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
 	// your logic here
-
-	return ctrl.Result{}, nil
+	tangservers := &daemonsv1alpha1.TangServer{}
+	err := r.Get(ctx, req.NamespacedName, tangservers)
+	return ctrl.Result{}, err
 }
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *TangServerReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&daemonsv1alpha1.TangServer{}).
+		Owns(&appsv1.Deployment{}).
+		// TODO: try to enable next option:
+		// WithOptions(ctrl.Options{MaxConcurrentReconciles: 2}).
 		Complete(r)
 }

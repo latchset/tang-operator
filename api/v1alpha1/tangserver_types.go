@@ -36,6 +36,9 @@ type TangServerSpec struct {
 
 	// KeyAmount is the amount of keys required to be deployed
 	KeyAmount uint32 `json:"keyamount,omitempty"`
+
+	// Size is the Tang Server amount to bringup
+	Size int32 `json:"size"`
 }
 
 // TangServerStatus defines the observed state of TangServer
@@ -48,6 +51,7 @@ type TangServerStatus struct {
 //+kubebuilder:subresource:status
 
 // TangServer is the Schema for the tangservers API
+//+kubebuilder:subresource:status
 type TangServer struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

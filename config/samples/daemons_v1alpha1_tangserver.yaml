@@ -7,3 +7,4 @@ spec:
   foo: bar
   keypath: /var/db
   keyamount: 2
+  size: 3

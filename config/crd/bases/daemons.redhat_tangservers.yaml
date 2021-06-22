@@ -48,6 +48,12 @@ spec:
                 description: KeyPath is field of TangServer. It allows to specify
                   the path where keys will be generated
                 type: string
+              size:
+                description: Size is the Tang Server amount to bringup
+                format: int32
+                type: integer
+            required:
+            - size
             type: object
           status:
             description: TangServerStatus defines the observed state of TangServer
