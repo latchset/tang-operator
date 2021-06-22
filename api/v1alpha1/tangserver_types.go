@@ -33,6 +33,9 @@ type TangServerSpec struct {
 
 	// KeyPath is field of TangServer. It allows to specify the path where keys will be generated
 	KeyPath string `json:"keypath,omitempty"`
+
+	// KeyAmount is the amount of keys required to be deployed
+	KeyAmount uint32 `json:"keyamount,omitempty"`
 }
 
 // TangServerStatus defines the observed state of TangServer

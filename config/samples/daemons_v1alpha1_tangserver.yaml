@@ -6,3 +6,4 @@ spec:
   # Add fields here
   foo: bar
   keypath: /var/db
+  keyamount: 2

@@ -40,6 +40,10 @@ spec:
                 description: Foo is an example field of TangServer. Edit tangserver_types.go
                   to remove/update
                 type: string
+              keyamount:
+                description: KeyAmount is the amount of keys required to be deployed
+                format: int32
+                type: integer
               keypath:
                 description: KeyPath is field of TangServer. It allows to specify
                   the path where keys will be generated
