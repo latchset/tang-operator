@@ -36,10 +36,6 @@ spec:
           spec:
             description: TangServerSpec defines the desired state of TangServer
             properties:
-              foo:
-                description: Foo is an example field of TangServer. Edit tangserver_types.go
-                  to remove/update
-                type: string
               keyamount:
                 description: KeyAmount is the amount of keys required to be deployed
                 format: int32
@@ -48,12 +44,17 @@ spec:
                 description: KeyPath is field of TangServer. It allows to specify
                   the path where keys will be generated
                 type: string
-              size:
+              replicas:
                 description: Size is the Tang Server amount to bringup
                 format: int32
                 type: integer
+              version:
+                description: Version is the version of the TangServer to use (empty
+                  => latest)
+                type: string
             required:
-            - size
+            - replicas
+            - version
             type: object
           status:
             description: TangServerStatus defines the observed state of TangServer

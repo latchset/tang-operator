@@ -28,9 +28,6 @@ type TangServerSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of TangServer. Edit tangserver_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
-
 	// KeyPath is field of TangServer. It allows to specify the path where keys will be generated
 	KeyPath string `json:"keypath,omitempty"`
 
@@ -38,7 +35,10 @@ type TangServerSpec struct {
 	KeyAmount uint32 `json:"keyamount,omitempty"`
 
 	// Size is the Tang Server amount to bringup
-	Size int32 `json:"size"`
+	Replicas int32 `json:"replicas"`
+
+	// Version is the version of the TangServer to use (empty => latest)
+	Version string `json:"version"`
 }
 
 // TangServerStatus defines the observed state of TangServer

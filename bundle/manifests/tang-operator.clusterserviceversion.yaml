@@ -11,10 +11,10 @@ metadata:
             "name": "tangserver-sample"
           },
           "spec": {
-            "foo": "bar",
             "keyamount": 2,
             "keypath": "/var/db",
-            "size": 3
+            "replicas": 3,
+            "version": "1"
           }
         }
       ]

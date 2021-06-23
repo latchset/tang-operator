@@ -4,7 +4,7 @@ metadata:
   name: tangserver-sample
 spec:
   # Add fields here
-  foo: bar
   keypath: /var/db
   keyamount: 2
-  size: 3
+  replicas: 3
+  version: "1"
