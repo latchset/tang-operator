@@ -55,11 +55,11 @@ type TangServerReconciler struct {
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.8.3/pkg/reconcile
-// +kubebuilder:rbac:groups=apps.redhat,resources=tangservers,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=apps.redhat,resources=tangservers/status,verbs=get;update;patch
-// +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch
+//+kubebuilder:rbac:groups=apps.redhat,resources=tangservers,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=apps.redhat,resources=tangservers/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch
 func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	l := log.FromContext(ctx)
 
@@ -120,7 +120,7 @@ func isDeploymentReady(deployment *appsv1.Deployment) bool {
 }
 
 // newDeploymentForCR returns a new deployment without replicas configured
-func newDeploymentForCR(cr *daemonsv1alpha1.TangServer) *appsv1.Deployment {
+func newDeploymentForCR(cr *daemonsv1alpha1.TangServer, log logr.Logger) *appsv1.Deployment {
 	labels := map[string]string{
 		"app": cr.Name,
 	}
@@ -132,6 +132,7 @@ func newDeploymentForCR(cr *daemonsv1alpha1.TangServer) *appsv1.Deployment {
 	// TODO:Check if application version exists and provide app name with
 	// configuration value
 	containerImage := "dockerhub.io/sarroutbi/tangserver:" + appVersion
+	log.Info("Container Image Description", "Image File", containerImage, "Version", appVersion)
 	probe := &corev1.Probe{
 		Handler: corev1.Handler{
 			HTTPGet: &corev1.HTTPGetAction{
@@ -186,7 +187,8 @@ func newDeploymentForCR(cr *daemonsv1alpha1.TangServer) *appsv1.Deployment {
 func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServer, log logr.Logger) (ctrl.Result, error) {
 	// TODO: Reconcile Deployment
 	// Define a new Deployment object
-	deployment := newDeploymentForCR(cr)
+	log.Info("reconcileDeployment")
+	deployment := newDeploymentForCR(cr, log)
 
 	// Set ReverseWordsApp instance as the owner and controller of the Deployment
 	if err := ctrl.SetControllerReference(cr, deployment, r.Scheme); err != nil {
