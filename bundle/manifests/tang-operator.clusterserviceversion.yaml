@@ -11,17 +11,18 @@ metadata:
             "name": "tangserver-sample"
           },
           "spec": {
+            "image": "registry.redhat.io/rhel8/tang",
             "keyamount": 2,
             "keypath": "/var/db",
-            "replicas": 3,
-            "version": "1"
+            "replicas": 2,
+            "version": "latest"
           }
         }
       ]
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.7.1+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: tang-operator.v0.0.2
+  name: tang-operator.v0.0.3
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -111,7 +112,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: sarroutbi/tang-operator:v0.0.2
+                image: sarroutbi/tang-operator:v0.0.3
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -201,4 +202,4 @@ spec:
   provider:
     name: redhat
     url: redhat.com
-  version: 0.0.2
+  version: 0.0.3

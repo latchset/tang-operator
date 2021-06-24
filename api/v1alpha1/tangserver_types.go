@@ -34,11 +34,15 @@ type TangServerSpec struct {
 	// KeyAmount is the amount of keys required to be deployed
 	KeyAmount uint32 `json:"keyamount,omitempty"`
 
-	// Size is the Tang Server amount to bringup
+	// Replicas is the Tang Server amount to bringup
 	Replicas int32 `json:"replicas"`
 
-	// Version is the version of the TangServer to use (empty => latest)
-	Version string `json:"version"`
+	// Image is the base container image of the TangServer to use
+	Image string `json:"image"`
+
+	// Version is the version of the TangServer container to use
+	// (empty => latest)
+	Version string `json:"version,omitempty"`
 }
 
 // TangServerStatus defines the observed state of TangServer

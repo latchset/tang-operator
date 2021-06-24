@@ -36,6 +36,9 @@ import (
 	"reflect"
 )
 
+const DEFAULT_APP_IMAGE = "registry.redhat.io/rhel8/tang"
+const DEFAULT_APP_VERSION = "latest"
+
 // TangServerReconciler reconciles a TangServer object
 type TangServerReconciler struct {
 	client.Client
@@ -125,13 +128,17 @@ func newDeploymentForCR(cr *daemonsv1alpha1.TangServer, log logr.Logger) *appsv1
 		"app": cr.Name,
 	}
 	replicas := cr.Spec.Replicas
-	appVersion := "latest"
+	appImage := DEFAULT_APP_IMAGE
+	appVersion := DEFAULT_APP_VERSION
+	if cr.Spec.Image != "" {
+		appImage = cr.Spec.Image
+	}
 	if cr.Spec.Version != "" {
 		appVersion = cr.Spec.Version
 	}
 	// TODO:Check if application version exists and provide app name with
 	// configuration value
-	containerImage := "dockerhub.io/sarroutbi/tangserver:" + appVersion
+	containerImage := appImage + ":" + appVersion
 	log.Info("Container Image Description", "Image File", containerImage, "Version", appVersion)
 	probe := &corev1.Probe{
 		Handler: corev1.Handler{

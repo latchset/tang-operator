@@ -6,5 +6,7 @@ spec:
   # Add fields here
   keypath: /var/db
   keyamount: 2
-  replicas: 3
-  version: "1"
+  replicas: 2
+  image: "registry.redhat.io/rhel8/tang"
+  version: "latest"
+#  version: "1": "latest" by default. Adjust in case neccessary
