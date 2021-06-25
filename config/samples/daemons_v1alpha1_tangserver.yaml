@@ -1,12 +1,13 @@
 apiVersion: daemons.redhat/v1alpha1
 kind: TangServer
 metadata:
-  name: tangserver-sample
+  name: tangserver
 spec:
   # Add fields here
   keypath: /var/db
   keyamount: 2
-  replicas: 2
-  image: "registry.redhat.io/rhel8/tang"
-  version: "latest"
+  replicas: 3
+#  image: "rhel8/tang"
+  image: "sarroutbi/fedora_tang"
+  version: "v0.0.1"
 #  version: "1": "latest" by default. Adjust in case neccessary

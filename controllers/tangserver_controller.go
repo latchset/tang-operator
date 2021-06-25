@@ -157,7 +157,7 @@ func newDeploymentForCR(cr *daemonsv1alpha1.TangServer, log logr.Logger) *appsv1
 			Kind:       "Deployment",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "dp-" + cr.Name,
+			Name:      "esp-sec-eng-" + cr.Name,
 			Namespace: cr.Namespace,
 			Labels:    labels,
 		},
@@ -185,6 +185,7 @@ func newDeploymentForCR(cr *daemonsv1alpha1.TangServer, log logr.Logger) *appsv1
 							ReadinessProbe: probe,
 						},
 					},
+					RestartPolicy: corev1.RestartPolicyNever,
 				},
 			},
 		},

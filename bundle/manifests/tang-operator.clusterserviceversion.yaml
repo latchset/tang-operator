@@ -8,14 +8,14 @@ metadata:
           "apiVersion": "daemons.redhat/v1alpha1",
           "kind": "TangServer",
           "metadata": {
-            "name": "tangserver-sample"
+            "name": "tangserver"
           },
           "spec": {
-            "image": "registry.redhat.io/rhel8/tang",
+            "image": "fedora_tang",
             "keyamount": 2,
             "keypath": "/var/db",
-            "replicas": 2,
-            "version": "latest"
+            "replicas": 3,
+            "version": "v0.0.1"
           }
         }
       ]
