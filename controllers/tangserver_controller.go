@@ -31,7 +31,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/apimachinery/pkg/util/intstr"
+	// "k8s.io/apimachinery/pkg/util/intstr"
 	_ "k8s.io/client-go/plugin/pkg/client/auth" // Check if really necessary
 	"reflect"
 )
@@ -142,9 +142,10 @@ func newDeploymentForCR(cr *daemonsv1alpha1.TangServer, log logr.Logger) *appsv1
 	log.Info("Container Image Description", "Image File", containerImage, "Version", appVersion)
 	probe := &corev1.Probe{
 		Handler: corev1.Handler{
-			HTTPGet: &corev1.HTTPGetAction{
-				Path: "/health",
-				Port: intstr.FromInt(8080),
+			Exec: &corev1.ExecAction{
+				Command: []string{
+					"/usr/bin/tangd-health-check",
+				},
 			},
 		},
 		InitialDelaySeconds: 5,

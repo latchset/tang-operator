@@ -8,4 +8,4 @@ spec:
   keyamount: 2
   replicas: 4
   image: "sarroutbi/fedora_tang"
-  version: "v0.0.2"
+  version: "v0.0.1"
