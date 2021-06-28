@@ -6,6 +6,6 @@ spec:
   # Add fields here
   keypath: /var/db
   keyamount: 2
-  replicas: 4
+  replicas: 1
   image: "sarroutbi/fedora_tang"
-  version: "v0.0.1"
+  version: "nohealth"
