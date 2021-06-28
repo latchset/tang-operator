@@ -11,7 +11,7 @@ metadata:
             "name": "tangserver"
           },
           "spec": {
-            "image": "fedora_tang",
+            "image": "sarroutbi/fedora_tang",
             "keyamount": 2,
             "keypath": "/var/db",
             "replicas": 3,
@@ -22,7 +22,7 @@ metadata:
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.7.1+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: tang-operator.v0.0.3
+  name: tang-operator.v0.0.4
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -112,7 +112,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: sarroutbi/tang-operator:v0.0.3
+                image: sarroutbi/tang-operator:v0.0.4
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -202,4 +202,4 @@ spec:
   provider:
     name: redhat
     url: redhat.com
-  version: 0.0.3
+  version: 0.0.4
