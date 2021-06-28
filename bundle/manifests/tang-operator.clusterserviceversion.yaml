@@ -15,7 +15,7 @@ metadata:
             "keyamount": 2,
             "keypath": "/var/db",
             "replicas": 3,
-            "version": "v0.0.2"
+            "version": "v0.0.3"
           }
         }
       ]
