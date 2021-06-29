@@ -188,6 +188,11 @@ func newDeploymentForCR(cr *daemonsv1alpha1.TangServer, log logr.Logger) *appsv1
 					},
 					// TODO: Check how to change Restart Policy
 					RestartPolicy: corev1.RestartPolicyAlways,
+					ImagePullSecrets: []corev1.LocalObjectReference{
+						{
+							Name: "tangserversecret",
+						},
+					},
 				},
 			},
 		},

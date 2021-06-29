@@ -7,7 +7,17 @@ spec:
   keypath: /var/db
   keyamount: 2
   replicas: 3
-#  image: "rhel8/tang"
-  image: "sarroutbi/fedora_tang"
-  version: "v0.0.3"
-#  version: "1": "latest" by default. Adjust in case neccessary
+  image: "registry.redhat.io/rhel8/tang"
+  version: "latest"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tangserversecret
+data:
+  # Set your base64 docker config here. To do so:
+  # 1 - Docker login to the private registry
+  # 2 - Annotate the docker config.json created (~/.docker/config.json normally)
+  # 3 - copy in next line output to 'base64 ~/.docker/config.json' command
+  .dockerconfigjson: YOUR_DOCKER_PRIVATE_REGISTRY_CREDENTIALS HERE
+type: kubernetes.io/dockerconfigjson
