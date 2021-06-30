@@ -193,6 +193,9 @@ func newDeploymentForCR(cr *daemonsv1alpha1.TangServer, log logr.Logger) *appsv1
 							Name: "tangserversecret",
 						},
 					},
+					SecurityContext: &corev1.PodSecurityContext{
+						RunAsUser: &[]int64{0}[0],
+					},
 				},
 			},
 		},

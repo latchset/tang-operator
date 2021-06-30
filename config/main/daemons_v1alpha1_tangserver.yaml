@@ -2,6 +2,7 @@ apiVersion: daemons.redhat/v1alpha1
 kind: TangServer
 metadata:
   name: tangserver
+  namespace: nbde
 spec:
   # Add fields here
   keypath: /var/db
