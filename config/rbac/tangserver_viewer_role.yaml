@@ -5,7 +5,7 @@ metadata:
   name: tangserver-viewer-role
 rules:
 - apiGroups:
-  - daemons.redhat
+  - daemons.redhat.com
   resources:
   - tangservers
   verbs:
@@ -13,7 +13,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - daemons.redhat
+  - daemons.redhat.com
   resources:
   - tangservers/status
   verbs:

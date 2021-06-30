@@ -1,4 +1,4 @@
-domain: redhat
+domain: redhat.com
 layout:
 - go.kubebuilder.io/v3
 plugins:
@@ -11,7 +11,7 @@ resources:
     crdVersion: v1
     namespaced: true
   controller: true
-  domain: redhat
+  domain: redhat.com
   group: daemons
   kind: TangServer
   path: github.com/sarroutbi/tang-operator/api/v1alpha1

@@ -28,7 +28,8 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 # This variable is used to construct full image tags for bundle and catalog images.
 #
 # For example, running 'make bundle-build bundle-push catalog-build catalog-push' will build and push both
-# sarroutbi/tang-operator-bundle:$VERSION and sarroutbi/tang-operator-catalog:$VERSION.
+# redhat.com/tang-operator-bundle:$VERSION and redhat.com/tang-operator-catalog:$VERSION.
+# IMAGE_TAG_BASE ?= redhat.com/tang-operator
 IMAGE_TAG_BASE ?= sarroutbi/tang-operator
 
 # BUNDLE_IMG defines the image:tag used for the bundle.

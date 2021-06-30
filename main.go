@@ -71,7 +71,7 @@ func main() {
 		Port:                   9443,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
-		LeaderElectionID:       "e44fa0d3.redhat",
+		LeaderElectionID:       "e44fa0d3.redhat.com",
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")

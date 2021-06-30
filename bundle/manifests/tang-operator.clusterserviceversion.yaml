@@ -5,7 +5,7 @@ metadata:
     alm-examples: |-
       [
         {
-          "apiVersion": "daemons.redhat/v1alpha1",
+          "apiVersion": "daemons.redhat.com/v1alpha1",
           "kind": "TangServer",
           "metadata": {
             "name": "tangserver"
@@ -14,7 +14,7 @@ metadata:
             "image": "registry.redhat.io/rhel8/tang",
             "keyamount": 2,
             "keypath": "/var/db",
-            "replicas": 3,
+            "replicas": 1,
             "version": "latest"
           }
         }
@@ -31,7 +31,7 @@ spec:
     - description: TangServer is the Schema for the tangservers API
       displayName: Tang Server
       kind: TangServer
-      name: tangservers.daemons.redhat
+      name: tangservers.daemons.redhat.com
       version: v1alpha1
   description: Tang Server Operator
   displayName: tang
@@ -43,7 +43,7 @@ spec:
       clusterPermissions:
       - rules:
         - apiGroups:
-          - daemons.redhat
+          - daemons.redhat.com
           resources:
           - tangservers
           verbs:
@@ -55,13 +55,13 @@ spec:
           - update
           - watch
         - apiGroups:
-          - daemons.redhat
+          - daemons.redhat.com
           resources:
           - tangservers/finalizers
           verbs:
           - update
         - apiGroups:
-          - daemons.redhat
+          - daemons.redhat.com
           resources:
           - tangservers/status
           verbs:

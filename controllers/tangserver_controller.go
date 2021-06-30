@@ -45,9 +45,9 @@ type TangServerReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=daemons.redhat,resources=tangservers,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=daemons.redhat,resources=tangservers/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=daemons.redhat,resources=tangservers/finalizers,verbs=update
+//+kubebuilder:rbac:groups=daemons.redhat.com,resources=tangservers,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=daemons.redhat.com,resources=tangservers/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=daemons.redhat.com,resources=tangservers/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -304,7 +304,5 @@ func (r *TangServerReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&daemonsv1alpha1.TangServer{}).
 		Owns(&appsv1.Deployment{}).
 		Owns(&corev1.Service{}).
-		// TODO: try to enable next option:
-		// WithOptions(ctrl.Options{MaxConcurrentReconciles: 2}).
 		Complete(r)
 }

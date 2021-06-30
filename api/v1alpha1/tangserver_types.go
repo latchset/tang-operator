@@ -55,7 +55,6 @@ type TangServerStatus struct {
 //+kubebuilder:subresource:status
 
 // TangServer is the Schema for the tangservers API
-//+kubebuilder:subresource:status
 type TangServer struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

@@ -5,7 +5,7 @@ metadata:
   name: tangserver-editor-role
 rules:
 - apiGroups:
-  - daemons.redhat
+  - daemons.redhat.com
   resources:
   - tangservers
   verbs:
@@ -17,7 +17,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - daemons.redhat
+  - daemons.redhat.com
   resources:
   - tangservers/status
   verbs:
