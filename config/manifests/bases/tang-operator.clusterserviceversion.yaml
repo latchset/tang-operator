@@ -13,15 +13,10 @@ spec:
     - description: TangServer is the Schema for the tangservers API
       displayName: Tang Server
       kind: TangServer
-      name: tangservers.daemons.redhat
-      version: v1alpha1
-    - description: TangServer is the Schema for the tangservers API
-      displayName: Tang Server
-      kind: TangServer
       name: tangservers.daemons.redhat.com
       version: v1alpha1
-  description: Tang Server Operator
-  displayName: tang
+  description: Tang Server operator
+  displayName: tang-operator
   icon:
   - base64data: ""
     mediatype: ""
@@ -42,19 +37,15 @@ spec:
   - tang
   - tangd
   - nbde
-  - server
-  - operator
-  - redhat
   links:
   - name: Tang Operator
     url: https://tang-operator.domain
   maintainers:
-  - email: sarroutb@redhat.com
-    name: '''Sergio Arroutbi'
-  - email: scorreia@redhat.com'
+  - email: scorreia@redhat.com
     name: Sergio Correia
+  - email: sarroutb@redhat.com
+    name: Sergio Arroutbi
   maturity: alpha
   provider:
-    name: redhat
-    url: redhat.com
+    name: Red Hat Inc.
   version: 0.0.0

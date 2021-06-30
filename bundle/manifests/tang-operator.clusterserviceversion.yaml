@@ -8,21 +8,14 @@ metadata:
           "apiVersion": "daemons.redhat.com/v1alpha1",
           "kind": "TangServer",
           "metadata": {
-            "name": "tangserver"
-          },
-          "spec": {
-            "image": "registry.redhat.io/rhel8/tang",
-            "keyamount": 2,
-            "keypath": "/var/db",
-            "replicas": 1,
-            "version": "latest"
+            "name": "tangserver-sample"
           }
         }
       ]
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.7.1+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: tang-operator.v0.0.5
+  name: tang-operator.v0.0.1
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -33,8 +26,8 @@ spec:
       kind: TangServer
       name: tangservers.daemons.redhat.com
       version: v1alpha1
-  description: Tang Server Operator
-  displayName: tang
+  description: Tang Server operator
+  displayName: tang-operator
   icon:
   - base64data: ""
     mediatype: ""
@@ -112,7 +105,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: sarroutbi/tang-operator:v0.0.5
+                image: sarroutbi/tang-operator:v0.0.1
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -187,19 +180,15 @@ spec:
   - tang
   - tangd
   - nbde
-  - server
-  - operator
-  - redhat
   links:
   - name: Tang Operator
     url: https://tang-operator.domain
   maintainers:
-  - email: sarroutb@redhat.com
-    name: '''Sergio Arroutbi'
-  - email: scorreia@redhat.com'
+  - email: scorreia@redhat.com
     name: Sergio Correia
+  - email: sarroutb@redhat.com
+    name: Sergio Arroutbi
   maturity: alpha
   provider:
-    name: redhat
-    url: redhat.com
-  version: 0.0.5
+    name: Red Hat Inc.
+  version: 0.0.1
