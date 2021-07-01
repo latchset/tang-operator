@@ -23,7 +23,7 @@ metadata:
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.7.1+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: tang-operator.v0.0.3
+  name: tang-operator.v0.0.4
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -43,6 +43,38 @@ spec:
     spec:
       clusterPermissions:
       - rules:
+        - apiGroups:
+          - apps
+          resources:
+          - deployments
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          verbs:
+          - get
+          - list
+          - watch
+        - apiGroups:
+          - ""
+          resources:
+          - services
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
         - apiGroups:
           - daemons.redhat.com
           resources:
@@ -113,7 +145,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: sarroutbi/tang-operator:v0.0.3
+                image: sarroutbi/tang-operator:v0.0.4
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -198,4 +230,4 @@ spec:
   maturity: alpha
   provider:
     name: Red Hat Inc
-  version: 0.0.3
+  version: 0.0.4
