@@ -8,10 +8,15 @@ metadata:
           "apiVersion": "daemons.redhat.com/v1alpha1",
           "kind": "TangServer",
           "metadata": {
-            "name": "tangserver-sample"
+            "name": "tangserver",
+            "namespace": "nbde"
           },
           "spec": {
-            "foo": "bar"
+            "image": "registry.redhat.io/rhel8/tang",
+            "keyamount": 2,
+            "keypath": "/var/db",
+            "replicas": 1,
+            "version": "latest"
           }
         }
       ]
