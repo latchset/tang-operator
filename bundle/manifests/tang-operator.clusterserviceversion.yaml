@@ -180,8 +180,8 @@ spec:
   - supported: true
     type: AllNamespaces
   keywords:
-  - tang
   - nbde
+  - tang
   links:
   - name: Tang Operator
     url: https://tang-operator.domain
