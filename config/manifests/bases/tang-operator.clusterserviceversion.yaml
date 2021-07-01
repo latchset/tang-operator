@@ -15,8 +15,8 @@ spec:
       kind: TangServer
       name: tangservers.daemons.redhat.com
       version: v1alpha1
-  description: Tang Server operator
-  displayName: tang-operator
+  description: Tang Operator for NBDE
+  displayName: tang
   icon:
   - base64data: ""
     mediatype: ""
@@ -35,7 +35,6 @@ spec:
     type: AllNamespaces
   keywords:
   - tang
-  - tangd
   - nbde
   links:
   - name: Tang Operator
@@ -47,5 +46,5 @@ spec:
     name: Sergio Arroutbi
   maturity: alpha
   provider:
-    name: Red Hat Inc.
+    name: Red Hat Inc
   version: 0.0.0
