@@ -11,3 +11,4 @@ Versions of the operator and the operator-bundle:
 * v0.0.2 : Basic version with no fields still updated
 * v0.0.3 : First release correct version. PLEASE, DO NOT OVERWRITE
 * v0.0.4 : Version that fixes issues with deployments/pods/services permissions. PLEASE, DO NOT OVERWRITE
+* v0.0.5 : Version that publishes the service and exposes it on configurable port

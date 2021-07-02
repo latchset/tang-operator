@@ -31,9 +31,9 @@ import (
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
-	// "k8s.io/apimachinery/pkg/util/intstr"
 	_ "k8s.io/client-go/plugin/pkg/client/auth" // Check if really necessary
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
 const DEFAULT_APP_IMAGE = "registry.redhat.io/rhel8/tang"
@@ -264,7 +264,7 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 		client.InNamespace(deploymentFound.Namespace),
 		client.MatchingLabels(deploymentFound.Labels),
 	}
-	// List the pods for this ReverseWordsApp deployment
+	// List the pods for this deployment
 	err = r.List(context.Background(), podList, listOpts...)
 	if err != nil {
 		log.Error(err, "Failed to list Pods.", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
@@ -286,15 +286,69 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 	// TODO: Reconcile the new status for the instance
 	// cr, err = r.updateTangServerStatus(cr, log)
 	// if err != nil {
-	// 	log.Error(err, "Failed to update ReverseWordsApp Status.")
+	// 	log.Error(err, "Failed to update TangServer Status.")
 	// 	return ctrl.Result{}, err
 	// }
 	// Deployment reconcile finished
 	return ctrl.Result{}, nil
 }
 
+// newServiceForCR Returns a new service allocated for tang server
+func newServiceForCR(cr *daemonsv1alpha1.TangServer) *corev1.Service {
+	labels := map[string]string{
+		"app": cr.Name,
+	}
+	return &corev1.Service{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "v1",
+			Kind:       "Service",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "service-" + cr.Name,
+			Namespace: cr.Namespace,
+			Labels:    labels,
+		},
+		Spec: corev1.ServiceSpec{
+			Type:     corev1.ServiceTypeLoadBalancer,
+			Selector: labels,
+			Ports: []corev1.ServicePort{
+				{
+					Name: "http",
+					Port: 8080,
+				},
+			},
+		},
+	}
+}
+
 func (r *TangServerReconciler) reconcileService(cr *daemonsv1alpha1.TangServer, log logr.Logger) (ctrl.Result, error) {
 	// TODO: Reconcile Service
+	// Define a new Service object
+	service := newServiceForCR(cr)
+
+	// Set ReverseWordsApp instance as the owner and controller of the Service
+	if err := controllerutil.SetControllerReference(cr, service, r.Scheme); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	// Check if this Service already exists
+	serviceFound := &corev1.Service{}
+	err := r.Get(context.Background(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, serviceFound)
+	if err != nil && errors.IsNotFound(err) {
+		log.Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
+		err = r.Create(context.Background(), service)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		// Service created successfully - don't requeue
+		return ctrl.Result{}, nil
+	} else if err != nil {
+		return ctrl.Result{}, err
+	} else {
+		// Service already exists
+		log.Info("Service already exists", "Service.Namespace", serviceFound.Namespace, "Service.Name", serviceFound.Name)
+	}
+	// Service reconcile finished
 	return ctrl.Result{}, nil
 }
 
