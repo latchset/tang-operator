@@ -20,7 +20,7 @@ TANG_DIRECTORY_BUILD=/root/tang/build
 
 function usage() {
   echo "$1 -d tang-source-code-build-directory"
-  return $2
+  exit "$2"
 }
 
 while getopts "d:h" arg
@@ -28,17 +28,20 @@ do
   case "${arg}" in
     d) TANG_DIRECTORY_BUILD=${OPTARG}
        ;;
-    h) usage $0 0
-       exit 0
+    h) usage "$0" 0
+       ;;
+    *) usage "$0" 1
        ;;
   esac
 done
 
-cd $TANG_DIRECTORY_BUILD && meson test
-if [ $? -eq 0 ]; then
-   touch ${TANG_DIRECTORY_BUILD}/TEST_OK
+rm -rf "${TANG_DIRECTORY_BUILD}"/TEST_*
+cd "${TANG_DIRECTORY_BUILD}" || exit 1
+if meson test;
+then
+   touch "${TANG_DIRECTORY_BUILD}/TEST_OK"
 else
-   touch ${TANG_DIRECTORY_BUILD}/TEST_FAIL
+   touch "${TANG_DIRECTORY_BUILD}/TEST_FAIL"
 fi
 
 # Make container to stay running in case necessary debugging is required
