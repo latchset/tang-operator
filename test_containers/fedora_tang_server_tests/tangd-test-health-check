@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Copyright (c) 2021 Red Hat, Inc.
 # Author: Sergio Arroutbi <sarroutb@redhat.com>
@@ -15,19 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM fedora:35
-RUN dnf install -y tang curl socat meson ninja-build git gcc-c++\
- cmake libjose-devel asciidoc http-parser-devel bash
-RUN /usr/libexec/tangd-keygen /var/db/tang
+TANG_DIRECTORY_BUILD=/root/tang/build
 
-COPY ["tangd-test-entrypoint", "/usr/bin/tangd-test-entrypoint"]
-COPY ["tangd-test-health-check", "/usr/bin/tangd-health-check"]
-RUN chmod 755 /usr/bin/tangd-test-entrypoint
-RUN chmod 755 /usr/bin/tangd-health-check
-RUN chmod 755 /usr/libexec/tangd
-RUN ln -s /usr/libexec/tangd /usr/bin/tangd
-RUN git clone https://github.com/latchset/tang /root/tang
-RUN cd /root/tang && mkdir -p build && cd build && meson .. && ninja
-RUN dnf remove -y git cmake http-parser-devel
-
-ENTRYPOINT ["/usr/bin/tangd-test-entrypoint", "-d", "/root/tang/build"]
+test -f ${TANG_DIRECTORY_BUILD}/TEST_OK && echo "ok" && exit 0
+echo "fail" && exit 1
