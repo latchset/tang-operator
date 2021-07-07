@@ -118,6 +118,90 @@ tsdp-tangserver-55f747757c-599j5   1/1     Running   0          40s
 
 Note the **Running** state for the tangserver pods.
 
+## Compilation
+
+Compilation of tang operator can be released in top directory, by executing
+**make docker-build**. The name of the image must be provided. In case there
+is no requirement to update the version, same version compared to the last
+version can be used. Otherwise, if new version of the tang operator is going
+to be released, it is recommended to increase version appropriately.
+
+In this case, same version is used. Last released version can be observed in
+[Versions](#versions) section.
+
+To summarize, taking into account that the last released version is **0.0.6**
+compilation can be done with next command:
+
+```bash
+$ make docker-build docker-push IMG="sarroutbi/tang-operator:v0.0.6"
+...
+Successfully built 4a88ba8e6426
+Successfully tagged sarroutbi/tang-operator:v0.0.6
+docker push sarroutbi/tang-operator:v0.0.6
+The push refers to repository [docker.io/sarroutbi/tang-operator]
+79109912085a: Pushed
+417cb9b79ade: Layer already exists
+v0.0.6: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
+```
+
+In case a new release is planned to be done, the steps to follow will be:
+
+- Modify Makefile so that it contains the new version:
+
+```bash
+$ git diff Makefile
+diff --git a/Makefile b/Makefile
+index 9a41c6a..db12a82 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,7 +3,7 @@
+# To re-generate a bundle for another specific version without changing the
+# standard setup, you can:
+# - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.2)
+# - use environment variables to overwrite this value (e.g export VERSION=0.0.2)
+-VERSION ?= 0.0.6
++VERSION ?= 0.0.7
+```
+
+- Compile operator:
+
+Compile tang operator code, specifying new version,
+by using **make docker-build** command:
+
+```bash
+$ make docker-build docker-push IMG="sarroutbi/tang-operator:v0.0.7"
+...
+Successfully tagged sarroutbi/tang-operator:v0.0.7
+docker push sarroutbi/tang-operator:v0.0.7
+The push refers to repository [docker.io/sarroutbi/tang-operator]
+9ff8a4099c67: Pushed
+417cb9b79ade: Layer already exists
+v0.0.7: digest: sha256:01620ab19faae54fb382a2ff285f589cf0bde6e168f14f07 size: 739
+```
+
+- Bundle push
+
+In case the operator bundle is required to be pushed, generate
+the bundle with **make bundle**, specifying appropriate image,
+and push it with **make bundle-build bundle-push**:
+
+- Commit changes
+
+Remember to **modify README.md** to include the new release version, and commit changes
+performed in the operator, together with README.md and Makefile changes
+
+```bash
+$ make bundle IMG="sarroutbi/tang-operator:v0.0.7"; make bundle-build bundle-push
+...
+docker push sarroutbi/tang-operator-bundle:v0.0.7
+The push refers to repository [docker.io/sarroutbi/tang-operator-bundle]
+02e3768cfc56: Pushed
+df0c8060d328: Pushed
+84774958bcf4: Pushed
+v0.0.7: digest: sha256:925c2f844f941db2b53ce45cba9db7ee0be613321da8f0f05d size: 939
+make[1]: Leaving directory '/home/sarroutb/RedHat/TASKS/TANG_OPERATOR/tang-operator'
+```
+
 ## Cleanup
 
 For operator removal, execution of option **cleanup** from sdk-operator is the
