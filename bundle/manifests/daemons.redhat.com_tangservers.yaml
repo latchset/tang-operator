@@ -55,7 +55,6 @@ spec:
                   use (empty => latest)
                 type: string
             required:
-            - image
             - replicas
             type: object
           status:

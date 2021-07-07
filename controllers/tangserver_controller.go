@@ -86,11 +86,13 @@ func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	// Reconcile Deployment object
 	result, err := r.reconcileDeployment(tangservers, l)
 	if err != nil {
+		l.Error(err, "Error on deployment reconciliation")
 		return result, err
 	}
 	// Reconcile Service object
 	result, err = r.reconcileService(tangservers, l)
 	if err != nil {
+		l.Error(err, "Error on service reconciliation")
 		return result, err
 	}
 	return ctrl.Result{}, err
@@ -127,7 +129,7 @@ func newDeploymentForCR(cr *daemonsv1alpha1.TangServer, log logr.Logger) *appsv1
 	labels := map[string]string{
 		"app": cr.Name,
 	}
-	replicas := cr.Spec.Replicas
+	replicas := int32(cr.Spec.Replicas)
 	appImage := DEFAULT_APP_IMAGE
 	appVersion := DEFAULT_APP_VERSION
 	if cr.Spec.Image != "" {

@@ -35,10 +35,10 @@ type TangServerSpec struct {
 	KeyAmount uint32 `json:"keyamount,omitempty"`
 
 	// Replicas is the Tang Server amount to bringup
-	Replicas int32 `json:"replicas"`
+	Replicas uint32 `json:"replicas"`
 
 	// Image is the base container image of the TangServer to use
-	Image string `json:"image"`
+	Image string `json:"image,omitempty"`
 
 	// Version is the version of the TangServer container to use
 	// (empty => latest)
