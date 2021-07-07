@@ -236,8 +236,6 @@ ok  github.com/sarroutbi/tang-operator/controllers  6.2s coverage: 50.0% of stat
 
 ## Links
 
-[Minishift Installation](https://www.redhat.com/sysadmin/learn-openshift-minishift)
-
-[operator-sdk Installation](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)
-
+[Minishift Installation](https://www.redhat.com/sysadmin/learn-openshift-minishift)\
+[operator-sdk Installation](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)\
 [OpenShift CLI Installation](https://docs.openshift.com/container-platform/4.2/cli_reference/openshift_cli/getting-started-cli.html#cli-installing-cli_cli-developer-commands)
