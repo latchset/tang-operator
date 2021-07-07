@@ -35,9 +35,9 @@ tang operator-bundle are:
 
 ## Installation
 
-In order to install Tang Operator, you must have previously installed
+In order to install tang operator, you must have previously installed
 an Open Shift cluster. For small computers, **Minishift** project
-is recommended. In case normal OpenShift cluster is used, Tang Operator
+is recommended. In case normal OpenShift cluster is used, tang operator
 installation should not differ from the Minishift one.
 
 Instructions for **Minishift** installation can be observed
@@ -57,28 +57,43 @@ bundle. For example, in case latest version is **0.0.6**, the command to execute
 will be:
 
 ```bash
-\$ operator-sdk run docker.io/sarroutbi/tang-operator-bundle:v.0.0.6
+$ operator-sdk run docker.io/sarroutbi/tang-operator-bundle:v.0.0.6
+INFO[0008] Successfully created registry pod: docker-io-sarroutbi-tang-operator-bundle-v0-0-6
+INFO[0009] Created CatalogSource: tang-operator-catalog
+INFO[0009] OperatorGroup "operator-sdk-og" created
+INFO[0009] Created Subscription: tang-operator-v0-0-6-sub
+INFO[0011] Approved InstallPlan install-lqf9f for the Subscription: tang-operator-v0-0-6-sub
+INFO[0011] Waiting for ClusterServiceVersion to reach 'Succeeded' phase
+INFO[0012]   Waiting for ClusterServiceVersion "default/tang-operator.v0.0.6"
+INFO[0018]   Found ClusterServiceVersion "default/tang-operator.v0.0.6" phase: Pending
+INFO[0020]   Found ClusterServiceVersion "default/tang-operator.v0.0.6" phase: InstallReady
+INFO[0021]   Found ClusterServiceVersion "default/tang-operator.v0.0.6" phase: Installing
+INFO[0031]   Found ClusterServiceVersion "default/tang-operator.v0.0.6" phase: Succeeded
+INFO[0031] OLM has successfully installed "tang-operator.v0.0.6"
 ```
 
-Correct tang operator execution can be observed if an output like the following is
-observed:
+If the message **OLM has successfully installed** is displayed, it is normally a
+sign of a proper installation of the tang operator.
+
+However, correct tang operator installation can be observed if an output like
+the following is observed when prompting for installed pods:
 
 ```bash
-\$ oc get pods
+$ oc get pods
 NAME                                                READY STATUS    RESTARTS AGE
 dbbd1837106ec169542546e7ad251b95d27c3542eb0409c1e   0/1   Completed 0        82s
 docker-io-tang-operator-bundle-v0-0-6               1/1   Running   0        90s
 tang-operator-controller-manager-5c9488d8dd-mgmsf   2/2   Running   0        52s
 ```
 
-Note the **Completed** and **Running** state for the different pods.
+Note the **Completed** and **Running** state for the different tang operator pods.
 
 Once operator is correctly installed, appropriate configuration can be applied
 from **config** directory. Minimal installation, that just provides the number
 of replicas (1) to use, is the recommended tang operator configuration to apply:
 
 ```bash
-\$ oc apply -f config/minimal
+$ oc apply -f config/minimal
 namespace/nbde created
 tangserver.daemons.redhat.com/tangserver created
 secret/tangserversecret created
@@ -88,7 +103,7 @@ In case tang operator is appropriately executed, **ndbe** namespace should conta
 the service, pod and deployment associated to the tang operator:
 
 ```bash
-\$ oc -n nbde get pods
+$ oc -n nbde get pods
 NAME                               READY   STATUS    RESTARTS   AGE
 tsdp-tangserver-55f747757c-599j5   1/1     Running   0          40s
 ```
@@ -96,11 +111,11 @@ tsdp-tangserver-55f747757c-599j5   1/1     Running   0          40s
 Note the **Running** state for the tangserver pods.
 
 ```
-\$ oc -n nbde get services
+$ oc -n nbde get services
 NAME               TYPE         CLUSTER-IP     EXTERNAL-IP    PORT(S)        AGE
 service-tangserver LoadBalancer 172.30.167.129 34.133.181.172 8080:30831/TCP 59s
 
-\$ oc -n nbde get deployments
+$ oc -n nbde get deployments
 NAME              READY   UP-TO-DATE   AVAILABLE   AGE
 tsdp-tangserver   1/1     1            1           63s
 ```
@@ -111,7 +126,7 @@ For operator removal, execution of option **cleanup** from sdk-operator is the
 recommended way:
 
 ```bash
-\$ $ operator-sdk cleanup tang-operator
+$ $ operator-sdk cleanup tang-operator
 INFO[0001] subscription "tang-operator-v0-0-6-sub" deleted
 INFO[0001] customresourcedefinition "tangservers.daemons.redhat.com" deleted
 INFO[0002] clusterserviceversion "tang-operator.v0.0.6" deleted
@@ -126,7 +141,7 @@ Execution of operator tests is pretty simple. Execute **make test** from top dir
 and available tests will be executed:
 
 ```bash
-\$ make test
+$ make test
 ...
 go fmt ./...
 go vet ./...
