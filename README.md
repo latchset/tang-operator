@@ -6,8 +6,8 @@
 - [Versions](#versions)
 - [Installation](#installation)
 - [Compilation](#compilation)
-- [Operator cleanup](#operator-cleanup)
-- [Operator tests](#operator-tests)
+- [Cleanup](#cleanup)
+- [Tests](#tests)
 - [Links](#links)
 
 ## Introduction
@@ -100,15 +100,7 @@ secret/tangserversecret created
 ```
 
 In case tang operator is appropriately executed, **ndbe** namespace should contain
-the service, pod and deployment associated to the tang operator:
-
-```bash
-$ oc -n nbde get pods
-NAME                               READY   STATUS    RESTARTS   AGE
-tsdp-tangserver-55f747757c-599j5   1/1     Running   0          40s
-```
-
-Note the **Running** state for the tangserver pods.
+the service, deployment and pod associated to the tang operator:
 
 ```
 $ oc -n nbde get services
@@ -118,9 +110,15 @@ service-tangserver LoadBalancer 172.30.167.129 34.133.181.172 8080:30831/TCP 59s
 $ oc -n nbde get deployments
 NAME              READY   UP-TO-DATE   AVAILABLE   AGE
 tsdp-tangserver   1/1     1            1           63s
+
+$ oc -n nbde get pods
+NAME                               READY   STATUS    RESTARTS   AGE
+tsdp-tangserver-55f747757c-599j5   1/1     Running   0          40s
 ```
 
-## Operator cleanup
+Note the **Running** state for the tangserver pods.
+
+## Cleanup
 
 For operator removal, execution of option **cleanup** from sdk-operator is the
 recommended way:
@@ -135,7 +133,7 @@ INFO[0002] operatorgroup "operator-sdk-og" deleted
 INFO[0002] Operator "tang-operator" uninstalled
 ```
 
-## Operator tests
+## Tests
 
 Execution of operator tests is pretty simple. Execute **make test** from top directory
 and available tests will be executed:
