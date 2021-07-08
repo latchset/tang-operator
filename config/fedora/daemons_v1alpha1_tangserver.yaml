@@ -1,0 +1,10 @@
+apiVersion: daemons.redhat.com/v1alpha1
+kind: TangServer
+metadata:
+  name: tangserver-fedora
+  namespace: nbde
+spec:
+  # Add fields here
+  replicas: 1
+  image: "docker.io/sarroutbi/fedora_tang_server"
+  version: "latest"

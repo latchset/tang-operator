@@ -3,6 +3,7 @@
 #
 # Copyright (c) 2020 Red Hat, Inc.
 # Author: Sergio Correia <scorreia@redhat.com>
+# Author: Sergio Arroutbi <sarroutb@redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,10 +17,25 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+export running=1
+
+function finish() {
+    echo "captured signal, exiting ..."
+    export running=0
+}
+trap finish SIGINT SIGTERM SIGKILL
 
 export PORT="${PORT:-80}"
 
 DB=/var/db/tang
 TANGD=/usr/libexec/tangd
 
-socat -v tcp-l:"${PORT}",reuseaddr,fork exec:"${TANGD} ${DB}"
+socat -v tcp-l:"${PORT}",reuseaddr,fork exec:"${TANGD} ${DB}" &
+while [ ${running} -eq 1 ];
+do
+    sleep 0.1
+done
+
+echo "stopping tangd ..."
+kill -9 $(ps aux | grep [s]ocat | awk {'print $2'})
+kill -9 $(ps aux | grep [t]angd-entrypoint | awk {'print $2'}) 2>/dev/null

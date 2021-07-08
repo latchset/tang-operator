@@ -1,6 +1,8 @@
 FROM fedora:35
-RUN dnf install -y tang curl socat
+RUN dnf install -y tang curl socat procps jq
 RUN /usr/libexec/tangd-keygen /var/db/tang
+
+ENV PORT=8080
 
 COPY ["tangd-entrypoint", "/usr/bin/tangd-entrypoint"]
 COPY ["tangd-health-check", "/usr/bin/tangd-health-check"]
