@@ -32,6 +32,8 @@ tang operator-bundle are:
           PLEASE, DO NOT OVERWRITE
 - v0.0.6: Types refactoring. Initial ginkgo based test.
           PLEASE, DO NOT OVERWRITE
+- v0.0.7: Include finalizers to make deletion quicker.
+          PLEASE, DO NOT OVERWRITE
 
 ## Installation
 

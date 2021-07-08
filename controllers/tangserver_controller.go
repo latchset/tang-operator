@@ -36,6 +36,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
+// Finalizer for tang server
+const tangServerFinalizer = "finalizer.daemons.tangserver.redhat.com"
+
+// Constants to use
 const DEFAULT_APP_IMAGE = "registry.redhat.io/rhel8/tang"
 const DEFAULT_APP_VERSION = "latest"
 
@@ -43,6 +47,26 @@ const DEFAULT_APP_VERSION = "latest"
 type TangServerReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
+}
+
+// contains returns true if a string is found on a slice
+func contains(hayjack []string, needle string) bool {
+	for _, n := range hayjack {
+		if n == needle {
+			return true
+		}
+	}
+	return false
+}
+
+// finalizeTangServerApp runs required tasks before deleting the objects owned by the CR
+func (r *TangServerReconciler) finalizeTangServer(log logr.Logger, cr *daemonsv1alpha1.TangServer) error {
+	// TODO(user): Add the cleanup steps that the operator
+	// needs to do before the CR can be deleted. Examples
+	// of finalizers include performing backups and deleting
+	// resources that are not owned by this CR, like a PVC.
+	log.Info("Successfully finalized TangServer")
+	return nil
 }
 
 //+kubebuilder:rbac:groups=daemons.redhat.com,resources=tangservers,verbs=get;list;watch;create;update;patch;delete
@@ -80,7 +104,24 @@ func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	isInstanceMarkedToBeDeleted := tangservers.GetDeletionTimestamp() != nil
 	if isInstanceMarkedToBeDeleted {
 		l.Info("Instance marked for deletion, running finalizers")
-		// TODO: Implement finalizers
+		if contains(tangservers.GetFinalizers(), tangServerFinalizer) {
+			// Run the finalizer logic
+			err := r.finalizeTangServer(l, tangservers)
+			if err != nil {
+				// Don't remove the finalizer if we failed to finalize the object
+				return ctrl.Result{}, err
+			}
+			l.Info("TangServer finalizers completed")
+			// Remove finalizer once the finalizer logic has run
+			controllerutil.RemoveFinalizer(tangservers, tangServerFinalizer)
+			err = r.Update(ctx, tangservers)
+			if err != nil {
+				// If the object update fails, requeue
+				return ctrl.Result{}, err
+			}
+		}
+		l.Info("TangServer can be deleted now")
+		return ctrl.Result{}, nil
 	}
 
 	// Reconcile Deployment object

@@ -3,6 +3,8 @@ kind: TangServer
 metadata:
   name: tangserver
   namespace: nbde
+  finalizers:
+  - finalizer.daemons.tangserver.redhat.com
 spec:
   # Add fields here
   keypath: /var/db

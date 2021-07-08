@@ -3,5 +3,7 @@ kind: TangServer
 metadata:
   name: tangserver
   namespace: nbde
+  finalizers:
+  - finalizer.daemons.tangserver.redhat.com
 spec:
   replicas: 1

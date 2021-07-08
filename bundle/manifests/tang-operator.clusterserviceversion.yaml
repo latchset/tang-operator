@@ -8,6 +8,9 @@ metadata:
           "apiVersion": "daemons.redhat.com/v1alpha1",
           "kind": "TangServer",
           "metadata": {
+            "finalizers": [
+              "finalizer.daemons.tangserver.redhat.com"
+            ],
             "name": "tangserver",
             "namespace": "nbde"
           },
@@ -23,7 +26,7 @@ metadata:
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.7.1+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: tang-operator.v0.0.6
+  name: tang-operator.v0.0.7
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -145,7 +148,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: sarroutbi/tang-operator:v0.0.6
+                image: sarroutbi/tang-operator:v0.0.7
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -230,4 +233,4 @@ spec:
   maturity: alpha
   provider:
     name: Red Hat Inc
-  version: 0.0.6
+  version: 0.0.7
