@@ -55,36 +55,48 @@ operator-sdk installation is described in the [Links](#links) section.
 
 In order to deploy the latest version of the tang operator, check latest released
 version in the [Versions](#versions) section, and install the appropriate version
-bundle. For example, in case latest version is **0.0.6**, the command to execute
+bundle. For example, in case latest version is **0.0.7**, the command to execute
 will be:
 
 ```bash
-$ operator-sdk run docker.io/sarroutbi/tang-operator-bundle:v.0.0.6
-INFO[0008] Successfully created registry pod: docker-io-sarroutbi-tang-operator-bundle-v0-0-6
+$ operator-sdk run docker.io/sarroutbi/tang-operator-bundle:v.0.0.7
+INFO[0008] Successfully created registry pod: docker-io-sarroutbi-tang-operator-bundle-v0-0-7
 INFO[0009] Created CatalogSource: tang-operator-catalog
 INFO[0009] OperatorGroup "operator-sdk-og" created
-INFO[0009] Created Subscription: tang-operator-v0-0-6-sub
-INFO[0011] Approved InstallPlan install-lqf9f for the Subscription: tang-operator-v0-0-6-sub
+INFO[0009] Created Subscription: tang-operator-v0-0-7-sub
+INFO[0011] Approved InstallPlan install-lqf9f for the Subscription: tang-operator-v0-0-7-sub
 INFO[0011] Waiting for ClusterServiceVersion to reach 'Succeeded' phase
-INFO[0012]   Waiting for ClusterServiceVersion "default/tang-operator.v0.0.6"
-INFO[0018]   Found ClusterServiceVersion "default/tang-operator.v0.0.6" phase: Pending
-INFO[0020]   Found ClusterServiceVersion "default/tang-operator.v0.0.6" phase: InstallReady
-INFO[0021]   Found ClusterServiceVersion "default/tang-operator.v0.0.6" phase: Installing
-INFO[0031]   Found ClusterServiceVersion "default/tang-operator.v0.0.6" phase: Succeeded
-INFO[0031] OLM has successfully installed "tang-operator.v0.0.6"
+INFO[0012]   Waiting for ClusterServiceVersion "default/tang-operator.v0.0.7"
+INFO[0018]   Found ClusterServiceVersion "default/tang-operator.v0.0.7" phase: Pending
+INFO[0020]   Found ClusterServiceVersion "default/tang-operator.v0.0.7" phase: InstallReady
+INFO[0021]   Found ClusterServiceVersion "default/tang-operator.v0.0.7" phase: Installing
+INFO[0031]   Found ClusterServiceVersion "default/tang-operator.v0.0.7" phase: Succeeded
+INFO[0031] OLM has successfully installed "tang-operator.v0.0.7"
 ```
 
 If the message **OLM has successfully installed** is displayed, it is normally a
 sign of a proper installation of the tang operator.
 
-However, correct tang operator installation can be observed if an output like
+If a message similar to **"failed open: failed to do request: context deadline exceeded"**,
+it is possible that a timeout is taking place. Try to increase the timeout in case
+your cluster takes long time to deploy. To do so, the option **--timeout** can be
+used (if not used, default time is 2m, which stands for two minutes):
+
+```bash
+$ operator-sdk run bundle --timeout 3m docker.io/sarroutbi/tang-operator-bundle:v0.0.7
+INFO[0008] Successfully created registry pod: docker-io-sarroutbi-tang-operator-bundle-v0-0-7
+...
+INFO[0031] OLM has successfully installed "tang-operator.v0.0.7"
+```
+
+Additionally, correct tang operator installation can be observed if an output like
 the following is observed when prompting for installed pods:
 
 ```bash
 $ oc get pods
 NAME                                                READY STATUS    RESTARTS AGE
 dbbd1837106ec169542546e7ad251b95d27c3542eb0409c1e   0/1   Completed 0        82s
-docker-io-tang-operator-bundle-v0-0-6               1/1   Running   0        90s
+docker-io-tang-operator-bundle-v0-0-7               1/1   Running   0        90s
 tang-operator-controller-manager-5c9488d8dd-mgmsf   2/2   Running   0        52s
 ```
 
@@ -131,19 +143,19 @@ to be released, it is recommended to increase version appropriately.
 In this case, same version is used. Last released version can be observed in
 [Versions](#versions) section.
 
-To summarize, taking into account that the last released version is **0.0.6**
+To summarize, taking into account that the last released version is **0.0.7**
 compilation can be done with next command:
 
 ```bash
-$ make docker-build docker-push IMG="sarroutbi/tang-operator:v0.0.6"
+$ make docker-build docker-push IMG="sarroutbi/tang-operator:v0.0.7"
 ...
 Successfully built 4a88ba8e6426
-Successfully tagged sarroutbi/tang-operator:v0.0.6
-docker push sarroutbi/tang-operator:v0.0.6
+Successfully tagged sarroutbi/tang-operator:v0.0.7
+docker push sarroutbi/tang-operator:v0.0.7
 The push refers to repository [docker.io/sarroutbi/tang-operator]
 79109912085a: Pushed
 417cb9b79ade: Layer already exists
-v0.0.6: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
+v0.0.7: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
 ```
 
 In case a new release is planned to be done, the steps to follow will be:
@@ -211,9 +223,9 @@ recommended way:
 
 ```bash
 $ $ operator-sdk cleanup tang-operator
-INFO[0001] subscription "tang-operator-v0-0-6-sub" deleted
+INFO[0001] subscription "tang-operator-v0-0-7-sub" deleted
 INFO[0001] customresourcedefinition "tangservers.daemons.redhat.com" deleted
-INFO[0002] clusterserviceversion "tang-operator.v0.0.6" deleted
+INFO[0002] clusterserviceversion "tang-operator.v0.0.7" deleted
 INFO[0002] catalogsource "tang-operator-catalog" deleted
 INFO[0002] operatorgroup "operator-sdk-og" deleted
 INFO[0002] Operator "tang-operator" uninstalled
