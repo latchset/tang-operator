@@ -37,7 +37,7 @@ import (
 )
 
 // Finalizer for tang server
-const tangServerFinalizer = "finalizer.daemons.tangserver.redhat.com"
+const DEFAULT_TANG_FINALIZER = "finalizer.daemons.tangserver.redhat.com"
 
 // Constants to use
 const DEFAULT_APP_IMAGE = "registry.redhat.io/rhel8/tang"
@@ -104,7 +104,7 @@ func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	isInstanceMarkedToBeDeleted := tangservers.GetDeletionTimestamp() != nil
 	if isInstanceMarkedToBeDeleted {
 		l.Info("Instance marked for deletion, running finalizers")
-		if contains(tangservers.GetFinalizers(), tangServerFinalizer) {
+		if contains(tangservers.GetFinalizers(), DEFAULT_TANG_FINALIZER) {
 			// Run the finalizer logic
 			err := r.finalizeTangServer(l, tangservers)
 			if err != nil {
@@ -113,7 +113,7 @@ func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 			}
 			l.Info("TangServer finalizers completed")
 			// Remove finalizer once the finalizer logic has run
-			controllerutil.RemoveFinalizer(tangservers, tangServerFinalizer)
+			controllerutil.RemoveFinalizer(tangservers, DEFAULT_TANG_FINALIZER)
 			err = r.Update(ctx, tangservers)
 			if err != nil {
 				// If the object update fails, requeue
