@@ -34,6 +34,8 @@ tang operator-bundle are:
           PLEASE, DO NOT OVERWRITE
 - v0.0.7: Include finalizers to make deletion quicker.
           PLEASE, DO NOT OVERWRITE
+- v0.0.8: Tang operator metadata homogeneization.
+          PLEASE, DO NOT OVERWRITE
 
 ## Installation
 
