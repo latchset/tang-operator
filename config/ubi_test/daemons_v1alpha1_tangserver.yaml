@@ -1,0 +1,12 @@
+apiVersion: daemons.redhat.com/v1alpha1
+kind: TangServer
+metadata:
+  name: tangserver-test
+  namespace: nbde-test
+spec:
+  # Add fields here
+  keypath: /var/db
+  keyamount: 2
+  replicas: 1
+  image: docker.io/sarroutbi/ubi_tang_server_tests
+  version: latest
