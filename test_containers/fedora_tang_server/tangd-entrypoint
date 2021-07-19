@@ -37,5 +37,5 @@ do
 done
 
 echo "stopping tangd ..."
-kill -9 $(ps aux | grep [s]ocat | awk {'print $2'})
+kill -9 $(ps aux | grep [s]ocat | awk {'print $2'}) 2>/dev/null
 kill -9 $(ps aux | grep [t]angd-entrypoint | awk {'print $2'}) 2>/dev/null
