@@ -55,5 +55,19 @@ var _ = Describe("TangServer controller", func() {
 			Expect(emptyTangServer.Spec.Image).Should(Equal(""))
 			Expect(emptyTangServer.Spec.Version).Should(Equal(""))
 		})
+		It("Should not be created", func() {
+			By("By creating a TangServer that already exist")
+			ctx := context.Background()
+			tangServer := &daemonsv1alpha1.TangServer{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      TangserverName,
+					Namespace: TangserverNamespace,
+				},
+				Spec: daemonsv1alpha1.TangServerSpec{
+					KeyPath: "/",
+				},
+			}
+			Expect(k8sClient.Create(ctx, tangServer)).Should(Not(Succeed()))
+		})
 	})
 })
