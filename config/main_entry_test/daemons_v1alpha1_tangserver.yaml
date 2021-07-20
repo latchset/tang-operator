@@ -10,5 +10,5 @@ spec:
   keypath: /var/db
   keyamount: 2
   replicas: 1
-  image: "docker.io/sarroutbi/ubi_tang_server_tests"
+  image: "docker.io/sarroutbi/ubi_tang_server"
   version: "clean_exit"
