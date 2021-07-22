@@ -23,6 +23,10 @@ import (
 const DEFAULT_APP_IMAGE = "registry.redhat.io/rhel8/tang"
 const DEFAULT_APP_VERSION = "latest"
 
+func getCompleteImageNameAndVersion(appImage string, appVersion string) string {
+	return appImage + ":" + appVersion
+}
+
 // getImageNameAndVersionName will return the image to use, or the default one
 // if no one is specified in the CRD
 func getImageNameAndVersion(cr *daemonsv1alpha1.TangServer) string {
@@ -34,5 +38,5 @@ func getImageNameAndVersion(cr *daemonsv1alpha1.TangServer) string {
 	if cr.Spec.Version != "" {
 		appVersion = cr.Spec.Version
 	}
-	return appImage + ":" + appVersion
+	return getCompleteImageNameAndVersion(appImage, appVersion)
 }
