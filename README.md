@@ -36,6 +36,8 @@ tang operator-bundle are:
           PLEASE, DO NOT OVERWRITE
 - v0.0.8: Tang operator metadata homogeneization.
           PLEASE, DO NOT OVERWRITE
+- v0.0.9: Tang operator shared storage.
+          PLEASE, DO NOT OVERWRITE
 
 ## Installation
 

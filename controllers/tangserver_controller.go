@@ -42,6 +42,7 @@ const DEFAULT_TANG_FINALIZER = "finalizer.daemons.tangserver.redhat.com"
 // Constants to use
 const DEFAULT_APP_IMAGE = "registry.redhat.io/rhel8/tang"
 const DEFAULT_APP_VERSION = "latest"
+const DEFAULT_DEPLOYMENT_PREFIX = "tsdp-"
 
 // TangServerReconciler reconciles a TangServer object
 type TangServerReconciler struct {
@@ -192,7 +193,7 @@ func newDeploymentForCR(cr *daemonsv1alpha1.TangServer, log logr.Logger) *appsv1
 			},
 		},
 		InitialDelaySeconds: 5,
-		TimeoutSeconds:      2,
+		TimeoutSeconds:      5,
 		PeriodSeconds:       15,
 	}
 	return &appsv1.Deployment{
@@ -201,7 +202,7 @@ func newDeploymentForCR(cr *daemonsv1alpha1.TangServer, log logr.Logger) *appsv1
 			Kind:       "Deployment",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "tsdp-" + cr.Name,
+			Name:      DEFAULT_DEPLOYMENT_PREFIX + cr.Name,
 			Namespace: cr.Namespace,
 			Labels:    labels,
 		},
@@ -227,6 +228,22 @@ func newDeploymentForCR(cr *daemonsv1alpha1.TangServer, log logr.Logger) *appsv1
 							},
 							LivenessProbe:  probe,
 							ReadinessProbe: probe,
+							VolumeMounts: []corev1.VolumeMount{
+								{
+									MountPath: "/var/db/tang",
+									Name:      "tangserver-db",
+								},
+							},
+						},
+					},
+					Volumes: []corev1.Volume{
+						{
+							Name: "tangserver-db",
+							VolumeSource: corev1.VolumeSource{
+								PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
+									ClaimName: "tangserver-db",
+								},
+							},
 						},
 					},
 					// TODO: Check how to change Restart Policy
