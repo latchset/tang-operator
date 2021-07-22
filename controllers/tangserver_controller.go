@@ -39,11 +39,6 @@ import (
 // Finalizer for tang server
 const DEFAULT_TANG_FINALIZER = "finalizer.daemons.tangserver.redhat.com"
 
-// Constants to use
-const DEFAULT_APP_IMAGE = "registry.redhat.io/rhel8/tang"
-const DEFAULT_APP_VERSION = "latest"
-const DEFAULT_DEPLOYMENT_PREFIX = "tsdp-"
-
 // TangServerReconciler reconciles a TangServer object
 type TangServerReconciler struct {
 	client.Client
@@ -168,98 +163,9 @@ func isDeploymentReady(deployment *appsv1.Deployment) bool {
 
 // newDeploymentForCR returns a new deployment without replicas configured
 func newDeploymentForCR(cr *daemonsv1alpha1.TangServer, log logr.Logger) *appsv1.Deployment {
-	labels := map[string]string{
-		"app": cr.Name,
-	}
-	replicas := int32(cr.Spec.Replicas)
-	appImage := DEFAULT_APP_IMAGE
-	appVersion := DEFAULT_APP_VERSION
-	if cr.Spec.Image != "" {
-		appImage = cr.Spec.Image
-	}
-	if cr.Spec.Version != "" {
-		appVersion = cr.Spec.Version
-	}
 	// TODO:Check if application version exists and provide app name with
 	// configuration value
-	containerImage := appImage + ":" + appVersion
-	log.Info("Container Image Description", "Image File", containerImage, "Version", appVersion)
-	probe := &corev1.Probe{
-		Handler: corev1.Handler{
-			Exec: &corev1.ExecAction{
-				Command: []string{
-					"/usr/bin/tangd-health-check",
-				},
-			},
-		},
-		InitialDelaySeconds: 5,
-		TimeoutSeconds:      5,
-		PeriodSeconds:       15,
-	}
-	return &appsv1.Deployment{
-		TypeMeta: metav1.TypeMeta{
-			APIVersion: "apps/v1",
-			Kind:       "Deployment",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      DEFAULT_DEPLOYMENT_PREFIX + cr.Name,
-			Namespace: cr.Namespace,
-			Labels:    labels,
-		},
-		Spec: appsv1.DeploymentSpec{
-			Replicas: &replicas,
-			Selector: &metav1.LabelSelector{
-				MatchLabels: labels,
-			},
-			Template: corev1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{
-					Labels: labels,
-				},
-				Spec: corev1.PodSpec{
-					Containers: []corev1.Container{
-						{
-							Image: containerImage,
-							Name:  "tangserver",
-							Ports: []corev1.ContainerPort{
-								{
-									ContainerPort: 8080,
-									Name:          "tangserver",
-								},
-							},
-							LivenessProbe:  probe,
-							ReadinessProbe: probe,
-							VolumeMounts: []corev1.VolumeMount{
-								{
-									MountPath: "/var/db/tang",
-									Name:      "tangserver-db",
-								},
-							},
-						},
-					},
-					Volumes: []corev1.Volume{
-						{
-							Name: "tangserver-db",
-							VolumeSource: corev1.VolumeSource{
-								PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-									ClaimName: "tangserver-db",
-								},
-							},
-						},
-					},
-					// TODO: Check how to change Restart Policy
-					RestartPolicy: corev1.RestartPolicyAlways,
-					ImagePullSecrets: []corev1.LocalObjectReference{
-						{
-							Name: "tangserversecret",
-						},
-					},
-					SecurityContext: &corev1.PodSecurityContext{
-						RunAsUser: &[]int64{0}[0],
-					},
-				},
-			},
-		},
-	}
+	return getDeployment(cr)
 }
 
 func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServer, log logr.Logger) (ctrl.Result, error) {

@@ -23,21 +23,23 @@ configuration values to perform appropriate tang server operations.
 Versions released up to date of the tang operator and the
 tang operator-bundle are:
 
-- v0.0.1: Hello world version
-- v0.0.2: Basic version with no fields still updated
-- v0.0.3: First release correct version. PLEASE, DO NOT OVERWRITE
-- v0.0.4: Version that fixes issues with deployments/pods/services permissions.
-          PLEASE, DO NOT OVERWRITE
-- v0.0.5: Version that publishes the service and exposes it on configurable port.
-          PLEASE, DO NOT OVERWRITE
-- v0.0.6: Types refactoring. Initial ginkgo based test.
-          PLEASE, DO NOT OVERWRITE
-- v0.0.7: Include finalizers to make deletion quicker.
-          PLEASE, DO NOT OVERWRITE
-- v0.0.8: Tang operator metadata homogeneization.
-          PLEASE, DO NOT OVERWRITE
-- v0.0.9: Tang operator shared storage.
-          PLEASE, DO NOT OVERWRITE
+- v0.0.1:  Hello world version
+- v0.0.2:  Basic version with no fields still updated
+- v0.0.3:  First release correct version. PLEASE, DO NOT OVERWRITE
+- v0.0.4:  Version that fixes issues with deployments/pods/services permissions.
+           PLEASE, DO NOT OVERWRITE
+- v0.0.5:  Version that publishes the service and exposes it on configurable port.
+           PLEASE, DO NOT OVERWRITE
+- v0.0.6:  Types refactoring. Initial ginkgo based test.
+           PLEASE, DO NOT OVERWRITE
+- v0.0.7:  Include finalizers to make deletion quicker.
+           PLEASE, DO NOT OVERWRITE
+- v0.0.8:  Tang operator metadata homogeneization.
+           PLEASE, DO NOT OVERWRITE
+- v0.0.9:  Tang operator shared storage.
+           PLEASE, DO NOT OVERWRITE
+- v0.0.10: Code Refactoring I.
+           PLEASE, DO NOT OVERWRITE
 
 ## Installation
 
@@ -59,23 +61,23 @@ operator-sdk installation is described in the [Links](#links) section.
 
 In order to deploy the latest version of the tang operator, check latest released
 version in the [Versions](#versions) section, and install the appropriate version
-bundle. For example, in case latest version is **0.0.8**, the command to execute
+bundle. For example, in case latest version is **0.0.10**, the command to execute
 will be:
 
 ```bash
-$ operator-sdk run docker.io/sarroutbi/tang-operator-bundle:v.0.0.8
-INFO[0008] Successfully created registry pod: docker-io-sarroutbi-tang-operator-bundle-v0-0-8
+$ operator-sdk run docker.io/sarroutbi/tang-operator-bundle:v.0.0.10
+INFO[0008] Successfully created registry pod: docker-io-sarroutbi-tang-operator-bundle-v0-0-10
 INFO[0009] Created CatalogSource: tang-operator-catalog
 INFO[0009] OperatorGroup "operator-sdk-og" created
-INFO[0009] Created Subscription: tang-operator-v0-0-8-sub
-INFO[0011] Approved InstallPlan install-lqf9f for the Subscription: tang-operator-v0-0-8-sub
+INFO[0009] Created Subscription: tang-operator-v0-0-10-sub
+INFO[0011] Approved InstallPlan install-lqf9f for the Subscription: tang-operator-v0-0-10-sub
 INFO[0011] Waiting for ClusterServiceVersion to reach 'Succeeded' phase
-INFO[0012]   Waiting for ClusterServiceVersion "default/tang-operator.v0.0.8"
-INFO[0018]   Found ClusterServiceVersion "default/tang-operator.v0.0.8" phase: Pending
-INFO[0020]   Found ClusterServiceVersion "default/tang-operator.v0.0.8" phase: InstallReady
-INFO[0021]   Found ClusterServiceVersion "default/tang-operator.v0.0.8" phase: Installing
-INFO[0031]   Found ClusterServiceVersion "default/tang-operator.v0.0.8" phase: Succeeded
-INFO[0031] OLM has successfully installed "tang-operator.v0.0.8"
+INFO[0012]   Waiting for ClusterServiceVersion "default/tang-operator.v0.0.10"
+INFO[0018]   Found ClusterServiceVersion "default/tang-operator.v0.0.10" phase: Pending
+INFO[0020]   Found ClusterServiceVersion "default/tang-operator.v0.0.10" phase: InstallReady
+INFO[0021]   Found ClusterServiceVersion "default/tang-operator.v0.0.10" phase: Installing
+INFO[0031]   Found ClusterServiceVersion "default/tang-operator.v0.0.10" phase: Succeeded
+INFO[0031] OLM has successfully installed "tang-operator.v0.0.10"
 ```
 
 If the message **OLM has successfully installed** is displayed, it is normally a
@@ -87,10 +89,10 @@ your cluster takes long time to deploy. To do so, the option **--timeout** can b
 used (if not used, default time is 2m, which stands for two minutes):
 
 ```bash
-$ operator-sdk run bundle --timeout 3m docker.io/sarroutbi/tang-operator-bundle:v0.0.8
+$ operator-sdk run bundle --timeout 3m docker.io/sarroutbi/tang-operator-bundle:v0.0.10
 INFO[0008] Successfully created registry pod: docker-io-sarroutbi-tang-operator-bundle-v0-0-8
 ...
-INFO[0031] OLM has successfully installed "tang-operator.v0.0.8"
+INFO[0031] OLM has successfully installed "tang-operator.v0.0.10"
 ```
 
 Additionally, correct tang operator installation can be observed if an output like
@@ -154,12 +156,12 @@ compilation can be done with next command:
 $ make docker-build docker-push IMG="sarroutbi/tang-operator:v0.0.8"
 ...
 Successfully built 4a88ba8e6426
-Successfully tagged sarroutbi/tang-operator:v0.0.8
-docker push sarroutbi/tang-operator:v0.0.8
+Successfully tagged sarroutbi/tang-operator:v0.0.10
+docker push sarroutbi/tang-operator:v0.0.10
 The push refers to repository [docker.io/sarroutbi/tang-operator]
 79109912085a: Pushed
 417cb9b79ade: Layer already exists
-v0.0.8: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
+v0.0.10: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
 ```
 
 In case a new release is planned to be done, the steps to follow will be:
@@ -175,10 +177,10 @@ index 9a41c6a..db12a82 100644
 @@ -3,7 +3,7 @@
 # To re-generate a bundle for another specific version without changing the
 # standard setup, you can:
-# - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.2)
-# - use environment variables to overwrite this value (e.g export VERSION=0.0.2)
--VERSION ?= 0.0.6
-+VERSION ?= 0.0.8
+# - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.10)
+# - use environment variables to overwrite this value (e.g export VERSION=0.0.10)
+-VERSION ?= 0.0.9
++VERSION ?= 0.0.10
 ```
 
 - Compile operator:
@@ -187,14 +189,14 @@ Compile tang operator code, specifying new version,
 by using **make docker-build** command:
 
 ```bash
-$ make docker-build docker-push IMG="sarroutbi/tang-operator:v0.0.8"
+$ make docker-build docker-push IMG="sarroutbi/tang-operator:v0.0.10"
 ...
-Successfully tagged sarroutbi/tang-operator:v0.0.8
-docker push sarroutbi/tang-operator:v0.0.8
+Successfully tagged sarroutbi/tang-operator:v0.0.10
+docker push sarroutbi/tang-operator:v0.0.10
 The push refers to repository [docker.io/sarroutbi/tang-operator]
 9ff8a4099c67: Pushed
 417cb9b79ade: Layer already exists
-v0.0.8: digest: sha256:01620ab19faae54fb382a2ff285f589cf0bde6e168f14f07 size: 739
+v0.0.10: digest: sha256:01620ab19faae54fb382a2ff285f589cf0bde6e168f14f07 size: 739
 ```
 
 - Bundle push
@@ -209,14 +211,14 @@ Remember to **modify README.md** to include the new release version, and commit 
 performed in the operator, together with README.md and Makefile changes
 
 ```bash
-$ make bundle IMG="sarroutbi/tang-operator:v0.0.8"; make bundle-build bundle-push
+$ make bundle IMG="sarroutbi/tang-operator:v0.0.10"; make bundle-build bundle-push
 ...
-docker push sarroutbi/tang-operator-bundle:v0.0.8
+docker push sarroutbi/tang-operator-bundle:v0.0.10
 The push refers to repository [docker.io/sarroutbi/tang-operator-bundle]
 02e3768cfc56: Pushed
 df0c8060d328: Pushed
 84774958bcf4: Pushed
-v0.0.8: digest: sha256:925c2f844f941db2b53ce45cba9db7ee0be613321da8f0f05d size: 939
+v0.0.10: digest: sha256:925c2f844f941db2b53ce45cba9db7ee0be613321da8f0f05d size: 939
 make[1]: Leaving directory '/home/sarroutb/RedHat/TASKS/TANG_OPERATOR/tang-operator'
 ```
 
@@ -227,9 +229,9 @@ recommended way:
 
 ```bash
 $ operator-sdk cleanup tang-operator
-INFO[0001] subscription "tang-operator-v0-0-8-sub" deleted
+INFO[0001] subscription "tang-operator-v0-0-10-sub" deleted
 INFO[0001] customresourcedefinition "tangservers.daemons.redhat.com" deleted
-INFO[0002] clusterserviceversion "tang-operator.v0.0.8" deleted
+INFO[0002] clusterserviceversion "tang-operator.v0.0.10" deleted
 INFO[0002] catalogsource "tang-operator-catalog" deleted
 INFO[0002] operatorgroup "operator-sdk-og" deleted
 INFO[0002] Operator "tang-operator" uninstalled
@@ -250,7 +252,7 @@ setting up env vars
 ?   github.com/sarroutbi/tang-operator      [no test files]
 ?   github.com/sarroutbi/tang-operator/api/v1alpha1 [no test files]
 ok  github.com/sarroutbi/tang-operator/controllers  6.2s coverage: 50.0% of statements
-```
+``
 
 ## Links
 

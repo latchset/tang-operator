@@ -31,9 +31,6 @@ type TangServerSpec struct {
 	// KeyPath is field of TangServer. It allows to specify the path where keys will be generated
 	KeyPath string `json:"keypath,omitempty"`
 
-	// KeyAmount is the amount of keys required to be deployed
-	KeyAmount uint32 `json:"keyamount,omitempty"`
-
 	// Replicas is the Tang Server amount to bringup
 	Replicas uint32 `json:"replicas"`
 
@@ -43,6 +40,15 @@ type TangServerSpec struct {
 	// Version is the version of the TangServer container to use
 	// (empty => latest)
 	Version string `json:"version,omitempty"`
+
+	// HealthScript is the script to run for healthiness/readiness
+	HealthScript string `json:"healthscript,omitempty"`
+
+	// Replicas is the Tang Server amount to bringup
+	PodListenPort uint32 `json:"podlistenport,omitempty"`
+
+	// Secret is the secret name to use to download image appropriately
+	Secret string `json:"secret,omitempty"`
 }
 
 // TangServerStatus defines the observed state of TangServer

@@ -36,6 +36,9 @@ spec:
           spec:
             description: TangServerSpec defines the desired state of TangServer
             properties:
+              healthscript:
+                description: HealthScript is the script to run for healthiness/readiness
+                type: string
               image:
                 description: Image is the base container image of the TangServer to
                   use
@@ -48,10 +51,17 @@ spec:
                 description: KeyPath is field of TangServer. It allows to specify
                   the path where keys will be generated
                 type: string
+              podlistenport:
+                description: Replicas is the Tang Server amount to bringup
+                format: int32
+                type: integer
               replicas:
                 description: Replicas is the Tang Server amount to bringup
                 format: int32
                 type: integer
+              secret:
+                description: Secret is the secret name to use to download image appropriately
+                type: string
               version:
                 description: Version is the version of the TangServer container to
                   use (empty => latest)
