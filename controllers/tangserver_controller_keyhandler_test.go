@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
 package controllers
 
 import (
@@ -30,14 +29,14 @@ var _ = Describe("TangServer controller probe", func() {
 	const (
 		TangserverName = "test-tangserver-probe"
 		// TODO: test why it can not be tested in non default namespace
-		TangserverNamespace        = "default"
-		TangserverResourceVersion  = "1"
-		TangServerTestHealthScript = "/tmp/test-health-script"
+		TangserverNamespace       = "default"
+		TangserverResourceVersion = "1"
+		TangServerTestKeyPath     = "/var/db/tang2"
 	)
 
 	Context("When Creating TangServer", func() {
-		It("Should be created with default script value", func() {
-			By("By creating a new TangServer with empty script value")
+		It("Should be created with default key path value", func() {
+			By("By creating a new TangServer with empty key path value")
 			ctx := context.Background()
 			tangServer := &daemonsv1alpha1.TangServer{
 				ObjectMeta: metav1.ObjectMeta{
@@ -49,11 +48,11 @@ var _ = Describe("TangServer controller probe", func() {
 				},
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
-			Expect(getProbe(tangServer).Handler.Exec.Command[0], DEFAULT_DEPLOYMENT_HEALTH_CHECK)
+			Expect(getDefaultKeyPath(tangServer), DEFAULT_DEPLOYMENT_KEY_PATH)
 			k8sClient.Delete(ctx, tangServer)
 		})
 		It("Should be created with default script value", func() {
-			By("By creating a new TangServer with particular health script")
+			By("By creating a new TangServer with empty image specs")
 			ctx := context.Background()
 			tangServer := &daemonsv1alpha1.TangServer{
 				ObjectMeta: metav1.ObjectMeta{
@@ -61,12 +60,12 @@ var _ = Describe("TangServer controller probe", func() {
 					Namespace: TangserverNamespace,
 				},
 				Spec: daemonsv1alpha1.TangServerSpec{
-					Replicas:     1,
-					HealthScript: TangServerTestHealthScript,
+					Replicas: 1,
+					KeyPath:  TangServerTestKeyPath,
 				},
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
-			Expect(getProbe(tangServer).Handler.Exec.Command[0], DEFAULT_DEPLOYMENT_HEALTH_CHECK)
+			Expect(getProbe(tangServer), TangServerTestKeyPath)
 			k8sClient.Delete(ctx, tangServer)
 		})
 	})
