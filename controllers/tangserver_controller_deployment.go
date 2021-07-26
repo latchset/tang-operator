@@ -23,9 +23,11 @@ import (
 )
 
 // Constants to use
-const DEFAULT_DEPLOYMENT_PREFIX = "tsdp-"
-const DEFAULT_REPLICA_AMOUNT = 1
-const DEFAULT_DEPLOYMENT_TYPE = "Deployment"
+const (
+	DEFAULT_DEPLOYMENT_PREFIX = "tsdp-"
+	DEFAULT_REPLICA_AMOUNT    = 1
+	DEFAULT_DEPLOYMENT_TYPE   = "Deployment"
+)
 
 func getDefaultName(cr *daemonsv1alpha1.TangServer) string {
 	return DEFAULT_DEPLOYMENT_PREFIX + cr.Name

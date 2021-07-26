@@ -44,11 +44,14 @@ type TangServerSpec struct {
 	// HealthScript is the script to run for healthiness/readiness
 	HealthScript string `json:"healthscript,omitempty"`
 
-	// Replicas is the Tang Server amount to bringup
+	// PodListenPort is the port where pods will listen for traffic
 	PodListenPort uint32 `json:"podlistenport,omitempty"`
 
 	// Secret is the secret name to use to download image appropriately
 	Secret string `json:"secret,omitempty"`
+
+	// ServiceListenPort is the port where service will listen for traffic
+	ServiceListenPort uint32 `json:"servicelistenport,omitempty"`
 }
 
 // TangServerStatus defines the observed state of TangServer

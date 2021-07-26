@@ -48,7 +48,8 @@ spec:
                   the path where keys will be generated
                 type: string
               podlistenport:
-                description: Replicas is the Tang Server amount to bringup
+                description: PodListenPort is the port where pods will listen for
+                  traffic
                 format: int32
                 type: integer
               replicas:
@@ -58,6 +59,11 @@ spec:
               secret:
                 description: Secret is the secret name to use to download image appropriately
                 type: string
+              servicelistenport:
+                description: ServiceListenPort is the port where service will listen
+                  for traffic
+                format: int32
+                type: integer
               version:
                 description: Version is the version of the TangServer container to
                   use (empty => latest)

@@ -27,7 +27,6 @@ import (
 	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
@@ -171,20 +170,14 @@ func isDeploymentReady(deployment *appsv1.Deployment) bool {
 	return deploymentReady
 }
 
-// newDeploymentForCR returns a new deployment without replicas configured
-func newDeploymentForCR(cr *daemonsv1alpha1.TangServer, log logr.Logger) *appsv1.Deployment {
-	// TODO:Check if application version exists and provide app name with
-	// configuration value
-	return getDeployment(cr)
-}
-
+// reconcileDeployment creates deployment appropriate for this CR
 func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServer, log logr.Logger) (ctrl.Result, error) {
 	// TODO: Reconcile Deployment
 	// Define a new Deployment object
 	log.Info("reconcileDeployment")
-	deployment := newDeploymentForCR(cr, log)
+	deployment := getDeployment(cr)
 
-	// Set ReverseWordsApp instance as the owner and controller of the Deployment
+	// Set tangserver instance as the owner and controller of the Deployment
 	if err := ctrl.SetControllerReference(cr, deployment, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
@@ -269,38 +262,8 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 	return ctrl.Result{}, nil
 }
 
-// newServiceForCR Returns a new service allocated for tang server
-func newServiceForCR(cr *daemonsv1alpha1.TangServer) *corev1.Service {
-	labels := map[string]string{
-		"app": cr.Name,
-	}
-	return &corev1.Service{
-		TypeMeta: metav1.TypeMeta{
-			APIVersion: "v1",
-			Kind:       "Service",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      "service-" + cr.Name,
-			Namespace: cr.Namespace,
-			Labels:    labels,
-		},
-		Spec: corev1.ServiceSpec{
-			Type:     corev1.ServiceTypeLoadBalancer,
-			Selector: labels,
-			Ports: []corev1.ServicePort{
-				{
-					Name: "http",
-					Port: 8080,
-				},
-			},
-		},
-	}
-}
-
 func (r *TangServerReconciler) reconcileService(cr *daemonsv1alpha1.TangServer, log logr.Logger) (ctrl.Result, error) {
-	// TODO: Reconcile Service
-	// Define a new Service object
-	service := newServiceForCR(cr)
+	service := getService(cr)
 
 	// Set ReverseWordsApp instance as the owner and controller of the Service
 	if err := controllerutil.SetControllerReference(cr, service, r.Scheme); err != nil {
