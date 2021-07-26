@@ -65,6 +65,34 @@ func (r *TangServerReconciler) finalizeTangServer(log logr.Logger, cr *daemonsv1
 	return nil
 }
 
+// isInstanceMarkedToBeDeleted checks if deletion has been initialized for tang server
+func isInstanceMarkedToBeDeleted(tangserver *daemonsv1alpha1.TangServer) bool {
+	return tangserver.GetDeletionTimestamp() != nil
+}
+
+// checkCRReadyForDeletion will check if CR can be deleted appropriately
+func (r *TangServerReconciler) checkCRReadyForDeletion(ctx context.Context, tangserver *daemonsv1alpha1.TangServer) (ctrl.Result, error) {
+	l := log.FromContext(ctx)
+	if contains(tangserver.GetFinalizers(), DEFAULT_TANG_FINALIZER) {
+		// Run the finalizer logic
+		err := r.finalizeTangServer(l, tangserver)
+		if err != nil {
+			// Don't remove the finalizer if we failed to finalize the object
+			return ctrl.Result{}, err
+		}
+		l.Info("TangServer finalizers completed")
+		// Remove finalizer once the finalizer logic has run
+		controllerutil.RemoveFinalizer(tangserver, DEFAULT_TANG_FINALIZER)
+		err = r.Update(ctx, tangserver)
+		if err != nil {
+			// If the object update fails, requeue
+			return ctrl.Result{}, err
+		}
+	}
+	l.Info("TangServer can be deleted now")
+	return ctrl.Result{}, nil
+}
+
 //+kubebuilder:rbac:groups=daemons.redhat.com,resources=tangservers,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=daemons.redhat.com,resources=tangservers/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=daemons.redhat.com,resources=tangservers/finalizers,verbs=update
@@ -87,8 +115,8 @@ func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	l := log.FromContext(ctx)
 
 	// your logic here
-	tangservers := &daemonsv1alpha1.TangServer{}
-	err := r.Get(ctx, req.NamespacedName, tangservers)
+	tangserver := &daemonsv1alpha1.TangServer{}
+	err := r.Get(ctx, req.NamespacedName, tangserver)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			l.Info("TangServer resource not found")
@@ -97,37 +125,19 @@ func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	}
 
 	// Check if the CR is marked to be deleted
-	isInstanceMarkedToBeDeleted := tangservers.GetDeletionTimestamp() != nil
-	if isInstanceMarkedToBeDeleted {
+	if isInstanceMarkedToBeDeleted(tangserver) {
 		l.Info("Instance marked for deletion, running finalizers")
-		if contains(tangservers.GetFinalizers(), DEFAULT_TANG_FINALIZER) {
-			// Run the finalizer logic
-			err := r.finalizeTangServer(l, tangservers)
-			if err != nil {
-				// Don't remove the finalizer if we failed to finalize the object
-				return ctrl.Result{}, err
-			}
-			l.Info("TangServer finalizers completed")
-			// Remove finalizer once the finalizer logic has run
-			controllerutil.RemoveFinalizer(tangservers, DEFAULT_TANG_FINALIZER)
-			err = r.Update(ctx, tangservers)
-			if err != nil {
-				// If the object update fails, requeue
-				return ctrl.Result{}, err
-			}
-		}
-		l.Info("TangServer can be deleted now")
-		return ctrl.Result{}, nil
+		return r.checkCRReadyForDeletion(ctx, tangserver)
 	}
 
 	// Reconcile Deployment object
-	result, err := r.reconcileDeployment(tangservers, l)
+	result, err := r.reconcileDeployment(tangserver, l)
 	if err != nil {
 		l.Error(err, "Error on deployment reconciliation", "Error:", err.Error())
 		return result, err
 	}
 	// Reconcile Service object
-	result, err = r.reconcileService(tangservers, l)
+	result, err = r.reconcileService(tangserver, l)
 	if err != nil {
 		l.Error(err, "Error on service reconciliation")
 		return result, err
