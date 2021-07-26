@@ -33,6 +33,8 @@ var _ = Describe("TangServer controller deployment", func() {
 		TangserverNamespace         = "default"
 		TangserverResourceVersion   = "1"
 		TangServerTestReplicaAmount = 4
+		TangServerTestPodListenPort = 8081
+		TangServerTestSecret        = "thisisaverysimplesecretname"
 	)
 
 	Context("When Creating TangServer", func() {
@@ -74,6 +76,29 @@ var _ = Describe("TangServer controller deployment", func() {
 			Expect(deployment.ObjectMeta.Name, getDefaultName(tangServer))
 			Expect(deployment.Spec.Replicas, TangServerTestReplicaAmount)
 			Expect(deployment.Spec.Template, Not(nil))
+			k8sClient.Delete(ctx, tangServer)
+		})
+		It("Should be created with listen port and secret", func() {
+			By("By creating a new TangServer with non empty listen port and secret")
+			ctx := context.Background()
+			tangServer := &daemonsv1alpha1.TangServer{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      TangserverName,
+					Namespace: TangserverNamespace,
+				},
+				Spec: daemonsv1alpha1.TangServerSpec{
+					PodListenPort: TangServerTestPodListenPort,
+					Secret:        TangServerTestSecret,
+				},
+			}
+			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
+			deployment := getDeployment(tangServer)
+			Expect(deployment, Not(nil))
+			Expect(deployment.TypeMeta.Kind, DEFAULT_DEPLOYMENT_TYPE)
+			Expect(deployment.ObjectMeta.Name, getDefaultName(tangServer))
+			Expect(deployment.Spec.Replicas, TangServerTestReplicaAmount)
+			Expect(deployment.Spec.Template.Spec.Containers[0].Ports[0].ContainerPort, TangServerTestPodListenPort)
+			Expect(deployment.Spec.Template.Spec.ImagePullSecrets[0].Name, TangServerTestSecret)
 			k8sClient.Delete(ctx, tangServer)
 		})
 	})
