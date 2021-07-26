@@ -253,7 +253,7 @@ setting up env vars
 ?   github.com/sarroutbi/tang-operator      [no test files]
 ?   github.com/sarroutbi/tang-operator/api/v1alpha1 [no test files]
 ok  github.com/sarroutbi/tang-operator/controllers  9.303s  coverage: 36.5% of statements
-``
+```
 
 ## Links
 
