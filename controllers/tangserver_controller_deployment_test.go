@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 package controllers
 
 import (
@@ -23,15 +24,14 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-var _ = Describe("TangServer controller keyhandler", func() {
+var _ = Describe("TangServer controller deployment", func() {
 
 	// Define utility constants for object names
 	const (
-		TangserverName = "test-tangserver-keyhandler"
+		TangserverName = "test-tangserver-deployment"
 		// TODO: test why it can not be tested in non default namespace
 		TangserverNamespace       = "default"
 		TangserverResourceVersion = "1"
-		TangServerTestKeyPath     = "/var/db/tang2"
 	)
 
 	Context("When Creating TangServer", func() {
@@ -43,29 +43,15 @@ var _ = Describe("TangServer controller keyhandler", func() {
 					Name:      TangserverName,
 					Namespace: TangserverNamespace,
 				},
-				Spec: daemonsv1alpha1.TangServerSpec{
-					Replicas: 1,
-				},
+				Spec: daemonsv1alpha1.TangServerSpec{},
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
-			Expect(getDefaultKeyPath(tangServer), DEFAULT_DEPLOYMENT_KEY_PATH)
-			k8sClient.Delete(ctx, tangServer)
-		})
-		It("Should be created with default script value", func() {
-			By("By creating a new TangServer with empty image specs")
-			ctx := context.Background()
-			tangServer := &daemonsv1alpha1.TangServer{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      TangserverName,
-					Namespace: TangserverNamespace,
-				},
-				Spec: daemonsv1alpha1.TangServerSpec{
-					Replicas: 1,
-					KeyPath:  TangServerTestKeyPath,
-				},
-			}
-			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
-			Expect(getProbe(tangServer), TangServerTestKeyPath)
+			deployment := getDeployment(tangServer)
+			Expect(deployment, Not(nil))
+			Expect(deployment.TypeMeta.Kind, DEFAULT_DEPLOYMENT_TYPE)
+			Expect(deployment.ObjectMeta.Name, getDefaultName(tangServer))
+			Expect(deployment.Spec.Replicas, DEFAULT_REPLICA_AMOUNT)
+			Expect(deployment.Spec.Template, Not(nil))
 			k8sClient.Delete(ctx, tangServer)
 		})
 	})

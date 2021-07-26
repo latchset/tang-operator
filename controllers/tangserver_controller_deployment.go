@@ -24,6 +24,12 @@ import (
 
 // Constants to use
 const DEFAULT_DEPLOYMENT_PREFIX = "tsdp-"
+const DEFAULT_REPLICA_AMOUNT = 1
+const DEFAULT_DEPLOYMENT_TYPE = "Deployment"
+
+func getDefaultName(cr *daemonsv1alpha1.TangServer) string {
+	return DEFAULT_DEPLOYMENT_PREFIX + cr.Name
+}
 
 // getDeployment function returns correctly constructed deployment
 func getDeployment(cr *daemonsv1alpha1.TangServer) *appsv1.Deployment {
@@ -31,13 +37,17 @@ func getDeployment(cr *daemonsv1alpha1.TangServer) *appsv1.Deployment {
 		"app": cr.Name,
 	}
 	replicas := int32(cr.Spec.Replicas)
+	if 0 == replicas {
+		replicas = DEFAULT_REPLICA_AMOUNT
+	}
+
 	return &appsv1.Deployment{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "apps/v1",
 			Kind:       "Deployment",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      DEFAULT_DEPLOYMENT_PREFIX + cr.Name,
+			Name:      getDefaultName(cr),
 			Namespace: cr.Namespace,
 			Labels:    labels,
 		},
