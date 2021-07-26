@@ -22,7 +22,27 @@ import (
 	. "github.com/onsi/gomega"
 	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
+	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
+	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
+
+// getOptions returns fake options for local controller testing
+func getOptions(scheme *runtime.Scheme) *ctrl.Options {
+	metricsAddr := "localhost:7070"
+	probeAddr := "localhost:7071"
+	enableLeaderElection := false
+	return &ctrl.Options{
+		Scheme:                 scheme,
+		MetricsBindAddress:     metricsAddr,
+		Port:                   9443,
+		HealthProbeBindAddress: probeAddr,
+		LeaderElection:         enableLeaderElection,
+		LeaderElectionID:       "e44fa0d3.redhat.com",
+	}
+}
 
 // +kubebuilder:docs-gen:collapse=Imports
 
@@ -67,6 +87,27 @@ var _ = Describe("TangServer controller", func() {
 				},
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Not(Succeed()))
+		})
+	})
+	Context("When Reconciling Tang Server", func() {
+		It("Reconcile should be created with no error", func() {
+			By("By creating a new TangServer with default specs")
+			scheme := runtime.NewScheme()
+			utilruntime.Must(clientgoscheme.AddToScheme(scheme))
+			utilruntime.Must(daemonsv1alpha1.AddToScheme(scheme))
+			opts := zap.Options{
+				Development: true,
+			}
+			ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
+			mgr, _ := ctrl.NewManager(ctrl.GetConfigOrDie(), *getOptions(scheme))
+			ctx := context.Background()
+			rec := TangServerReconciler{
+				Client: mgr.GetClient(),
+				Scheme: mgr.GetScheme(),
+			}
+			rec.SetupWithManager(mgr)
+			_, err := rec.Reconcile(ctx, ctrl.Request{})
+			Expect(err, nil)
 		})
 	})
 })

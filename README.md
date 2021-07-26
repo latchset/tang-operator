@@ -239,8 +239,9 @@ INFO[0002] Operator "tang-operator" uninstalled
 
 ## Tests
 
-Execution of operator tests is pretty simple. Execute **make test** from top directory
-and available tests will be executed:
+Execution of operator tests is pretty simple. A k8s infrastructure (minikube/minishift) 
+must be running to execute tang operator tests based on reconciliation.
+Execute **make test** from top directory and available tests will be executed:
 
 ```bash
 $ make test

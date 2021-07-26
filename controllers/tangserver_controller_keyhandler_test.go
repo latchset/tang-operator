@@ -65,7 +65,7 @@ var _ = Describe("TangServer controller keyhandler", func() {
 				},
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
-			Expect(getProbe(tangServer), TangServerTestKeyPath)
+			Expect(getDefaultKeyPath(tangServer), TangServerTestKeyPath)
 			k8sClient.Delete(ctx, tangServer)
 		})
 	})
