@@ -23,10 +23,7 @@ import (
 	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
-	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
 // getOptions returns fake options for local controller testing
@@ -88,17 +85,9 @@ var _ = Describe("TangServer controller", func() {
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Not(Succeed()))
 		})
-	})
-	Context("When Reconciling Tang Server", func() {
 		It("Reconcile should be created with no error", func() {
 			By("By creating a new TangServer with default specs")
 			scheme := runtime.NewScheme()
-			utilruntime.Must(clientgoscheme.AddToScheme(scheme))
-			utilruntime.Must(daemonsv1alpha1.AddToScheme(scheme))
-			opts := zap.Options{
-				Development: true,
-			}
-			ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 			mgr, _ := ctrl.NewManager(ctrl.GetConfigOrDie(), *getOptions(scheme))
 			ctx := context.Background()
 			rec := TangServerReconciler{

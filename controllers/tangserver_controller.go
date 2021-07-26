@@ -123,7 +123,7 @@ func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	// Reconcile Deployment object
 	result, err := r.reconcileDeployment(tangservers, l)
 	if err != nil {
-		l.Error(err, "Error on deployment reconciliation")
+		l.Error(err, "Error on deployment reconciliation", "Error:", err.Error())
 		return result, err
 	}
 	// Reconcile Service object
