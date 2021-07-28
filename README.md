@@ -255,6 +255,15 @@ setting up env vars
 ok  github.com/sarroutbi/tang-operator/controllers  9.303s  coverage: 36.5% of statements
 ```
 
+## CI/CD
+
+tang-operator uses ci-operator to automate the generation of Prow jobs to perform Openshift CI
+tasks. To generate appropriate generation of images, execute:
+
+```bash
+$ ci-operator --config .ci-operator.yaml --git-ref=sarroutbi/tang-operator@main --target=src
+```
+
 ## Links
 
 [Minishift Installation](https://www.redhat.com/sysadmin/learn-openshift-minishift)\
