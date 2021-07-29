@@ -253,9 +253,23 @@ go vet ./...
 setting up env vars
 ?   github.com/sarroutbi/tang-operator      [no test files]
 ?   github.com/sarroutbi/tang-operator/api/v1alpha1 [no test files]
-ok  github.com/sarroutbi/tang-operator/controllers  9.303s  coverage: 36.5% of statements
+ok  github.com/sarroutbi/tang-operator/controllers  6.541s  coverage: 24.8% of statements
 ```
 
+In order to execute tests that require having a cluster up and running, CLUSTER_TANG_OPERATOR_TEST
+environment variable must be set
+
+```bash
+$ CLUSTER_TANG_OPERATOR_TEST=1 make test
+...
+go fmt ./...
+go vet ./...
+...
+setting up env vars
+?   github.com/sarroutbi/tang-operator      [no test files]
+?   github.com/sarroutbi/tang-operator/api/v1alpha1 [no test files]
+ok  github.com/sarroutbi/tang-operator/controllers  9.303s  coverage: 36.5% of statements
+```
 ## CI/CD
 
 tang-operator uses ci-operator to automate the generation of Prow jobs to perform Openshift CI

@@ -23,6 +23,7 @@ import (
 	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
@@ -54,6 +55,9 @@ var _ = Describe("TangServer controller", func() {
 
 	Context("When Creating Simple TangServer", func() {
 		It("Should be created with no error", func() {
+			if os.Getenv("CLUSTER_TANG_OPERATOR_TEST") == "" {
+				Skip("Avoiding test that requires cluster")
+			}
 			By("By creating a new TangServer with default specs")
 			ctx := context.Background()
 			tangServer := &daemonsv1alpha1.TangServer{
@@ -72,6 +76,9 @@ var _ = Describe("TangServer controller", func() {
 			Expect(emptyTangServer.Spec.Version).Should(Equal(""))
 		})
 		It("Should not be created", func() {
+			if os.Getenv("CLUSTER_TANG_OPERATOR_TEST") == "" {
+				Skip("Avoiding test that requires cluster")
+			}
 			By("By creating a TangServer that already exist")
 			ctx := context.Background()
 			tangServer := &daemonsv1alpha1.TangServer{
@@ -86,6 +93,9 @@ var _ = Describe("TangServer controller", func() {
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Not(Succeed()))
 		})
 		It("Reconcile should be created with no error", func() {
+			if os.Getenv("CLUSTER_TANG_OPERATOR_TEST") == "" {
+				Skip("Avoiding test that requires cluster")
+			}
 			By("By creating a new TangServer with default specs")
 			scheme := runtime.NewScheme()
 			mgr, _ := ctrl.NewManager(ctrl.GetConfigOrDie(), *getOptions(scheme))
