@@ -279,8 +279,42 @@ tasks. To generate appropriate generation of images, execute:
 $ ci-operator --config .ci-operator.yaml --git-ref=sarroutbi/tang-operator@main --target=src
 ```
 
+## Operator sdk score card tests
+
+Execution of operator-sdk scorecard tests are passing completely in version v0.0.10.
+In order to execute these tests, run next command:
+
+```bash
+$ operator-sdk scorecard -w 60s quay.io/sarroutb/tang-operator-bundle:v0.0.10
+...
+Results:
+Name: olm-status-descriptors
+State: pass
+...
+Results:
+Name: olm-spec-descriptors
+State: pass
+...
+Results:
+Name: olm-crds-have-resources
+State: pass
+...
+Results:
+Name: basic-check-spec
+State: pass
+...
+Results:
+Name: olm-crds-have-validation
+State: pass
+...
+Results:
+Name: olm-bundle-validation
+State: pass
+```
+
 ## Links
 
 [Minishift Installation](https://www.redhat.com/sysadmin/learn-openshift-minishift)\
 [operator-sdk Installation](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)\
-[OpenShift CLI Installation](https://docs.openshift.com/container-platform/4.2/cli_reference/openshift_cli/getting-started-cli.html#cli-installing-cli_cli-developer-commands)
+[OpenShift CLI Installation](https://docs.openshift.com/container-platform/4.2/cli_reference/openshift_cli/getting-started-cli.html#cli-installing-cli_cli-developer-commands)\
+[Validating Operators using the scorecard tool](https://docs.okd.io/latest/operators/operator_sdk/osdk-scorecard.html)
