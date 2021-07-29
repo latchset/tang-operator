@@ -73,6 +73,7 @@ type TangServerStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Error"
+	// +optional
 	TangServerError TangServerStatusError `json:"tangServerError,omitempty"`
 }
 
