@@ -256,8 +256,8 @@ setting up env vars
 ok  github.com/sarroutbi/tang-operator/controllers  6.541s  coverage: 24.8% of statements
 ```
 
-In order to execute tests that require having a cluster up and running, CLUSTER_TANG_OPERATOR_TEST
-environment variable must be set
+In order to execute tests that require having a cluster up and running, **CLUSTER_TANG_OPERATOR_TEST**
+environment variable must be set:
 
 ```bash
 $ CLUSTER_TANG_OPERATOR_TEST=1 make test
