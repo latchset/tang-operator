@@ -36,6 +36,17 @@ spec:
       kind: TangServer
       name: tangservers.daemons.redhat.com
       version: v1alpha1
+      resources:
+      - kind: Deployment
+        version: v1
+      - kind: ReplicaSet
+        version: v1
+      - kind: Pod
+        version: v1
+      - kind: Secret
+        version: v1
+      - kind: Service
+        version: v1
   description: Tang Operator for NBDE
   displayName: Tang
   icon:
