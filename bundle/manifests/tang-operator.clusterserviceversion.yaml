@@ -16,7 +16,6 @@ metadata:
           },
           "spec": {
             "image": "registry.redhat.io/rhel8/tang",
-            "keyamount": 2,
             "keypath": "/var/db",
             "replicas": 1,
             "version": "latest"

@@ -177,8 +177,11 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 	log.Info("reconcileDeployment")
 	deployment := getDeployment(cr)
 
+	cr.Status.TangServerError = daemonsv1alpha1.NoError
+
 	// Set tangserver instance as the owner and controller of the Deployment
 	if err := ctrl.SetControllerReference(cr, deployment, r.Scheme); err != nil {
+		cr.Status.TangServerError = daemonsv1alpha1.CreateError
 		return ctrl.Result{}, err
 	}
 
@@ -189,11 +192,13 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 		log.Info("Creating a new Deployment", "Deployment.Namespace", deployment.Namespace, "Deployment.Name", deployment.Name)
 		err = r.Create(context.Background(), deployment)
 		if err != nil {
+			cr.Status.TangServerError = daemonsv1alpha1.CreateError
 			return ctrl.Result{}, err
 		}
 		// Requeue the object to update its status
 		return ctrl.Result{Requeue: true}, nil
 	} else if err != nil {
+		cr.Status.TangServerError = daemonsv1alpha1.CreateError
 		return ctrl.Result{}, err
 	} else {
 		// Deployment already exists

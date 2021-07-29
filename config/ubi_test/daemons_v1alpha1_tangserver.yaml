@@ -6,7 +6,6 @@ metadata:
 spec:
   # Add fields here
   keypath: /var/db
-  keyamount: 2
   replicas: 1
   image: docker.io/sarroutbi/ubi_tang_server_tests
   version: latest
