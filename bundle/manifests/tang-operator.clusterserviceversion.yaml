@@ -47,6 +47,53 @@ spec:
         version: v1
       - kind: Service
         version: v1
+      specDescriptors:
+      - description: Path where Tang keys will be generated
+        displayName: Key Path
+        path: keypath
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Replica Amount to Launch
+        displayName: Replica Amount
+        path: replicas
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Container Image to launch
+        displayName: Container Image
+        path: image
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Version of the Container Image to launch
+        displayName: Container Image Version
+        path: version
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Health Script to launch
+        displayName: Health Script
+        path: healthscript
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Port where Pod will listen
+        displayName: Pod Listen Port
+        path: podlistenport
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Name of the secret to use for image retrieval
+        displayName: Secret Name
+        path: secret
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Port where Service will listen
+        displayName: Service Listen Port
+        path: servicelistenport
+        x-descriptors:
+        - urn:alm:descriptor:text
+      statusDescriptors:
+      - description: Status Error of Tang Operator creation
+        displayName: Tang Status Error
+        path: status.tangservererror
+        x-descriptors:
+        - urn:alm:descriptor:text
   description: Tang Operator for NBDE
   displayName: Tang
   icon:

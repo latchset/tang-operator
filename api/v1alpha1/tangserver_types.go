@@ -34,6 +34,7 @@ type TangServerSpec struct {
 	KeyPath string `json:"keypath,omitempty"`
 
 	// Replicas is the Tang Server amount to bringup
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Amount of replicas to launch"
 	Replicas uint32 `json:"replicas"`
 
 	// Image is the base container image of the TangServer to use
@@ -41,8 +42,7 @@ type TangServerSpec struct {
 	// +optional
 	Image string `json:"image,omitempty"`
 
-	// Version is the version of the TangServer container to use
-	// (empty => latest)
+	// Version is the version of the TangServer container to use (empty=>latest)
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Image Version of Container to deploy"
 	// +optional
 	Version string `json:"version,omitempty"`
@@ -74,7 +74,7 @@ type TangServerStatus struct {
 	// Important: Run "make" to regenerate code after modifying this file
 	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Error"
 	// +optional
-	TangServerError TangServerStatusError `json:"tangServerError,omitempty"`
+	TangServerError TangServerStatusError `json:"tangservererror,omitempty"`
 }
 
 //+kubebuilder:object:root=true
