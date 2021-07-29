@@ -65,8 +65,8 @@ bundle. For example, in case latest version is **0.0.10**, the command to execut
 will be:
 
 ```bash
-$ operator-sdk run docker.io/sarroutbi/tang-operator-bundle:v.0.0.10
-INFO[0008] Successfully created registry pod: docker-io-sarroutbi-tang-operator-bundle-v0-0-10
+$ operator-sdk run quay.io/sarroutb/tang-operator-bundle:v.0.0.10
+INFO[0008] Successfully created registry pod: quay-io-sarroutb-tang-operator-bundle-v0-0-10
 INFO[0009] Created CatalogSource: tang-operator-catalog
 INFO[0009] OperatorGroup "operator-sdk-og" created
 INFO[0009] Created Subscription: tang-operator-v0-0-10-sub
@@ -89,8 +89,8 @@ your cluster takes long time to deploy. To do so, the option **--timeout** can b
 used (if not used, default time is 2m, which stands for two minutes):
 
 ```bash
-$ operator-sdk run bundle --timeout 3m docker.io/sarroutbi/tang-operator-bundle:v0.0.10
-INFO[0008] Successfully created registry pod: docker-io-sarroutbi-tang-operator-bundle-v0-0-8
+$ operator-sdk run bundle --timeout 3m quay.io/sarroutb/tang-operator-bundle:v0.0.10
+INFO[0008] Successfully created registry pod: quay-io-sarroutb-tang-operator-bundle-v0-0-8
 ...
 INFO[0031] OLM has successfully installed "tang-operator.v0.0.10"
 ```
@@ -102,7 +102,7 @@ the following is observed when prompting for installed pods:
 $ oc get pods
 NAME                                                READY STATUS    RESTARTS AGE
 dbbd1837106ec169542546e7ad251b95d27c3542eb0409c1e   0/1   Completed 0        82s
-docker-io-tang-operator-bundle-v0-0-8               1/1   Running   0        90s
+quay-io-tang-operator-bundle-v0-0-10                1/1   Running   0        90s
 tang-operator-controller-manager-5c9488d8dd-mgmsf   2/2   Running   0        52s
 ```
 
@@ -149,16 +149,16 @@ to be released, it is recommended to increase version appropriately.
 In this case, same version is used. Last released version can be observed in
 [Versions](#versions) section.
 
-To summarize, taking into account that the last released version is **0.0.8**
+To summarize, taking into account that the last released version is **0.0.10**
 compilation can be done with next command:
 
 ```bash
-$ make docker-build docker-push IMG="sarroutbi/tang-operator:v0.0.8"
+$ make docker-build docker-push IMG="quay.io/sarroutb/tang-operator:v0.0.10"
 ...
 Successfully built 4a88ba8e6426
-Successfully tagged sarroutbi/tang-operator:v0.0.10
-docker push sarroutbi/tang-operator:v0.0.10
-The push refers to repository [docker.io/sarroutbi/tang-operator]
+Successfully tagged sarroutb/tang-operator:v0.0.10
+docker push sarroutb/tang-operator:v0.0.10
+The push refers to repository [quay.io/sarroutb/tang-operator]
 79109912085a: Pushed
 417cb9b79ade: Layer already exists
 v0.0.10: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
@@ -189,11 +189,11 @@ Compile tang operator code, specifying new version,
 by using **make docker-build** command:
 
 ```bash
-$ make docker-build docker-push IMG="sarroutbi/tang-operator:v0.0.10"
+$ make docker-build docker-push IMG="quay.io/sarroutb/tang-operator:v0.0.10"
 ...
-Successfully tagged sarroutbi/tang-operator:v0.0.10
-docker push sarroutbi/tang-operator:v0.0.10
-The push refers to repository [docker.io/sarroutbi/tang-operator]
+Successfully tagged sarroutb/tang-operator:v0.0.10
+docker push sarroutb/tang-operator:v0.0.10
+The push refers to repository [quay.io/sarroutb/tang-operator]
 9ff8a4099c67: Pushed
 417cb9b79ade: Layer already exists
 v0.0.10: digest: sha256:01620ab19faae54fb382a2ff285f589cf0bde6e168f14f07 size: 739
@@ -211,10 +211,11 @@ Remember to **modify README.md** to include the new release version, and commit 
 performed in the operator, together with README.md and Makefile changes
 
 ```bash
-$ make bundle IMG="sarroutbi/tang-operator:v0.0.10"; make bundle-build bundle-push
+$ make bundle-build BUNDLE_IMG=quay.io/sarroutb/tang-operator-bundle:v0.0.10
+$ make bundle-build bundle-push BUNDLE_IMG=quay.io/sarroutb/tang-operator-bundle:v0.0.10
 ...
-docker push sarroutbi/tang-operator-bundle:v0.0.10
-The push refers to repository [docker.io/sarroutbi/tang-operator-bundle]
+docker push sarroutb/tang-operator-bundle:v0.0.10
+The push refers to repository [quay.io/sarroutb/tang-operator-bundle]
 02e3768cfc56: Pushed
 df0c8060d328: Pushed
 84774958bcf4: Pushed
