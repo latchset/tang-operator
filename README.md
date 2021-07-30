@@ -291,6 +291,8 @@ tasks. To generate appropriate generation of images, execute:
 $ ci-operator --config .ci-operator.yaml --git-ref=sarroutbi/tang-operator@main --target=src
 ```
 
+NOTE: CI/CD is in a work in progress state
+
 ## Operator sdk score card tests
 
 Execution of operator-sdk scorecard tests are passing completely in version v0.0.10.
