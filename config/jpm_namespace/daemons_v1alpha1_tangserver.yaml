@@ -1,0 +1,12 @@
+apiVersion: daemons.redhat.com/v1alpha1
+kind: TangServer
+metadata:
+  name: tangserver
+  namespace: jpm
+  finalizers:
+  - finalizer.daemons.tangserver.redhat.com
+spec:
+  # Add fields here
+  replicas: 1
+  image: "registry.redhat.io/rhel8/tang"
+  version: "latest"
