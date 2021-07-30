@@ -199,7 +199,7 @@ The push refers to repository [quay.io/sarroutb/tang-operator]
 v0.0.10: digest: sha256:01620ab19faae54fb382a2ff285f589cf0bde6e168f14f07 size: 739
 ```
 
-- Bundle push
+- Bundle push:
 
 In case the operator bundle is required to be pushed, generate
 the bundle with **make bundle**, specifying appropriate image,
@@ -218,7 +218,7 @@ v0.0.10: digest: sha256:925c2f844f941db2b53ce45cba9db7ee0be613321da8f0f05d size:
 make[1]: Leaving directory '/home/sarroutb/RedHat/TASKS/TANG_OPERATOR/tang-operator'
 ```
 
-- Commit changes
+- Commit changes:
 
 Remember to **modify README.md** to include the new release version, and commit changes
 performed in the operator, together with README.md and Makefile changes
