@@ -270,6 +270,18 @@ setting up env vars
 ?   github.com/sarroutbi/tang-operator/api/v1alpha1 [no test files]
 ok  github.com/sarroutbi/tang-operator/controllers  9.303s  coverage: 36.5% of statements
 ```
+
+As shown previously, coverage is calculated after test execution. Coverage data is dumped
+to file **coverage.out**. To inspect coverage graphically, it can be observed by executing
+next command:
+
+```bash
+$ go tool cover -html=cover.out
+```
+
+Previous command will open a web browser with the different coverage reports of the different
+files that are part of the controller.
+
 ## CI/CD
 
 tang-operator uses ci-operator to automate the generation of Prow jobs to perform Openshift CI
