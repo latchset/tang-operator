@@ -70,8 +70,7 @@ type TangServerSpec struct {
 
 // TangServerStatus defines the observed state of TangServer
 type TangServerStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// Tang Server Error collects error on Tang Operator creation
 	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Error"
 	// +optional
 	TangServerError TangServerStatusError `json:"tangservererror,omitempty"`
