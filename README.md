@@ -205,11 +205,6 @@ In case the operator bundle is required to be pushed, generate
 the bundle with **make bundle**, specifying appropriate image,
 and push it with **make bundle-build bundle-push**:
 
-- Commit changes
-
-Remember to **modify README.md** to include the new release version, and commit changes
-performed in the operator, together with README.md and Makefile changes
-
 ```bash
 $ make bundle-build BUNDLE_IMG=quay.io/sarroutb/tang-operator-bundle:v0.0.10
 $ make bundle-build bundle-push BUNDLE_IMG=quay.io/sarroutb/tang-operator-bundle:v0.0.10
@@ -222,6 +217,11 @@ df0c8060d328: Pushed
 v0.0.10: digest: sha256:925c2f844f941db2b53ce45cba9db7ee0be613321da8f0f05d size: 939
 make[1]: Leaving directory '/home/sarroutb/RedHat/TASKS/TANG_OPERATOR/tang-operator'
 ```
+
+- Commit changes
+
+Remember to **modify README.md** to include the new release version, and commit changes
+performed in the operator, together with README.md and Makefile changes
 
 ## Cleanup
 
