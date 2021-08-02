@@ -23,8 +23,10 @@ import (
 	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/kubernetes/scheme"
 	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
+	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // getOptions returns fake options for local controller testing
@@ -39,6 +41,13 @@ func getOptions(scheme *runtime.Scheme) *ctrl.Options {
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
 		LeaderElectionID:       "e44fa0d3.redhat.com",
+	}
+}
+
+// getClientOptions returns fake options for local controller testing
+func getClientOptions(scheme *runtime.Scheme) *client.Options {
+	return &client.Options{
+		Scheme: scheme,
 	}
 }
 
@@ -102,12 +111,23 @@ var _ = Describe("TangServer controller", func() {
 				Skip("Avoiding test that requires cluster")
 			}
 			By("By creating a new TangServer with default specs")
-			scheme := runtime.NewScheme()
-			mgr, _ := ctrl.NewManager(ctrl.GetConfigOrDie(), *getOptions(scheme))
 			ctx := context.Background()
+			tangServer := &daemonsv1alpha1.TangServer{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      TangserverName,
+					Namespace: TangserverNamespace,
+				},
+				Spec: daemonsv1alpha1.TangServerSpec{
+					KeyPath: "/",
+				},
+			}
+			s := scheme.Scheme
+			s.AddKnownTypes(daemonsv1alpha1.GroupVersion, tangServer)
+			mgr, _ := ctrl.NewManager(ctrl.GetConfigOrDie(), *getOptions(s))
+			nc, _ := client.New(ctrl.GetConfigOrDie(), *getClientOptions(s))
 			rec := TangServerReconciler{
-				Client: mgr.GetClient(),
-				Scheme: mgr.GetScheme(),
+				Client: nc,
+				Scheme: s,
 			}
 			rec.SetupWithManager(mgr)
 			_, err := rec.Reconcile(ctx, ctrl.Request{})
