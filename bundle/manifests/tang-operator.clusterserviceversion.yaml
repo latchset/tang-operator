@@ -205,7 +205,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: sarroutbi/tang-operator:v0.0.10
+                image: quay.io/sarroutb/tang-operator:v0.0.10
                 livenessProbe:
                   httpGet:
                     path: /healthz
