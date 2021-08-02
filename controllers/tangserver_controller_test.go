@@ -42,6 +42,11 @@ func getOptions(scheme *runtime.Scheme) *ctrl.Options {
 	}
 }
 
+// isCluster checks for environment variable value to run test on cluster
+func isCluster() bool {
+	return os.Getenv("CLUSTER_TANG_OPERATOR_TEST") == "1" || os.Getenv("CLUSTER_TANG_OPERATOR_TEST") == "y"
+}
+
 // +kubebuilder:docs-gen:collapse=Imports
 
 var _ = Describe("TangServer controller", func() {
@@ -55,7 +60,7 @@ var _ = Describe("TangServer controller", func() {
 
 	Context("When Creating Simple TangServer", func() {
 		It("Should be created with no error", func() {
-			if os.Getenv("CLUSTER_TANG_OPERATOR_TEST") == "" {
+			if !isCluster() {
 				Skip("Avoiding test that requires cluster")
 			}
 			By("By creating a new TangServer with default specs")
@@ -76,7 +81,7 @@ var _ = Describe("TangServer controller", func() {
 			Expect(emptyTangServer.Spec.Version).Should(Equal(""))
 		})
 		It("Should not be created", func() {
-			if os.Getenv("CLUSTER_TANG_OPERATOR_TEST") == "" {
+			if !isCluster() {
 				Skip("Avoiding test that requires cluster")
 			}
 			By("By creating a TangServer that already exist")
@@ -93,7 +98,7 @@ var _ = Describe("TangServer controller", func() {
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Not(Succeed()))
 		})
 		It("Reconcile should be created with no error", func() {
-			if os.Getenv("CLUSTER_TANG_OPERATOR_TEST") == "" {
+			if !isCluster() {
 				Skip("Avoiding test that requires cluster")
 			}
 			By("By creating a new TangServer with default specs")
