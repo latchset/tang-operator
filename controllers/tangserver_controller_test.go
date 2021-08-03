@@ -23,6 +23,7 @@ import (
 	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes/scheme"
 	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -130,7 +131,12 @@ var _ = Describe("TangServer controller", func() {
 				Scheme: s,
 			}
 			rec.SetupWithManager(mgr)
-			_, err := rec.Reconcile(ctx, ctrl.Request{})
+			_, err := rec.Reconcile(ctx, ctrl.Request{
+				NamespacedName: types.NamespacedName{
+					Namespace: TangserverNamespace,
+					Name:      TangserverName,
+				},
+			})
 			Expect(err, nil)
 		})
 	})

@@ -19,6 +19,8 @@ package controllers
 import (
 	"context"
 	"github.com/go-logr/logr"
+	"io/ioutil"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -69,6 +71,11 @@ func isInstanceMarkedToBeDeleted(tangserver *daemonsv1alpha1.TangServer) bool {
 	return tangserver.GetDeletionTimestamp() != nil
 }
 
+//
+func dumpToErrFile(msg string) {
+	ioutil.WriteFile("/tmp/err2", []byte(msg), 0644)
+}
+
 // checkCRReadyForDeletion will check if CR can be deleted appropriately
 func (r *TangServerReconciler) checkCRReadyForDeletion(ctx context.Context, tangserver *daemonsv1alpha1.TangServer) (ctrl.Result, error) {
 	l := log.FromContext(ctx)
@@ -114,7 +121,12 @@ func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	l := log.FromContext(ctx)
 
 	// your logic here
-	tangserver := &daemonsv1alpha1.TangServer{}
+	tangserver := &daemonsv1alpha1.TangServer{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: req.NamespacedName.Namespace,
+			Name:      req.NamespacedName.Name,
+		},
+	}
 	err := r.Get(ctx, req.NamespacedName, tangserver)
 	if err != nil {
 		if errors.IsNotFound(err) {
@@ -133,6 +145,7 @@ func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	result, err := r.reconcileDeployment(tangserver, l)
 	if err != nil {
 		l.Error(err, "Error on deployment reconciliation", "Error:", err.Error())
+		dumpToErrFile("Error on deployment reconciliation, Error:" + err.Error() + "\n")
 		return result, err
 	}
 	// Reconcile Service object
