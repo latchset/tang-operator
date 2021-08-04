@@ -27,28 +27,21 @@ tang operator-bundle are:
 - v0.0.2:  Basic version with no fields still updated
 - v0.0.3:  First release correct version. PLEASE, DO NOT OVERWRITE
 - v0.0.4:  Version that fixes issues with deployments/pods/services permissions.
-           PLEASE, DO NOT OVERWRITE
 - v0.0.5:  Version that publishes the service and exposes it on configurable port.
-           PLEASE, DO NOT OVERWRITE
 - v0.0.6:  Types refactoring. Initial ginkgo based test.
-           PLEASE, DO NOT OVERWRITE
 - v0.0.7:  Include finalizers to make deletion quicker.
-           PLEASE, DO NOT OVERWRITE
 - v0.0.8:  Tang operator metadata homogeneization.
-           PLEASE, DO NOT OVERWRITE
 - v0.0.9:  Tang operator shared storage.
-           PLEASE, DO NOT OVERWRITE
 - v0.0.10: Code Refactoring I.
-           PLEASE, DO NOT OVERWRITE
 
 ## Installation
 
 In order to install tang operator, you must have previously installed
-an Open Shift cluster. For small computers, **Minishift** project
-is recommended. In case normal OpenShift cluster is used, tang operator
-installation should not differ from the Minishift one.
+an Open Shift cluster. For small computers, **CRC** (Code Ready Containers)
+project is recommended. In case normal OpenShift cluster is used, tang operator
+installation should not differ from the CRC one.
 
-Instructions for **Minishift** installation can be observed
+Instructions for **CRC** installation can be observed
 in the [Links](#links) section.
 Apart from cluster, the corresponding client is required to check
 the status of the different Pods, Deployments and Services. Required
@@ -328,7 +321,7 @@ State: pass
 
 ## Links
 
-[Minishift Installation](https://www.redhat.com/sysadmin/learn-openshift-minishift)\
+[CRC Installation](https://access.redhat.com/documentation/en-us/red_hat_codeready_containers/1.29/html/getting_started_guide/installation_gsg)\
 [operator-sdk Installation](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)\
 [OpenShift CLI Installation](https://docs.openshift.com/container-platform/4.2/cli_reference/openshift_cli/getting-started-cli.html#cli-installing-cli_cli-developer-commands)\
 [Validating Operators using the scorecard tool](https://docs.okd.io/latest/operators/operator_sdk/osdk-scorecard.html)
