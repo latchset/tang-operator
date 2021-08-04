@@ -212,6 +212,31 @@ v0.0.11: digest: sha256:925c2f844f941db2b53ce45cba9db7ee0be613321da8f0f05d size:
 make[1]: Leaving directory '/home/sarroutb/RedHat/TASKS/TANG_OPERATOR/tang-operator'
 ```
 
+**IMPORTANT NOTE**: After bundle generation, next change will appear on the bundle directory:
+
+```bash
+--- a/bundle/manifests/tang-operator.clusterserviceversion.yaml
++++ b/bundle/manifests/tang-operator.clusterserviceversion.yaml
+@@ -36,17 +36,6 @@ spec:
+       displayName: Tang Server
+       kind: TangServer
+       name: tangservers.daemons.redhat.com
+-      resources:
+-      - kind: Deployment
+-        version: v1
+-      - kind: ReplicaSet
+-        version: v1
+-      - kind: Pod
+-        version: v1
+-      - kind: Secret
+-        version: v1
+-      - kind: Service
+-        version: v1
+```
+
+**DO NOT COMMIT PREVIOUS CHANGE**, as this metadata information is required by
+scorecard tests to pass successfully
+
 - Commit changes:
 
 Remember to **modify README.md** to include the new release version, and commit changes
