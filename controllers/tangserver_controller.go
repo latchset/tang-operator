@@ -18,10 +18,13 @@ package controllers
 
 import (
 	"context"
+	"crypto/sha256"
+	"fmt"
 	"github.com/go-logr/logr"
-	"io/ioutil"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"math/rand"
+	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
@@ -71,9 +74,16 @@ func isInstanceMarkedToBeDeleted(tangserver *daemonsv1alpha1.TangServer) bool {
 	return tangserver.GetDeletionTimestamp() != nil
 }
 
-//
+//dumpToErrFile allows dumping string to error file
 func dumpToErrFile(msg string) {
-	ioutil.WriteFile("/tmp/err2", []byte(msg), 0644)
+	f, err := os.OpenFile("/tmp/tangserver-error", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	if _, err = f.WriteString(msg); err != nil {
+		panic(err)
+	}
 }
 
 // checkCRReadyForDeletion will check if CR can be deleted appropriately
@@ -99,11 +109,21 @@ func (r *TangServerReconciler) checkCRReadyForDeletion(ctx context.Context, tang
 	return ctrl.Result{}, nil
 }
 
+// getSHA256 returns a random SHA256 number
+func getSHA256() string {
+	data := make([]byte, 10)
+	for i := range data {
+		data[i] = byte(rand.Intn(256))
+	}
+	sha := fmt.Sprintf("%x", sha256.Sum256(data))
+	return sha
+}
+
 // updateUID allows to set a UID for those cases where it is not set (i.e.:running on test infra)
 func updateUID(cr *daemonsv1alpha1.TangServer, req ctrl.Request) {
 	// Ugly hack to update UID for test to run appropriately
 	if req.NamespacedName.Name == daemonsv1alpha1.DefaultTestName {
-		cr.ObjectMeta.UID = "12345"
+		cr.ObjectMeta.UID = types.UID(getSHA256())
 	}
 }
 
@@ -293,7 +313,7 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 func (r *TangServerReconciler) reconcileService(cr *daemonsv1alpha1.TangServer, log logr.Logger) (ctrl.Result, error) {
 	service := getService(cr)
 
-	// Set ReverseWordsApp instance as the owner and controller of the Service
+	// Set TangServer instance as the owner and controller of the Service
 	if err := controllerutil.SetControllerReference(cr, service, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}

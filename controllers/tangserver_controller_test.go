@@ -64,6 +64,7 @@ var _ = Describe("TangServer controller", func() {
 	// Define utility constants for object names and testing timeouts/durations and intervals.
 	const (
 		TangserverName      = daemonsv1alpha1.DefaultTestName
+		TangserverNameNoUID = daemonsv1alpha1.DefaultTestNameNoUID
 		TangserverNamespace = daemonsv1alpha1.DefaultTestNamespace
 	)
 
@@ -106,7 +107,39 @@ var _ = Describe("TangServer controller", func() {
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Not(Succeed()))
 		})
-		It("Reconcile should be created with no error", func() {
+		It("Reconcile should be executed with no error", func() {
+			if !isCluster() {
+				Skip("Avoiding test that requires cluster")
+			}
+			By("By creating a new TangServer with default specs")
+			ctx := context.Background()
+			tangServer := &daemonsv1alpha1.TangServer{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      TangserverNameNoUID,
+					Namespace: TangserverNamespace,
+				},
+				Spec: daemonsv1alpha1.TangServerSpec{
+					KeyPath: "/",
+				},
+			}
+			s := scheme.Scheme
+			s.AddKnownTypes(daemonsv1alpha1.GroupVersion, tangServer)
+			mgr, _ := ctrl.NewManager(ctrl.GetConfigOrDie(), *getOptions(s))
+			nc, _ := client.New(ctrl.GetConfigOrDie(), *getClientOptions(s))
+			rec := TangServerReconciler{
+				Client: nc,
+				Scheme: s,
+			}
+			rec.SetupWithManager(mgr)
+			_, err := rec.Reconcile(ctx, ctrl.Request{
+				NamespacedName: types.NamespacedName{
+					Namespace: TangserverNamespace,
+					Name:      TangserverNameNoUID,
+				},
+			})
+			Expect(err, nil)
+		})
+		It("Double Reconcile should be executed with no error", func() {
 			if !isCluster() {
 				Skip("Avoiding test that requires cluster")
 			}
@@ -130,12 +163,15 @@ var _ = Describe("TangServer controller", func() {
 				Scheme: s,
 			}
 			rec.SetupWithManager(mgr)
-			_, err := rec.Reconcile(ctx, ctrl.Request{
+			req := ctrl.Request{
 				NamespacedName: types.NamespacedName{
-					Namespace: TangserverNamespace,
 					Name:      TangserverName,
+					Namespace: TangserverNamespace,
 				},
-			})
+			}
+			_, err := rec.Reconcile(ctx, req)
+			Expect(err, nil)
+			_, err = rec.Reconcile(ctx, req)
 			Expect(err, nil)
 		})
 	})
