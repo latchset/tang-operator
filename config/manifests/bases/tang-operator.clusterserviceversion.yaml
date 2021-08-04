@@ -14,6 +14,38 @@ spec:
       displayName: Tang Server
       kind: TangServer
       name: tangservers.daemons.redhat.com
+      specDescriptors:
+      - description: HealthScript is the script to run for healthiness/readiness
+        displayName: Health Script to execute
+        path: healthscript
+      - description: Image is the base container image of the TangServer to use
+        displayName: Image of Container to deploy
+        path: image
+      - description: KeyPath is field of TangServer. It allows to specify the path
+          where keys will be generated
+        displayName: Key Path
+        path: keypath
+      - description: PodListenPort is the port where pods will listen for traffic
+        displayName: 'Port where Pod will listen '
+        path: podlistenport
+      - description: Replicas is the Tang Server amount to bringup
+        displayName: Amount of replicas to launch
+        path: replicas
+      - description: Secret is the secret name to use to download image appropriately
+        displayName: Secret name to use for container download
+        path: secret
+      - description: ServiceListenPort is the port where service will listen for traffic
+        displayName: Port where service will listen
+        path: servicelistenport
+      - description: Version is the version of the TangServer container to use (empty=>latest)
+        displayName: Image Version of Container to deploy
+        path: version
+      statusDescriptors:
+      - description: Tang Server Error collects error on Tang Operator creation
+        displayName: Tang Server Error
+        path: tangservererror
+        x-descriptors:
+        - urn:alm:descriptor:text
       version: v1alpha1
   description: Tang Operator for NBDE
   displayName: Tang

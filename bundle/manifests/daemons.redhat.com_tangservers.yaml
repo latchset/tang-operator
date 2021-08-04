@@ -14,7 +14,40 @@ spec:
     singular: tangserver
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - additionalPrinterColumns:
+    - description: Directory to use for key generation
+      jsonPath: .spec.keypath
+      name: KeyPath
+      type: string
+    - description: Replicas to launch for a particular deployment
+      jsonPath: .spec.replicas
+      name: Replicas
+      type: integer
+    - description: Container Image to use
+      jsonPath: .spec.replicas
+      name: Image
+      type: string
+    - description: Version of the Container Image to use
+      jsonPath: .spec.version
+      name: Version
+      type: string
+    - description: Health Script to execute
+      jsonPath: .spec.healthscript
+      name: HealthScript
+      type: string
+    - description: Port where each Pod will listen
+      jsonPath: .spec.podlistenport
+      name: PodListenPort
+      type: integer
+    - description: Secret name to use in case it is necessary
+      jsonPath: .spec.secret
+      name: Secret
+      type: string
+    - description: Port where each Service will listen
+      jsonPath: .spec.podlistenport
+      name: ServiceListenPort
+      type: integer
+    name: v1alpha1
     schema:
       openAPIV3Schema:
         description: TangServer is the Schema for the tangservers API
@@ -64,13 +97,17 @@ spec:
                 type: integer
               version:
                 description: Version is the version of the TangServer container to
-                  use (empty => latest)
+                  use (empty=>latest)
                 type: string
             required:
             - replicas
             type: object
           status:
             description: TangServerStatus defines the observed state of TangServer
+            properties:
+              tangservererror:
+                description: Tang Server Error collects error on Tang Operator creation
+                type: string
             type: object
         type: object
     served: true
