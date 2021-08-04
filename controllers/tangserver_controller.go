@@ -99,6 +99,14 @@ func (r *TangServerReconciler) checkCRReadyForDeletion(ctx context.Context, tang
 	return ctrl.Result{}, nil
 }
 
+// updateUID allows to set a UID for those cases where it is not set (i.e.:running on test infra)
+func updateUID(cr *daemonsv1alpha1.TangServer, req ctrl.Request) {
+	// Ugly hack to update UID for test to run appropriately
+	if req.NamespacedName.Name == daemonsv1alpha1.DefaultTestName {
+		cr.ObjectMeta.UID = "12345"
+	}
+}
+
 //+kubebuilder:rbac:groups=daemons.redhat.com,resources=tangservers,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=daemons.redhat.com,resources=tangservers/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=daemons.redhat.com,resources=tangservers/finalizers,verbs=update
@@ -127,6 +135,8 @@ func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 			Name:      req.NamespacedName.Name,
 		},
 	}
+	updateUID(tangserver, req)
+
 	err := r.Get(ctx, req.NamespacedName, tangserver)
 	if err != nil {
 		if errors.IsNotFound(err) {

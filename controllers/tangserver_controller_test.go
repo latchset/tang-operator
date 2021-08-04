@@ -63,9 +63,8 @@ var _ = Describe("TangServer controller", func() {
 
 	// Define utility constants for object names and testing timeouts/durations and intervals.
 	const (
-		TangserverName = "test-tangserver"
-		// TODO: test why it can not be tested in non default namespace
-		TangserverNamespace = "default"
+		TangserverName      = daemonsv1alpha1.DefaultTestName
+		TangserverNamespace = daemonsv1alpha1.DefaultTestNamespace
 	)
 
 	Context("When Creating Simple TangServer", func() {

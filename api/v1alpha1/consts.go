@@ -19,6 +19,9 @@ package v1alpha1
 type TangServerStatusError string
 
 const (
-	NoError     TangServerStatusError = "No Error"
-	CreateError TangServerStatusError = "Error on pod creation"
+	NoError         TangServerStatusError = "No Error"
+	CreateError     TangServerStatusError = "Error on pod creation"
+	DefaultTestName string                = "tangserver-test"
+	// TODO: test why it can not be tested in non default namespace
+	DefaultTestNamespace string = "default"
 )
