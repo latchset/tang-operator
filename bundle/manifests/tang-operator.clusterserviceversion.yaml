@@ -15,6 +15,7 @@ metadata:
             "namespace": "nbde"
           },
           "spec": {
+            "healthscript": "/usr/bin/tangd-health-check",
             "image": "registry.redhat.io/rhel8/tang",
             "keypath": "/var/db",
             "replicas": 1,
@@ -25,7 +26,7 @@ metadata:
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.7.1+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: tang-operator.v0.0.10
+  name: tang-operator.v0.0.11
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -35,7 +36,6 @@ spec:
       displayName: Tang Server
       kind: TangServer
       name: tangservers.daemons.redhat.com
-      version: v1alpha1
       resources:
       - kind: Deployment
         version: v1
@@ -48,52 +48,38 @@ spec:
       - kind: Service
         version: v1
       specDescriptors:
-      - description: Path where Tang keys will be generated
+      - description: HealthScript is the script to run for healthiness/readiness
+        displayName: Health Script to execute
+        path: healthscript
+      - description: Image is the base container image of the TangServer to use
+        displayName: Image of Container to deploy
+        path: image
+      - description: KeyPath is field of TangServer. It allows to specify the path
+          where keys will be generated
         displayName: Key Path
         path: keypath
-        x-descriptors:
-        - urn:alm:descriptor:text
-      - description: Replica Amount to Launch
-        displayName: Replica Amount
-        path: replicas
-        x-descriptors:
-        - urn:alm:descriptor:text
-      - description: Container Image to launch
-        displayName: Container Image
-        path: image
-        x-descriptors:
-        - urn:alm:descriptor:text
-      - description: Version of the Container Image to launch
-        displayName: Container Image Version
-        path: version
-        x-descriptors:
-        - urn:alm:descriptor:text
-      - description: Health Script to launch
-        displayName: Health Script
-        path: healthscript
-        x-descriptors:
-        - urn:alm:descriptor:text
-      - description: Port where Pod will listen
-        displayName: Pod Listen Port
+      - description: PodListenPort is the port where pods will listen for traffic
+        displayName: 'Port where Pod will listen '
         path: podlistenport
-        x-descriptors:
-        - urn:alm:descriptor:text
-      - description: Name of the secret to use for image retrieval
-        displayName: Secret Name
+      - description: Replicas is the Tang Server amount to bringup
+        displayName: Amount of replicas to launch
+        path: replicas
+      - description: Secret is the secret name to use to download image appropriately
+        displayName: Secret name to use for container download
         path: secret
-        x-descriptors:
-        - urn:alm:descriptor:text
-      - description: Port where Service will listen
-        displayName: Service Listen Port
+      - description: ServiceListenPort is the port where service will listen for traffic
+        displayName: Port where service will listen
         path: servicelistenport
-        x-descriptors:
-        - urn:alm:descriptor:text
+      - description: Version is the version of the TangServer container to use (empty=>latest)
+        displayName: Image Version of Container to deploy
+        path: version
       statusDescriptors:
-      - description: Status Error of Tang Operator creation
-        displayName: Tang Status Error
-        path: status.tangservererror
+      - description: Tang Server Error collects error on Tang Operator creation
+        displayName: Tang Server Error
+        path: tangservererror
         x-descriptors:
         - urn:alm:descriptor:text
+      version: v1alpha1
   description: Tang Operator for NBDE
   displayName: Tang
   icon:
@@ -205,7 +191,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: quay.io/sarroutb/tang-operator:v0.0.10
+                image: quay.io/sarroutb/tang-operator:v0.0.11
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -288,4 +274,4 @@ spec:
   maturity: alpha
   provider:
     name: Red Hat
-  version: 0.0.10
+  version: 0.0.11
