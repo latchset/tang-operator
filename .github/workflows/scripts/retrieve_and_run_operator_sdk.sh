@@ -26,6 +26,6 @@ fi
 
 echo "PWD:$(pwd)"
 
-curl -L -o operator-sdk "https://github.com/operator-framework/operator-sdk/releases/download/${OPERATOR_SDK_RELEASE_VERSION}/operator-sdk_linux_amd64"
-chmod +x operator-sdk
-operator-sdk run bundle --timeout "${TIMEOUT}" "${BUNDLE_IMG}"
+curl -L -o "$(pwd)/operator-sdk" "https://github.com/operator-framework/operator-sdk/releases/download/${OPERATOR_SDK_RELEASE_VERSION}/operator-sdk_linux_amd64"
+chmod +x "$(pwd)/operator-sdk"
+$(pwd)/operator-sdk run bundle --timeout "${TIMEOUT}" "${BUNDLE_IMG}"
