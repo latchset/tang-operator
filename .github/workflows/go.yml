@@ -18,12 +18,13 @@ jobs:
       with:
         go-version: 1.16
 
-    - name: Setup OpenShift
-      uses: manusa/actions-setup-openshift@v1.1.3
-      with:
-        oc version: 'v4.8.2'
-        github token: ${{secrets.GITHUB_TOKEN}}
+    - name: start minikube
+      id: minikube
+      uses: medyagh/setup-minikube@master
 
+    - name: kubectl
+      uses: kubectl get pods
+      
     - name: Build
       run: make
 
