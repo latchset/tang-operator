@@ -24,11 +24,7 @@ if [ -z "${TIMEOUNT}" ]; then
   TIMEOUT="${DEFAULT_TIMEOUT}"
 fi
 
-echo "PWD:$(pwd)"
-
 curl -L -o "$(pwd)/operator-sdk" "https://github.com/operator-framework/operator-sdk/releases/download/${OPERATOR_SDK_RELEASE_VERSION}/operator-sdk_linux_amd64"
 chmod +x "$(pwd)/operator-sdk"
-echo "PWD:$(pwd)"
-echo "LS:$(ls $(pwd))"
 $(pwd)/operator-sdk olm install --timeout "${TIMEOUT}"
 $(pwd)/operator-sdk run bundle --timeout "${TIMEOUT}" "${BUNDLE_IMG}"
