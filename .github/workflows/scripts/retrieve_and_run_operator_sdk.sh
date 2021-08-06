@@ -19,7 +19,7 @@ if [ -z "${BUNDLE_IMG}" ]; then
   BUNDLE_IMG="${DEFAULT_BUNDLE_IMAGE}"
 fi
 
-if [ -z "${TIMEOUNT}" ]; then
+if [ -z "${TIMEOUT}" ]; then
   echo "INFO: using default timeout: ${DEFAULT_TIMEOUT}"
   TIMEOUT="${DEFAULT_TIMEOUT}"
 fi
