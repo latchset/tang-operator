@@ -31,5 +31,5 @@ jobs:
     - name: Test
       run: make test
 
-    - name: Deploy
+    - name: Deploy and Scorecard
       run: sh .github/workflows/scripts/retrieve_and_run_operator_sdk.sh "v1.10.1" "quay.io/sarroutb/tang-operator-bundle:v0.0.11" "10m"
