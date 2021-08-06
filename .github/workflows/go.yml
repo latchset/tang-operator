@@ -22,8 +22,16 @@ jobs:
       id: minikube
       uses: medyagh/setup-minikube@master
 
-    - name: kubectl
-      run: kubectl get pods
+    - name: Status
+      run: minikube status
+
+    - name: Download operator-sdk
+      uses: sarroutbi/operator-sdk-github-action@v1.0.3-alpha3
+      with:
+        image: "tang-operator"
+        tag: v0.0.11
+        dirPath: "./"
+        operatorSdkReleaseVersion: "v1.8.2"
       
     - name: Build
       run: make
