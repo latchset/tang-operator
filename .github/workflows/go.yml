@@ -26,9 +26,7 @@ jobs:
       run: minikube status
 
     - name: Download operator-sdk
-      uses:  sarroutbi/operator-sdk-retrieve-github-action@v0.0.1-beta6
-      with:
-        operatorSdkReleaseVersion: "v1.8.2"
+      run: sh .github/workflows/scripts/retrieve_operator_sdk.sh
       
     - name: Build
       run: make
