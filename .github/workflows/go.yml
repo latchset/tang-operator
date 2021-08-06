@@ -25,9 +25,6 @@ jobs:
     - name: Status
       run: minikube status
 
-    - name: Download operator-sdk
-      run: sh .github/workflows/scripts/retrieve_operator_sdk.sh
-      
     - name: Build
       run: make
 
@@ -35,4 +32,4 @@ jobs:
       run: make test
 
     - name: Deploy
-      run: operator-sdk run bundle --timeout 5m quay.io/sarroutb/tang-operator-bundle:v0.0.11
+      run: sh .github/workflows/scripts/retrieve_and_run_operator_sdk.sh "v1.8.2" "quay.io/sarroutb/tang-operator-bundle:v0.0.11"
