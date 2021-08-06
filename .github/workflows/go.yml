@@ -41,5 +41,3 @@ jobs:
 
     - name: Deploy
       run: /operator-sdk run bundle --timeout 5m quay.io/sarroutb/tang-operator-bundle:v0.0.11
-      
-      
