@@ -23,7 +23,7 @@ jobs:
       uses: medyagh/setup-minikube@master
 
     - name: kubectl
-      uses: kubectl get pods
+      run: kubectl get pods
       
     - name: Build
       run: make
