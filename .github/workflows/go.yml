@@ -18,9 +18,9 @@ jobs:
       with:
         go-version: 1.16
 
-    - name: start minikube
+    - name: Minikube Installation
       id: minikube
-      uses: medyagh/setup-minikube@master
+      uses: sarroutbi/setup-minikube@master
 
     - name: Status
       run: minikube status
