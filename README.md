@@ -25,7 +25,7 @@ tang operator-bundle are:
 
 - v0.0.1:  Hello world version
 - v0.0.2:  Basic version with no fields still updated
-- v0.0.3:  First release correct version. PLEASE, DO NOT OVERWRITE
+- v0.0.3:  First release correct version.
 - v0.0.4:  Version that fixes issues with deployments/pods/services permissions.
 - v0.0.5:  Version that publishes the service and exposes it on configurable port.
 - v0.0.6:  Types refactoring. Initial ginkgo based test.
