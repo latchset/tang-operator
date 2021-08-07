@@ -28,4 +28,4 @@ curl -L -o "$(pwd)/operator-sdk" "https://github.com/operator-framework/operator
 chmod +x "$(pwd)/operator-sdk"
 $(pwd)/operator-sdk olm install --timeout "${TIMEOUT}"
 $(pwd)/operator-sdk run bundle --timeout "${TIMEOUT}" "${BUNDLE_IMG}"
-$(pwd)/operator-sdk scorecard
+$(pwd)/operator-sdk scorecard "${BUNDLE_IMG}"
