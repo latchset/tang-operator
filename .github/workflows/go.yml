@@ -20,7 +20,7 @@ jobs:
 
     - name: Minikube Installation
       id: minikube
-      uses: sarroutbi/setup-minikube@master
+      uses: sarroutbi/setup-minikube@v0.0.3
 
     - name: Status
       run: minikube status
