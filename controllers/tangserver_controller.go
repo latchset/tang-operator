@@ -287,25 +287,6 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 		log.Error(err, "Failed to list Pods.", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
 		return ctrl.Result{}, err
 	}
-	// TODO: Get running Pods
-	// podNames := getRunningPodNames(podList.Items)
-	// if deploymentReady {
-	// 	// Update the status to ready
-	// 	cr.Status.AppPods = podNames
-	// 	cr.SetCondition(appsv1alpha1.ConditionTypeReverseWordsDeploymentNotReady, false)
-	// 	cr.SetCondition(appsv1alpha1.ConditionTypeReady, true)
-	// } else {
-	// 	// Update the status to not ready
-	// 	cr.Status.AppPods = podNames
-	// 	cr.SetCondition(appsv1alpha1.ConditionTypeReverseWordsDeploymentNotReady, true)
-	// 	cr.SetCondition(appsv1alpha1.ConditionTypeReady, false)
-	// }
-	// TODO: Reconcile the new status for the instance
-	// cr, err = r.updateTangServerStatus(cr, log)
-	// if err != nil {
-	// 	log.Error(err, "Failed to update TangServer Status.")
-	// 	return ctrl.Result{}, err
-	// }
 	// Deployment reconcile finished
 	return ctrl.Result{}, nil
 }
