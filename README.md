@@ -259,7 +259,7 @@ INFO[0002] Operator "tang-operator" uninstalled
 
 ## Tests
 
-Execution of operator tests is pretty simple. A k8s infrastructure (minikube/minishift) 
+Execution of operator tests is pretty simple. A k8s infrastructure (minikube/minishift)
 must be running to execute tang operator tests based on reconciliation.
 Execute **make test** from top directory and available tests will be executed:
 
@@ -303,12 +303,17 @@ files that are part of the controller.
 
 ## CI/CD
 
-tang-operator uses ci-operator to automate the generation of Prow jobs to perform Openshift CI
-tasks. To generate appropriate generation of images, execute:
+tang-operator uses Github Actions to perform CI/CD task. A verification job will run for each
+commit to main or PR. The verify job perform following steps:
 
-```bash
-$ ci-operator --config .ci-operator.yaml --git-ref=sarroutbi/tang-operator@main --target=src
-```
+* Set up Go
+* Minikube Installation
+* Check Minikube Status
+* Build
+* Test
+* Cluster Test
+* Deployment
+* Scorecard test execution
 
 NOTE: CI/CD is in a work in progress state
 
