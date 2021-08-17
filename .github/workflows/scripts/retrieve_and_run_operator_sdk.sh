@@ -37,8 +37,10 @@ if [ -z "${BUNDLE_VERSION}" ]; then
   BUNDLE_VERSION="${MAKE_BUNDLE_VERSION}"
 fi
 
+BUNDLE_IMG_VERSION="${BUNDLE_IMG}:v${BUNDLE_VERSION}"
+
 curl -L -o "$(pwd)/operator-sdk" "https://github.com/operator-framework/operator-sdk/releases/download/${OPERATOR_SDK_RELEASE_VERSION}/operator-sdk_linux_amd64"
 chmod +x "$(pwd)/operator-sdk"
 "$(pwd)"/operator-sdk olm install --timeout "${TIMEOUT}"
-"$(pwd)"/operator-sdk run bundle --timeout "${TIMEOUT}" "${BUNDLE_IMG}:v${BUNDLE_VERSION}"
-"$(pwd)"/operator-sdk scorecard "${BUNDLE_IMG}"
+"$(pwd)"/operator-sdk run bundle --timeout "${TIMEOUT}" "${BUNDLE_IMG_VERSION}"
+"$(pwd)"/operator-sdk scorecard "${BUNDLE_IMG_VERSION}"
