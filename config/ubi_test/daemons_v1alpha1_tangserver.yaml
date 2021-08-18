@@ -7,5 +7,5 @@ spec:
   # Add fields here
   keypath: /var/db
   replicas: 1
-  image: docker.io/sarroutbi/ubi_tang_server_tests
+  image: quay.io/sarroutb/ubi_tang_server_tests
   version: latest
