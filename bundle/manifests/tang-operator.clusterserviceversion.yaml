@@ -17,7 +17,7 @@ metadata:
           "spec": {
             "healthscript": "/usr/bin/tangd-health-check",
             "image": "registry.redhat.io/rhel8/tang",
-            "keypath": "/var/db",
+            "keypath": "/var/db/tang",
             "replicas": 1,
             "version": "latest"
           }
