@@ -55,11 +55,11 @@ operator-sdk installation is described in the [Links](#links) section.
 
 In order to deploy the latest version of the tang operator, check latest released
 version in the [Versions](#versions) section, and install the appropriate version
-bundle. For example, in case latest version is **0.0.10**, the command to execute
+bundle. For example, in case latest version is **0.0.11**, the command to execute
 will be:
 
 ```bash
-$ operator-sdk run quay.io/sarroutb/tang-operator-bundle:v.0.0.10
+$ operator-sdk run quay.io/sarroutb/tang-operator-bundle:v.0.0.11
 INFO[0008] Successfully created registry pod: quay-io-sarroutb-tang-operator-bundle-v0-0-11
 INFO[0009] Created CatalogSource: tang-operator-catalog
 INFO[0009] OperatorGroup "operator-sdk-og" created
@@ -143,7 +143,7 @@ to be released, it is recommended to increase version appropriately.
 In this case, same version is used. Last released version can be observed in
 [Versions](#versions) section.
 
-To summarize, taking into account that the last released version is **0.0.10**
+To summarize, taking into account that the last released version is **0.0.11**
 compilation can be done with next command:
 
 ```bash
@@ -171,10 +171,10 @@ index 9a41c6a..db12a82 100644
 @@ -3,7 +3,7 @@
 # To re-generate a bundle for another specific version without changing the
 # standard setup, you can:
-# - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.10)
-# - use environment variables to overwrite this value (e.g export VERSION=0.0.10)
--VERSION ?= 0.0.9
-+VERSION ?= 0.0.10
+# - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.11)
+# - use environment variables to overwrite this value (e.g export VERSION=0.0.11)
+-VERSION ?= 0.0.10
++VERSION ?= 0.0.11
 ```
 
 - Compile operator:
