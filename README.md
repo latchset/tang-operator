@@ -200,7 +200,7 @@ the bundle with **make bundle**, specifying appropriate image,
 and push it with **make bundle-build bundle-push**:
 
 ```bash
-$ make bundle IMG="quay.io/sarroutb/tang-operator-bundle:v0.0.11"
+$ make bundle IMG="quay.io/sarroutb/tang-operator:v0.0.11"
 $ make bundle-build bundle-push BUNDLE_IMG="quay.io/sarroutb/tang-operator-bundle:v0.0.11"
 ...
 docker push sarroutb/tang-operator-bundle:v0.0.11
