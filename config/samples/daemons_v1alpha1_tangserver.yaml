@@ -7,7 +7,7 @@ metadata:
   - finalizer.daemons.tangserver.redhat.com
 spec:
   # Add fields here
-  keypath: /var/db
+  keypath: /var/db/tang
   replicas: 1
   image: "registry.redhat.io/rhel8/tang"
   version: "latest"
