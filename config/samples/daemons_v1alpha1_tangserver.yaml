@@ -8,6 +8,7 @@ metadata:
 spec:
   # Add fields here
   keypath: /var/db/tang
+  persistentvolumeclaim: tangserver-pvc
   replicas: 1
   image: "registry.redhat.io/rhel8/tang"
   version: "latest"

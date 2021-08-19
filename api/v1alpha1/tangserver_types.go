@@ -37,6 +37,11 @@ type TangServerSpec struct {
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Amount of replicas to launch"
 	Replicas uint32 `json:"replicas"`
 
+	// Persistent Volume Claim to store the keys
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Persistent Volume Claim to attach to (default:tangserver-pvc)"
+	// +optional
+	PersistentVolumeClaim string `json:"persistentvolumeclaim,omitempty"`
+
 	// Image is the base container image of the TangServer to use
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Image of Container to deploy"
 	// +optional

@@ -18,6 +18,7 @@ metadata:
             "healthscript": "/usr/bin/tangd-health-check",
             "image": "registry.redhat.io/rhel8/tang",
             "keypath": "/var/db/tang",
+            "persistentvolumeclaim": "tangserver-pvc",
             "replicas": 1,
             "version": "latest"
           }
@@ -26,7 +27,7 @@ metadata:
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.7.1+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: tang-operator.v0.0.12
+  name: tang-operator.v0.0.13
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -58,6 +59,9 @@ spec:
           where keys will be generated
         displayName: Key Path
         path: keypath
+      - description: Persistent Volume Claim to store the keys
+        displayName: Persistent Volume Claim to attach to (default:tangserver-pvc)
+        path: persistentvolumeclaim
       - description: PodListenPort is the port where pods will listen for traffic
         displayName: 'Port where Pod will listen '
         path: podlistenport
@@ -191,7 +195,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: quay.io/sarroutb/tang-operator:v0.0.12
+                image: quay.io/sarroutb/tang-operator:v0.0.13
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -274,4 +278,4 @@ spec:
   maturity: alpha
   provider:
     name: Red Hat
-  version: 0.0.12
+  version: 0.0.13

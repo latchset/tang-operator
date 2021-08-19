@@ -25,6 +25,9 @@ spec:
           where keys will be generated
         displayName: Key Path
         path: keypath
+      - description: Persistent Volume Claim to store the keys
+        displayName: Persistent Volume Claim to attach to (default:tangserver-pvc)
+        path: persistentvolumeclaim
       - description: PodListenPort is the port where pods will listen for traffic
         displayName: 'Port where Pod will listen '
         path: podlistenport

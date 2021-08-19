@@ -24,7 +24,7 @@ import (
 
 const DEFAULT_RUNNING_PORT = 8080
 const DEFAULT_TANGSERVER_NAME = "tangserver"
-const DEFAULT_TANGSERVER_VOL_NAME = "tangserver-vol"
+const DEFAULT_TANGSERVER_PVC_NAME = "tangserver-pvc"
 const DEFAULT_TANGSERVER_SECRET = "tangserversecret"
 
 // getPodListenPort function returns the internal port where tangserver will listen
@@ -41,6 +41,14 @@ func getSecret(cr *daemonsv1alpha1.TangServer) string {
 		return cr.Spec.Secret
 	}
 	return DEFAULT_TANGSERVER_SECRET
+}
+
+// getPersistentVolumeClaim function returns the internal port where tangserver will listen
+func getPersistentVolumeClaim(cr *daemonsv1alpha1.TangServer) string {
+	if cr.Spec.PersistentVolumeClaim != "" {
+		return cr.Spec.PersistentVolumeClaim
+	}
+	return DEFAULT_TANGSERVER_PVC_NAME
 }
 
 // getPodTemplate function returns pod specification according to tangserver spec
@@ -66,17 +74,17 @@ func getPodTemplate(cr *daemonsv1alpha1.TangServer, labels map[string]string) *c
 					VolumeMounts: []corev1.VolumeMount{
 						{
 							MountPath: getDefaultKeyPath(cr),
-							Name:      DEFAULT_TANGSERVER_VOL_NAME,
+							Name:      getPersistentVolumeClaim(cr),
 						},
 					},
 				},
 			},
 			Volumes: []corev1.Volume{
 				{
-					Name: DEFAULT_TANGSERVER_VOL_NAME,
+					Name: getPersistentVolumeClaim(cr),
 					VolumeSource: corev1.VolumeSource{
 						PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-							ClaimName: DEFAULT_TANGSERVER_VOL_NAME,
+							ClaimName: getPersistentVolumeClaim(cr),
 						},
 					},
 				},

@@ -78,6 +78,9 @@ spec:
                 description: KeyPath is field of TangServer. It allows to specify
                   the path where keys will be generated
                 type: string
+              persistentvolumeclaim:
+                description: Persistent Volume Claim to store the keys
+                type: string
               podlistenport:
                 description: PodListenPort is the port where pods will listen for
                   traffic
