@@ -121,7 +121,7 @@ the service, deployment and pod associated to the tang operator:
 ```
 $ oc -n nbde get services
 NAME               TYPE         CLUSTER-IP     EXTERNAL-IP    PORT(S)        AGE
-service-tangserver LoadBalancer 172.30.167.129 34.133.181.172 8080:30831/TCP 59s
+service-tangserver LoadBalancer 172.30.167.129 34.133.181.172 8080:30831/TCP 58s
 
 $ oc -n nbde get deployments
 NAME              READY   UP-TO-DATE   AVAILABLE   AGE
