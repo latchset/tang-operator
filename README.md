@@ -112,7 +112,6 @@ of replicas (1) to use, is the recommended tang operator configuration to apply:
 $ oc apply -f config/minimal
 namespace/nbde created
 tangserver.daemons.redhat.com/tangserver created
-secret/tangserversecret created
 ```
 
 In case tang operator is appropriately executed, **ndbe** namespace should contain
