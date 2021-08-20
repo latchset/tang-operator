@@ -161,7 +161,6 @@ func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	if err != nil {
 		if errors.IsNotFound(err) {
 			l.Info("TangServer resource not found")
-			return ctrl.Result{}, nil
 		}
 	}
 
