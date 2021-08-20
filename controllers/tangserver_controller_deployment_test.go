@@ -30,11 +30,12 @@ var _ = Describe("TangServer controller deployment", func() {
 	const (
 		TangserverName = "test-tangserver-deployment"
 		// TODO: test why it can not be tested in non default namespace
-		TangserverNamespace         = "default"
-		TangserverResourceVersion   = "1"
-		TangServerTestReplicaAmount = 4
-		TangServerTestPodListenPort = 8081
-		TangServerTestSecret        = "thisisaverysimplesecretname"
+		TangserverNamespace          = "default"
+		TangserverResourceVersion    = "1"
+		TangServerTestReplicaAmount  = 4
+		TangServerTestPodListenPort  = 8081
+		TangServerTestSecret         = "thisisaverysimplesecretname"
+		TangServerPrivateVolumeClaim = "test-pvc"
 	)
 
 	Context("When Creating TangServer", func() {
@@ -87,8 +88,9 @@ var _ = Describe("TangServer controller deployment", func() {
 					Namespace: TangserverNamespace,
 				},
 				Spec: daemonsv1alpha1.TangServerSpec{
-					PodListenPort: TangServerTestPodListenPort,
-					Secret:        TangServerTestSecret,
+					PodListenPort:         TangServerTestPodListenPort,
+					Secret:                TangServerTestSecret,
+					PersistentVolumeClaim: TangServerPrivateVolumeClaim,
 				},
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
@@ -99,6 +101,7 @@ var _ = Describe("TangServer controller deployment", func() {
 			Expect(deployment.Spec.Replicas, TangServerTestReplicaAmount)
 			Expect(deployment.Spec.Template.Spec.Containers[0].Ports[0].ContainerPort, TangServerTestPodListenPort)
 			Expect(deployment.Spec.Template.Spec.ImagePullSecrets[0].Name, TangServerTestSecret)
+			Expect(deployment.Spec.Template.Spec.Volumes[0].VolumeSource.PersistentVolumeClaim.ClaimName, TangServerPrivateVolumeClaim)
 			k8sClient.Delete(ctx, tangServer)
 		})
 	})
