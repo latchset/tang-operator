@@ -214,7 +214,6 @@ func isDeploymentReady(deployment *appsv1.Deployment) bool {
 
 // reconcileDeployment creates deployment appropriate for this CR
 func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServer, log logr.Logger) (ctrl.Result, error) {
-	// TODO: Reconcile Deployment
 	// Define a new Deployment object
 	log.Info("reconcileDeployment")
 	deployment := getDeployment(cr)
@@ -291,7 +290,7 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 }
 
 func (r *TangServerReconciler) reconcileService(cr *daemonsv1alpha1.TangServer, log logr.Logger) (ctrl.Result, error) {
-	service := getService(cr)
+	service := getService(cr, log)
 
 	// Set TangServer instance as the owner and controller of the Service
 	if err := controllerutil.SetControllerReference(cr, service, r.Scheme); err != nil {

@@ -17,14 +17,16 @@ limitations under the License.
 package controllers
 
 import (
+	"github.com/go-logr/logr"
 	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
 // constants to use
 const (
-	DEFAULT_SERVICE_PORT   = 8080
+	DEFAULT_SERVICE_PORT   = 8081
 	DEFAULT_SERVICE_TYPE   = "Service"
 	DEFAULT_API_VERSION    = "v1"
 	DEFAULT_SERVICE_PREFIX = "service-"
@@ -32,14 +34,17 @@ const (
 )
 
 // getService function returns correctly created service
-func getService(tangserver *daemonsv1alpha1.TangServer) *corev1.Service {
+func getService(tangserver *daemonsv1alpha1.TangServer, log logr.Logger) *corev1.Service {
+	log.Info("getService")
 	labels := map[string]string{
 		"app": tangserver.Name,
 	}
 	servicePort := uint32(tangserver.Spec.ServiceListenPort)
 	if 0 == servicePort {
+		log.Info("Assigning default service port", "DEFAULT_SERVICE_PORT", DEFAULT_SERVICE_PORT)
 		servicePort = DEFAULT_SERVICE_PORT
 	}
+	log.Info("Listening Port", "servicePort", servicePort)
 	return &corev1.Service{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: DEFAULT_API_VERSION,
@@ -55,8 +60,9 @@ func getService(tangserver *daemonsv1alpha1.TangServer) *corev1.Service {
 			Selector: labels,
 			Ports: []corev1.ServicePort{
 				{
-					Name: DEFAULT_SERVICE_PROTO,
-					Port: int32(servicePort),
+					Name:       DEFAULT_SERVICE_PROTO,
+					Port:       int32(servicePort),
+					TargetPort: intstr.FromInt(int(getPodListenPort(tangserver))),
 				},
 			},
 		},

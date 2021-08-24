@@ -22,7 +22,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-const DEFAULT_RUNNING_PORT = 8080
+const DEFAULT_POD_RUNNING_PORT = 8080
 const DEFAULT_TANGSERVER_NAME = "tangserver"
 const DEFAULT_TANGSERVER_PVC_NAME = "tangserver-pvc"
 const DEFAULT_TANGSERVER_SECRET = "tangserversecret"
@@ -32,7 +32,7 @@ func getPodListenPort(cr *daemonsv1alpha1.TangServer) uint32 {
 	if cr.Spec.PodListenPort != 0 {
 		return cr.Spec.PodListenPort
 	}
-	return DEFAULT_RUNNING_PORT
+	return DEFAULT_POD_RUNNING_PORT
 }
 
 // getSecret function returns the internal port where tangserver will listen
