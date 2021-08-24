@@ -1,0 +1,14 @@
+apiVersion: daemons.redhat.com/v1alpha1
+kind: TangServer
+metadata:
+  name: tangserver-main
+  namespace: nbde
+  finalizers:
+  - finalizer.daemons.tangserver.redhat.com
+spec:
+  # Add fields here
+  replicas: 3
+  image: "registry.redhat.io/rhel8/tang"
+  version: "latest"
+  persistentvolumeclaim: "tangserver-pvc-main"
+  servicelistenport: 9999
