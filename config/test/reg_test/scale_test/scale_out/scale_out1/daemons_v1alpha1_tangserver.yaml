@@ -1,0 +1,10 @@
+apiVersion: daemons.redhat.com/v1alpha1
+kind: TangServer
+metadata:
+  name: tangserver-scaleout
+  namespace: nbde
+  finalizers:
+  - finalizer.daemons.tangserver.redhat.com
+spec:
+  # Add fields here
+  replicas: 2
