@@ -1,0 +1,11 @@
+apiVersion: daemons.redhat.com/v1alpha1
+kind: TangServer
+metadata:
+  name: tangserver-scalein
+  namespace: nbde
+  finalizers:
+  - finalizer.daemons.tangserver.redhat.com
+spec:
+  replicas: 1
+  image: "registry.redhat.io/rhel8/tang"
+  version: "latest"
