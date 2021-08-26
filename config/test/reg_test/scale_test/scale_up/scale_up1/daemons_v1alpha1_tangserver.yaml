@@ -12,7 +12,7 @@ spec:
   version: "latest"
   resourcesrequest:
     cpu: "40m"
-    mem: "40"
+    mem: "40M"
   resourceslimit:
     cpu: "60m"
     mem: "60M"
