@@ -27,7 +27,7 @@ metadata:
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.7.1+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: tang-operator.v0.0.20
+  name: tang-operator.v0.0.15
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -37,6 +37,17 @@ spec:
       displayName: Tang Server
       kind: TangServer
       name: tangservers.daemons.redhat.com
+      resources:
+      - kind: Deployment
+        version: v1
+      - kind: ReplicaSet
+        version: v1
+      - kind: Pod
+        version: v1
+      - kind: Secret
+        version: v1
+      - kind: Service
+        version: v1
       specDescriptors:
       - description: HealthScript is the script to run for healthiness/readiness
         displayName: Health Script to execute
@@ -190,7 +201,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: quay.io/sarroutb/tang-operator:v0.0.20
+                image: quay.io/sarroutb/tang-operator:v0.0.15
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -273,4 +284,4 @@ spec:
   maturity: alpha
   provider:
     name: Red Hat
-  version: 0.0.20
+  version: 0.0.15
