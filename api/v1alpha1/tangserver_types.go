@@ -71,6 +71,28 @@ type TangServerSpec struct {
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Port where service will listen"
 	// +optional
 	ServiceListenPort uint32 `json:"servicelistenport,omitempty"`
+
+	// ResourceRequest is the resource request to perform for each pod
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Resources Request for Tang Server"
+	// +optional
+	ResourcesRequest ResourcesRequest `json:"resourcesrequest,omitempty"`
+
+	// ResourceLimit is the resource limit to perform for each pod
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Resources Limit for Tang Server"
+	// +optional
+	ResourcesLimit ResourcesLimit `json:"resourceslimit,omitempty"`
+}
+
+// ResourcesRequest contains the struct to provide resources requests to Tang Server
+type ResourcesRequest struct {
+	Cpu    string `json:"cpu,omitempty"`
+	Memory string `json:"memory,omitempty"`
+}
+
+// ResourcesLimit contains the struct to provide resources limit to Tang Server
+type ResourcesLimit struct {
+	Cpu    string `json:"cpu,omitempty"`
+	Memory string `json:"memory,omitempty"`
 }
 
 // TangServerStatus defines the observed state of TangServer

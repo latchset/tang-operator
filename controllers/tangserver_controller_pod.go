@@ -19,6 +19,7 @@ package controllers
 import (
 	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -51,6 +52,42 @@ func getPersistentVolumeClaim(cr *daemonsv1alpha1.TangServer) string {
 	return DEFAULT_TANGSERVER_PVC_NAME
 }
 
+// getRequests returns the information based on the information in the CRD
+func getRequests(cr *daemonsv1alpha1.TangServer) corev1.ResourceList {
+	requests := make(map[corev1.ResourceName]resource.Quantity)
+	if cr.Spec.ResourcesRequest.Cpu != "" {
+		cpu, e := resource.ParseQuantity(cr.Spec.ResourcesRequest.Cpu)
+		if e == nil {
+			requests[corev1.ResourceCPU] = cpu
+		}
+	}
+	if cr.Spec.ResourcesRequest.Memory != "" {
+		mem, e := resource.ParseQuantity(cr.Spec.ResourcesRequest.Memory)
+		if e == nil {
+			requests[corev1.ResourceMemory] = mem
+		}
+	}
+	return requests
+}
+
+// getLimits returns the information based on the information in the CRD
+func getLimits(cr *daemonsv1alpha1.TangServer) corev1.ResourceList {
+	limits := make(map[corev1.ResourceName]resource.Quantity)
+	if cr.Spec.ResourcesLimit.Cpu != "" {
+		cpu, e := resource.ParseQuantity(cr.Spec.ResourcesLimit.Cpu)
+		if e == nil {
+			limits[corev1.ResourceCPU] = cpu
+		}
+	}
+	if cr.Spec.ResourcesLimit.Memory != "" {
+		mem, e := resource.ParseQuantity(cr.Spec.ResourcesLimit.Memory)
+		if e == nil {
+			limits[corev1.ResourceMemory] = mem
+		}
+	}
+	return limits
+}
+
 // getPodTemplate function returns pod specification according to tangserver spec
 func getPodTemplate(cr *daemonsv1alpha1.TangServer, labels map[string]string) *corev1.PodTemplateSpec {
 	probe := getProbe(cr)
@@ -76,6 +113,10 @@ func getPodTemplate(cr *daemonsv1alpha1.TangServer, labels map[string]string) *c
 							MountPath: getDefaultKeyPath(cr),
 							Name:      getPersistentVolumeClaim(cr),
 						},
+					},
+					Resources: corev1.ResourceRequirements{
+						Requests: getRequests(cr),
+						Limits:   getLimits(cr),
 					},
 				},
 			},

@@ -34,6 +34,12 @@ spec:
       - description: Replicas is the Tang Server amount to bringup
         displayName: Amount of replicas to launch
         path: replicas
+      - description: ResourceLimit is the resource limit to perform for each pod
+        displayName: Resources Limit for Tang Server
+        path: resourceslimit
+      - description: ResourceRequest is the resource request to perform for each pod
+        displayName: Resources Request for Tang Server
+        path: resourcesrequest
       - description: Secret is the secret name to use to download image appropriately
         displayName: Secret name to use for container download
         path: secret

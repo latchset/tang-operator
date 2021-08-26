@@ -90,6 +90,24 @@ spec:
                 description: Replicas is the Tang Server amount to bringup
                 format: int32
                 type: integer
+              resourceslimit:
+                description: ResourceLimit is the resource limit to perform for each
+                  pod
+                properties:
+                  cpu:
+                    type: string
+                  memory:
+                    type: string
+                type: object
+              resourcesrequest:
+                description: ResourceRequest is the resource request to perform for
+                  each pod
+                properties:
+                  cpu:
+                    type: string
+                  memory:
+                    type: string
+                type: object
               secret:
                 description: Secret is the secret name to use to download image appropriately
                 type: string
