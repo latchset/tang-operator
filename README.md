@@ -8,7 +8,7 @@
 - [Compilation](#compilation)
 - [Cleanup](#cleanup)
 - [Tests](#tests)
-- [CI/CD](#ci/cd)
+- [CI/CD](#cicd)
 - [Scorecard](#scorecard)
 - [Links](#links)
 
@@ -320,7 +320,7 @@ commit to main or PR. The verify job perform following steps:
 * Deployment
 * Scorecard test execution
 
-NOTE: CI/CD is in a work in progress state
+NOTE: CI/CD is in a "work in progress" state
 
 ## scorecard
 
