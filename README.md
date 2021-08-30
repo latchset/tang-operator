@@ -8,6 +8,8 @@
 - [Compilation](#compilation)
 - [Cleanup](#cleanup)
 - [Tests](#tests)
+- [CI/CD](#ci/cd)
+- [Scorecard](#scorecard)
 - [Links](#links)
 
 ## Introduction
@@ -320,7 +322,7 @@ commit to main or PR. The verify job perform following steps:
 
 NOTE: CI/CD is in a work in progress state
 
-## Operator sdk score card tests
+## scorecard
 
 Execution of operator-sdk scorecard tests are passing completely in version v0.0.15.
 In order to execute these tests, run next command:
