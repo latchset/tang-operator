@@ -24,7 +24,7 @@ import (
 
 // Constants to use
 const (
-	DEFAULT_DEPLOYMENT_PREFIX = "tsdp-"
+	DEFAULT_DEPLOYMENT_PREFIX = "tangdeployment-"
 	DEFAULT_REPLICA_AMOUNT    = 1
 	DEFAULT_DEPLOYMENT_TYPE   = "Deployment"
 )
@@ -46,7 +46,7 @@ func getDeployment(cr *daemonsv1alpha1.TangServer) *appsv1.Deployment {
 	return &appsv1.Deployment{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "apps/v1",
-			Kind:       "Deployment",
+			Kind:       DEFAULT_DEPLOYMENT_TYPE,
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      getDefaultName(cr),
@@ -57,6 +57,9 @@ func getDeployment(cr *daemonsv1alpha1.TangServer) *appsv1.Deployment {
 			Replicas: &replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: labels,
+			},
+			Strategy: appsv1.DeploymentStrategy{
+				Type: appsv1.RecreateDeploymentStrategyType,
 			},
 			Template: *getPodTemplate(cr, labels),
 		},

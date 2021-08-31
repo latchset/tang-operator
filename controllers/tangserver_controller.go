@@ -148,7 +148,6 @@ func updateUID(cr *daemonsv1alpha1.TangServer, req ctrl.Request) {
 func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	l := log.FromContext(ctx)
 
-	// your logic here
 	tangserver := &daemonsv1alpha1.TangServer{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: req.NamespacedName.Namespace,
@@ -201,6 +200,21 @@ func checkDeploymentImage(current *appsv1.Deployment, desired *appsv1.Deployment
 	return false
 }
 
+// mustRedeploy checks for cases where redeploy must be performed
+func mustRedeploy(new *appsv1.Deployment, prev *appsv1.Deployment) bool {
+	if new.Spec.Template.Spec.Containers[0].Resources.Requests[corev1.ResourceCPU] !=
+		prev.Spec.Template.Spec.Containers[0].Resources.Requests[corev1.ResourceCPU] ||
+		new.Spec.Template.Spec.Containers[0].Resources.Requests[corev1.ResourceMemory] !=
+			prev.Spec.Template.Spec.Containers[0].Resources.Requests[corev1.ResourceMemory] ||
+		new.Spec.Template.Spec.Containers[0].Resources.Limits[corev1.ResourceCPU] !=
+			prev.Spec.Template.Spec.Containers[0].Resources.Limits[corev1.ResourceCPU] ||
+		new.Spec.Template.Spec.Containers[0].Resources.Limits[corev1.ResourceMemory] !=
+			prev.Spec.Template.Spec.Containers[0].Resources.Limits[corev1.ResourceMemory] {
+		return true
+	}
+	return false
+}
+
 // isDeploymentReady returns a true bool if the deployment has all its pods ready
 func isDeploymentReady(deployment *appsv1.Deployment) bool {
 	configuredReplicas := deployment.Status.Replicas
@@ -244,6 +258,12 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 	} else {
 		// Deployment already exists
 		log.Info("Deployment already exists", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
+		log.Info("Checking redeployment")
+		// Check if it is needed to be redeployed
+		if mustRedeploy(deployment, deploymentFound) {
+			log.Info("Updating deployment, must redeploy")
+			err = r.Update(context.Background(), deployment)
+		}
 	}
 
 	// Ensure deployment replicas match the desired state
@@ -256,6 +276,7 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 			return ctrl.Result{}, err
 		}
 	}
+
 	// Ensure deployment container image match the desired state, returns true if deployment needs to be updated
 	if checkDeploymentImage(deploymentFound, deployment) {
 		log.Info("Current deployment image version do not match TangServers configured version")
