@@ -86,7 +86,6 @@ install_crc() {
   ls; echo "CRC_DIR=${CRC_DIR}" # QUIT
   pushd "${CRC_DIR}"
   test -d "${CRC_HOME_BIN}" || mkdir -p "${CRC_HOME_BIN}"
-  chown -R "${CRC_USER}.${CRC_USER}" "${CRC_HOME}"
   cp "${CRC_EXEC}" "${CRC_HOME_BIN}"
 #  export PATH="${PATH}:${HOME_BIN}"
   cat<<EOF>>"${CRC_HOME_BASHRC}"
@@ -101,7 +100,7 @@ EOF
 "${CRC_PASSWORD}"
 "${CRC_PASSWORD}"
 EOF
-
+  chown -R "${CRC_USER}.${CRC_USER}" "${CRC_HOME}"
   cat<<EOF>>/etc/sudoers
 
 ### Add crc user to sudoers
