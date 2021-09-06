@@ -21,8 +21,6 @@ TMPDIR=$(mktemp -d)
 OC_INSTALL_FILE="${TMPDIR}/${OC_OUTPUT_FILE}"
 #### OC Installation
 get_oc_rpm_adding_repo() {
-  "${SM}" register
-  "${SM}" refresh
   POOL_ID=$("${SM}" list --available --matches 'Red Hat OpenShift Container Platform' | grep -i 'Pool ID' | awk -F ':' '{print $2}' | tr -d ' ' | head -1)
   for pool_id in $("${SM}" list --available --matches 'Red Hat OpenShift Container Platform' | grep -i 'Pool ID' | awk -F ':' '{print $2}' | tr -d ' ')
   do
@@ -53,5 +51,11 @@ install_oc() {
   dnf install -y "${OC_INSTALL_FILE}"
 }
 
+sm_register() {
+  "${SM}" register
+  "${SM}" refresh
+}
+
+sm_register
 get_oc_rpm_with_wget
 install_oc
