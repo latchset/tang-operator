@@ -88,10 +88,11 @@ install_crc() {
   test -d "${CRC_HOME_BIN}" || mkdir -p "${CRC_HOME_BIN}"
   cp "${CRC_EXEC}" "${CRC_HOME_BIN}"
 #  export PATH="${PATH}:${HOME_BIN}"
+  cp "${HOME_BASHRC}" "${CRC_HOME_BASHRC}"
   cat<<EOF>>"${CRC_HOME_BASHRC}"
 
 # CRC installation PATH update
-export PATH="${PATH}:${HOME_BIN}"
+export PATH='${PATH}:'${CRC_HOME_BIN}
 EOF
   popd
   popd
@@ -106,7 +107,9 @@ EOF
 ### Add crc user to sudoers
 "${CRC_USER}" ALL=(ALL) NOPASSWD:ALL
 EOF
-  sudo -u "${CRC_USER}" "${CRC_EXEC_PATH}" setup
+  sudo -u "${CRC_USER}" "${CRC_EXEC_PATH}" setup<<EOF
+no
+EOF
 }
 
 sm_register() {
@@ -119,7 +122,8 @@ clean() {
   test -d "${TMPDIR_NON_TMPFS}" && rm -fr "${TMPDIR_NON_TMPFS}"
 }
 
-sm_register
+### Unnecessary for wget based installation:
+### sm_register
 install_podman
 get_oc_rpm_with_wget
 install_oc
