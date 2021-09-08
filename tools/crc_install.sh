@@ -73,6 +73,16 @@ install_podman() {
   yum install -y podman
 }
 
+install_network_manager() {
+  yum install -y NetworkManager
+  systemctl enable --now NetworkManager
+}
+
+install_libvirtd() {
+  yum install -y libvirtd
+  systemctl enable --now libvirtd
+}
+
 install_oc() {
   type oc && return 0
   yum install -y "${OC_INSTALL_FILE}"
@@ -107,7 +117,18 @@ EOF
 ### Add crc user to sudoers
 "${CRC_USER}" ALL=(ALL) NOPASSWD:ALL
 EOF
-  sudo -u "${CRC_USER}" "${CRC_EXEC_PATH}" setup<<EOF
+
+  # AVOID issues with systemctl and network manager
+  sudo loginctl enable-linger
+  sudo -u "${CRC_USER}" crc config set skip-check-daemon-systemd-unit true
+  sudo -u "${CRC_USER}" crc config set skip-check-daemon-systemd-sockets true
+  sudo -u "${CRC_USER}" crc config set skip-check-network-manager-running true
+  sudo -u "${CRC_USER}" crc config set skip-check-network-manager-installed true
+  sudo -u "${CRC_USER}" crc config set skip-check-network-manager-config true
+
+
+  ###   34  2021-09-07 12:41:44 sudo -u crc XDG_RUNTIME_DIR=/run/user/$(id -u $otherUser) systemctl --user
+  sudo -u "${CRC_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${CRC_USER}") "${CRC_EXEC_PATH}" setup<<EOF
 no
 EOF
 }
@@ -122,11 +143,20 @@ clean() {
   test -d "${TMPDIR_NON_TMPFS}" && rm -fr "${TMPDIR_NON_TMPFS}"
 }
 
-### Unnecessary for wget based installation:
-### sm_register
+check_reboot() {
+echo "
+  CRC installed, need to reboot for changes to be applied appropriately.
+  AFTER reinstallation, execute, as crc user, \"crc setup\" and follow instructions.
+"
+}
+
+sm_register
 install_podman
+install_libvirtd
+install_network_manager
 get_oc_rpm_with_wget
 install_oc
 get_crc_tgz_with_wget
 install_crc
+check_reboot
 clean
