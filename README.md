@@ -20,6 +20,9 @@ and how it is deployed in top of OpenShift.
 Up to date, it can be deployed as a CRD, containing its proper
 configuration values to perform appropriate tang server operations.
 
+An introductory video can be seen in next link:
+https://youtu.be/hmMSIkBoGoY
+
 ## Versions
 
 Versions released up to date of the tang operator and the
