@@ -21,7 +21,7 @@ Up to date, it can be deployed as a CRD, containing its proper
 configuration values to perform appropriate tang server operations.
 
 An introductory video can be seen in next link:
-https://youtu.be/hmMSIkBoGoY
+[NBDE in Openshift: tang-operator basics](https://youtu.be/hmMSIkBoGoY)
 
 ## Versions
 
