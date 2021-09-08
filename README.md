@@ -20,7 +20,7 @@ and how it is deployed in top of OpenShift.
 Up to date, it can be deployed as a CRD, containing its proper
 configuration values to perform appropriate tang server operations.
 
-An introductory video can be seen in next link:
+An introductory video can be seen in next link:  
 [NBDE in Openshift: tang-operator basics](https://youtu.be/hmMSIkBoGoY)
 
 ## Versions
