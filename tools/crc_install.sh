@@ -121,11 +121,11 @@ EOF
 
   # AVOID issues with systemctl and network manager
   sudo loginctl enable-linger
-  sudo -u "${CRC_USER}" crc config set skip-check-daemon-systemd-unit true
-  sudo -u "${CRC_USER}" crc config set skip-check-daemon-systemd-sockets true
-  sudo -u "${CRC_USER}" crc config set skip-check-network-manager-running true
-  sudo -u "${CRC_USER}" crc config set skip-check-network-manager-installed true
-  sudo -u "${CRC_USER}" crc config set skip-check-network-manager-config true
+  sudo -u "${CRC_USER}" "${CRC_EXEC_PATH}" config set skip-check-daemon-systemd-unit true
+  sudo -u "${CRC_USER}" "${CRC_EXEC_PATH}" config set skip-check-daemon-systemd-sockets true
+  sudo -u "${CRC_USER}" "${CRC_EXEC_PATH}" config set skip-check-network-manager-running true
+  sudo -u "${CRC_USER}" "${CRC_EXEC_PATH}" config set skip-check-network-manager-installed true
+  sudo -u "${CRC_USER}" "${CRC_EXEC_PATH}" config set skip-check-network-manager-config true
 
 
   ###   34  2021-09-07 12:41:44 sudo -u crc XDG_RUNTIME_DIR=/run/user/$(id -u $otherUser) systemctl --user
