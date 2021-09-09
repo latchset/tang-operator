@@ -100,6 +100,7 @@ install_crc() {
 #  export PATH="${PATH}:${HOME_BIN}"
   cp "${HOME_BASHRC}" "${CRC_HOME_BASHRC}"
   cat<<EOF>>"${CRC_HOME_BASHRC}"
+
 # CRC installation PATH update
 EOF
   printf 'export PATH="${PATH}:' >> "${CRC_HOME_BASHRC}"
