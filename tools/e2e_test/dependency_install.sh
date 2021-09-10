@@ -152,7 +152,7 @@ EOF
   then
     sudo -u "${CRC_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${CRC_USER}") "${CRC_EXEC_PATH}" start
   else
-    sudo -u "${CRC_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${CRC_USER}") "${CRC_EXEC_PATH}" setup<<EOF
+    sudo -u "${CRC_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${CRC_USER}") "${CRC_EXEC_PATH}" start<<EOF
 ${CRC_SECRET}
 EOF
   fi
