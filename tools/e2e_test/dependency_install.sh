@@ -42,10 +42,10 @@ CRC_SECRET=""
 
 usage() {
   echo ""
-  echo "$1 [-s \"CRC secret\"]"
+  echo "$1"
   echo ""
   echo "NOTE: secret is mandatory for CRC install, as it requires it for its installation"
-  echo "      If not provided, it will be prompted after crc installation, in crc start step"
+  echo "      It will be prompted after crc installation, in crc start step"
   echo "      Secret can be retrieved in next URL: https://console.redhat.com/openshift/create/local"
   echo ""
   exit $2
@@ -149,14 +149,7 @@ EOF
   sudo -u "${CRC_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${CRC_USER}") "${CRC_EXEC_PATH}" setup<<EOF
 no
 EOF
-  if [ -z "${CRC_SECRET}" ];
-  then
-    sudo -u "${CRC_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${CRC_USER}") "${CRC_EXEC_PATH}" start
-  else
-    sudo -u "${CRC_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${CRC_USER}") "${CRC_EXEC_PATH}" start<<EOF
-${CRC_SECRET}
-EOF
-  fi
+  sudo -u "${CRC_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${CRC_USER}") "${CRC_EXEC_PATH}" start
 }
 
 sm_register() {
@@ -167,13 +160,6 @@ sm_register() {
 clean() {
   test -d "${TMPDIR}" && rm -fr "${TMPDIR}"
   test -d "${TMPDIR_NON_TMPFS}" && rm -fr "${TMPDIR_NON_TMPFS}"
-}
-
-check_reboot() {
-echo "
-  CRC installed, need to reboot for changes to be applied appropriately.
-  AFTER reinstallation, execute, as crc user, \"crc setup\" and follow instructions.
-"
 }
 
 # TODO: A parse pararams function could be added for this
@@ -195,5 +181,4 @@ get_oc_rpm_with_wget
 install_oc
 get_crc_tgz_with_wget
 install_crc
-#check_reboot
 clean
