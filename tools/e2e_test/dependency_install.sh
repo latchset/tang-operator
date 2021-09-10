@@ -95,8 +95,8 @@ install_network_manager() {
 }
 
 install_libvirtd() {
-  yum install -y libvirtd-daemon
-  systemctl enable --now libvirtd-daemon
+  yum install -y libvirt-daemon
+  systemctl enable --now libvirt-daemon
 }
 
 install_oc() {
