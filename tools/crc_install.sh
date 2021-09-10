@@ -93,9 +93,9 @@ install_crc() {
   pushd "${TMPDIR_NON_TMPFS}"
   tar Jxvf "${CRC_OUTPUT_FILE}"
   CRC_DIR=$(ls -d ${CRC_PREFIX}*)
-  ls; echo "CRC_DIR=${CRC_DIR}" # QUIT
   pushd "${CRC_DIR}"
   test -d "${CRC_HOME_BIN}" || mkdir -p "${CRC_HOME_BIN}"
+  rm -fr "${CRC_USER}"/.crc "${CRC_USER}"/.kube
   cp "${CRC_EXEC}" "${CRC_HOME_BIN}"
 #  export PATH="${PATH}:${HOME_BIN}"
   cp "${HOME_BASHRC}" "${CRC_HOME_BASHRC}"
@@ -159,5 +159,5 @@ get_oc_rpm_with_wget
 install_oc
 get_crc_tgz_with_wget
 install_crc
-check_reboot
+#check_reboot
 clean
