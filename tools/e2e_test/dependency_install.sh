@@ -96,6 +96,7 @@ install_network_manager() {
 
 install_libvirtd() {
   yum install -y libvirt-daemon
+  yum install -y dbus-launch
   systemctl enable --now libvirt-daemon
 }
 
