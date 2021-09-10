@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 # Copyright 2021.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+# Uncomment next line to dump verbose information in script execution:
+# set -x
+
 SM="subscription-manager"
 OC_PATH=http://download.eng.bos.redhat.com/brewroot/vol/rhel-8/packages/openshift-clients/4.9.0/202109020218.p0.git.96e95ce.assembly.stream.el8/x86_64
 OC_FILE=openshift-clients-4.9.0-202109020218.p0.git.96e95ce.assembly.stream.el8.x86_64.rpm
@@ -34,6 +38,18 @@ CRC_HOME="/home/${CRC_USER}"
 CRC_HOME_BIN="${CRC_HOME}/bin"
 CRC_HOME_BASHRC="${CRC_HOME}/.bashrc"
 CRC_EXEC_PATH="${CRC_HOME_BIN}/${CRC_EXEC}"
+CRC_SECRET=""
+
+usage() {
+  echo ""
+  echo "$1 [-s \"CRC secret\"]"
+  echo ""
+  echo "NOTE: secret is mandatory for CRC install, as it requires it for its installation"
+  echo "      If not provided, it will be prompted after crc installation, in crc start step"
+  echo "      Secret can be retrieved in next URL: https://console.redhat.com/openshift/create/local"
+  echo ""
+  exit $2
+}
 
 #### OC Installation
 get_oc_rpm_adding_repo() {
@@ -79,8 +95,8 @@ install_network_manager() {
 }
 
 install_libvirtd() {
-  yum install -y libvirtd
-  systemctl enable --now libvirtd
+  yum install -y libvirtd-daemon
+  systemctl enable --now libvirtd-daemon
 }
 
 install_oc() {
@@ -132,6 +148,14 @@ EOF
   sudo -u "${CRC_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${CRC_USER}") "${CRC_EXEC_PATH}" setup<<EOF
 no
 EOF
+  if [ -z "${CRC_SECRET}" ];
+  then
+    sudo -u "${CRC_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${CRC_USER}") "${CRC_EXEC_PATH}" start
+  else
+    sudo -u "${CRC_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${CRC_USER}") "${CRC_EXEC_PATH}" setup<<EOF
+${CRC_SECRET}
+EOF
+  fi
 }
 
 sm_register() {
@@ -150,6 +174,17 @@ echo "
   AFTER reinstallation, execute, as crc user, \"crc setup\" and follow instructions.
 "
 }
+
+# TODO: A parse pararams function could be added for this
+while getopts "s:h" arg
+do
+  case "${arg}" in
+    s) CRC_SECRET=${OPTARG}
+      ;;
+    h) usage $0 0
+      ;;
+  esac
+done
 
 sm_register
 install_podman
