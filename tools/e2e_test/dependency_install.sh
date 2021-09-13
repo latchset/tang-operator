@@ -106,8 +106,8 @@ install_oc() {
 }
 
 install_crc() {
-  type crc && return 0
-  test -d "${CRC_HOME_BIN}/${CRC_EXEC}" && return 0
+  sudo -u crc /home/crc/bin/crc status && return 0
+  test -f "${CRC_HOME_BIN}/${CRC_EXEC}" && return 0
   get_crc_tgz_with_wget
   pushd "${TMPDIR_NON_TMPFS}"
   tar Jxvf "${CRC_OUTPUT_FILE}"
