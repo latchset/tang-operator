@@ -30,6 +30,7 @@ CRC_OUTPUT_FILE=crc-linux-amd64.tar.xz
 CRC_INSTALL_FILE="${TMPDIR_NON_TMPFS}/${CRC_OUTPUT_FILE}"
 CRC_PREFIX="crc-linux-[0-9]"
 CRC_EXEC="crc"
+CRC_VIRSH_DOMAIN="crc"
 HOME_BIN="${HOME}/bin"
 HOME_BASHRC="${HOME}/.bashrc"
 CRC_USER="crc"
@@ -45,7 +46,7 @@ usage() {
   echo "$1"
   echo ""
   echo "NOTE: secret is mandatory for CRC install, as it requires it for its installation"
-  echo "      It will be prompted after crc installation, in crc start step"
+  echo "      It will be prompted after crc installation, in \"crc start\" step"
   echo "      Secret can be retrieved in next URL: https://console.redhat.com/openshift/create/local"
   echo ""
   exit $2
@@ -79,7 +80,6 @@ get_oc_rpm_with_wget() {
 }
 
 get_crc_tgz_with_wget() {
-  type crc && return 0
   mkdir "${TMPDIR_NON_TMPFS}"
   wget "${CRC_PATH}/${CRC_FILE}" -O "${CRC_INSTALL_FILE}"
 }
@@ -107,12 +107,17 @@ install_oc() {
 
 install_crc() {
   type crc && return 0
+  test -d "${CRC_HOME_BIN}/${CRC_EXEC}" && return 0
+  get_crc_tgz_with_wget
   pushd "${TMPDIR_NON_TMPFS}"
   tar Jxvf "${CRC_OUTPUT_FILE}"
   CRC_DIR=$(ls -d ${CRC_PREFIX}*)
   pushd "${CRC_DIR}"
   test -d "${CRC_HOME_BIN}" || mkdir -p "${CRC_HOME_BIN}"
   rm -fr "${CRC_USER}"/.crc "${CRC_USER}"/.kube
+  virsh shutdown "${CRC_VIRSH_DOMAIN}"
+  virsh undefine "${CRC_VIRSH_DOMAIN}"
+  virsh delete   "${CRC_VIRSH_DOMAIN}"
   cp "${CRC_EXEC}" "${CRC_HOME_BIN}"
 #  export PATH="${PATH}:${HOME_BIN}"
   cp "${HOME_BASHRC}" "${CRC_HOME_BASHRC}"
@@ -162,6 +167,14 @@ clean() {
   test -d "${TMPDIR_NON_TMPFS}" && rm -fr "${TMPDIR_NON_TMPFS}"
 }
 
+install_operator_sdk() {
+  export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
+  export OS=$(uname | awk '{print tolower($0)}')
+  export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v1.12.0
+  curl -LO ${OPERATOR_SDK_DL_URL}/operator-sdk_${OS}_${ARCH}
+  chmod +x operator-sdk_${OS}_${ARCH} && sudo mv operator-sdk_${OS}_${ARCH} "${CRC_HOME_BIN}/operator-sdk"
+}
+
 # TODO: A parse pararams function could be added for this
 while getopts "s:h" arg
 do
@@ -169,6 +182,8 @@ do
     s) CRC_SECRET=${OPTARG}
       ;;
     h) usage $0 0
+      ;;
+    *) usage $0 0
       ;;
   esac
 done
@@ -179,6 +194,6 @@ install_libvirtd
 install_network_manager
 get_oc_rpm_with_wget
 install_oc
-get_crc_tgz_with_wget
 install_crc
+install_operator_sdk
 clean
