@@ -174,6 +174,10 @@ install_operator_sdk() {
   chmod +x operator-sdk_${OS}_${ARCH} && sudo mv operator-sdk_${OS}_${ARCH} "${CRC_HOME_BIN}/operator-sdk"
 }
 
+setup_crc() {
+  sudo -u "${CRC_USER}" oc adm policy add-scc-to-group anyuid system:authenticated
+}
+
 # TODO: A parse pararams function could be added for this
 while getopts "s:h" arg
 do
@@ -194,5 +198,6 @@ install_network_manager
 get_oc_rpm_with_wget
 install_oc
 install_crc
+setup_crc
 install_operator_sdk
 clean
