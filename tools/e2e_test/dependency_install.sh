@@ -39,7 +39,6 @@ CRC_HOME="/home/${CRC_USER}"
 CRC_HOME_BIN="${CRC_HOME}/bin"
 CRC_HOME_BASHRC="${CRC_HOME}/.bashrc"
 CRC_EXEC_PATH="${CRC_HOME_BIN}/${CRC_EXEC}"
-CRC_SECRET=""
 
 usage() {
   echo ""
@@ -182,8 +181,6 @@ setup_crc() {
 while getopts "s:h" arg
 do
   case "${arg}" in
-    s) CRC_SECRET=${OPTARG}
-      ;;
     h) usage $0 0
       ;;
     *) usage $0 0
