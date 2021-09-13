@@ -115,9 +115,8 @@ install_crc() {
   pushd "${CRC_DIR}"
   test -d "${CRC_HOME_BIN}" || mkdir -p "${CRC_HOME_BIN}"
   rm -fr "${CRC_USER}"/.crc "${CRC_USER}"/.kube
-  virsh shutdown "${CRC_VIRSH_DOMAIN}"
+  virsh destroy "${CRC_VIRSH_DOMAIN}"
   virsh undefine "${CRC_VIRSH_DOMAIN}"
-  virsh delete   "${CRC_VIRSH_DOMAIN}"
   cp "${CRC_EXEC}" "${CRC_HOME_BIN}"
 #  export PATH="${PATH}:${HOME_BIN}"
   cp "${HOME_BASHRC}" "${CRC_HOME_BASHRC}"
