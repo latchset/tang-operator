@@ -69,7 +69,7 @@ bundle. For example, in case latest version is **0.0.16**, the command to execut
 will be:
 
 ```bash
-$ operator-sdk run quay.io/sarroutb/tang-operator-bundle:v0.0.16
+$ operator-sdk run bundle quay.io/sarroutb/tang-operator-bundle:v0.0.16
 INFO[0008] Successfully created registry pod: quay-io-sarroutb-tang-operator-bundle-v0-0-16
 INFO[0009] Created CatalogSource: tang-operator-catalog
 INFO[0009] OperatorGroup "operator-sdk-og" created
