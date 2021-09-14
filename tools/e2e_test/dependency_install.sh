@@ -22,7 +22,7 @@ OC_PATH=http://download.eng.bos.redhat.com/brewroot/vol/rhel-8/packages/openshif
 OC_FILE=openshift-clients-4.9.0-202109020218.p0.git.96e95ce.assembly.stream.el8.x86_64.rpm
 OC_OUTPUT_FILE=openshift-clients-4.9.0.rpm
 TMPDIR=$(mktemp -d)
-TMPDIR_NON_TMPFS=$(echo "${TMPDIR}" | sed -e 's@/tmp/@@g')
+TMPDIR_NON_TMPFS="${TMPDIR//\/tmp/}"
 OC_INSTALL_FILE="${TMPDIR}/${OC_OUTPUT_FILE}"
 CRC_PATH=https://developers.redhat.com/content-gateway/rest/mirror/pub/openshift-v4/clients/crc/latest
 CRC_FILE=crc-linux-amd64.tar.xz
@@ -31,7 +31,6 @@ CRC_INSTALL_FILE="${TMPDIR_NON_TMPFS}/${CRC_OUTPUT_FILE}"
 CRC_PREFIX="crc-linux-[0-9]"
 CRC_EXEC="crc"
 CRC_VIRSH_DOMAIN="crc"
-HOME_BIN="${HOME}/bin"
 HOME_BASHRC="${HOME}/.bashrc"
 CRC_USER="crc"
 CRC_PASSWORD="crc1234crc5678"
@@ -42,13 +41,13 @@ CRC_EXEC_PATH="${CRC_HOME_BIN}/${CRC_EXEC}"
 
 usage() {
   echo ""
-  echo "$1"
+  echo "Usage: $1"
   echo ""
   echo "NOTE: secret is mandatory for CRC install, as it requires it for its installation"
   echo "      It will be prompted after crc installation, in \"crc start\" step"
   echo "      Secret can be retrieved in next URL: https://console.redhat.com/openshift/create/local"
   echo ""
-  exit $2
+  exit "$2"
 }
 
 #### OC Installation
@@ -56,8 +55,8 @@ get_oc_rpm_adding_repo() {
   POOL_ID=$("${SM}" list --available --matches 'Red Hat OpenShift Container Platform' | grep -i 'Pool ID' | awk -F ':' '{print $2}' | tr -d ' ' | head -1)
   for pool_id in $("${SM}" list --available --matches 'Red Hat OpenShift Container Platform' | grep -i 'Pool ID' | awk -F ':' '{print $2}' | tr -d ' ')
   do
-    "${SM}" attach --pool="${POOL_ID}"
-    echo "POOL_ID=${POOL_ID}"
+    "${SM}" attach --pool="${pool_id}"
+    echo "POOL_ID=${pool_id}"
     for repo in $(subscription-manager repos --list | grep 'Repo ID:' | awk -F ':' '{print $2}');
     do
       "${SM}" repos --enable="${repo}"
@@ -108,25 +107,24 @@ install_crc() {
   sudo -u crc /home/crc/bin/crc status && return 0
   test -f "${CRC_HOME_BIN}/${CRC_EXEC}" && return 0
   get_crc_tgz_with_wget
-  pushd "${TMPDIR_NON_TMPFS}"
+  pushd "${TMPDIR_NON_TMPFS}" || exit
   tar Jxvf "${CRC_OUTPUT_FILE}"
   CRC_DIR=$(ls -d ${CRC_PREFIX}*)
-  pushd "${CRC_DIR}"
+  pushd "${CRC_DIR}" || exit
   test -d "${CRC_HOME_BIN}" || mkdir -p "${CRC_HOME_BIN}"
   rm -fr "${CRC_USER}"/.crc "${CRC_USER}"/.kube
   virsh destroy "${CRC_VIRSH_DOMAIN}"
   virsh undefine "${CRC_VIRSH_DOMAIN}"
   cp "${CRC_EXEC}" "${CRC_HOME_BIN}"
-#  export PATH="${PATH}:${HOME_BIN}"
   cp "${HOME_BASHRC}" "${CRC_HOME_BASHRC}"
   cat<<EOF>>"${CRC_HOME_BASHRC}"
 
 # CRC installation PATH update
 EOF
   printf 'export PATH="${PATH}:' >> "${CRC_HOME_BASHRC}"
-  printf "${CRC_HOME_BIN}\"\n" >> "${CRC_HOME_BASHRC}"
-  popd
-  popd
+  printf "%s\n" "${CRC_HOME_BIN}" >> "${CRC_HOME_BASHRC}"
+  popd || exit
+  popd || exit
   useradd "${CRC_USER}"
   passwd "${CRC_USER}"<<EOF
 "${CRC_PASSWORD}"
@@ -149,10 +147,10 @@ EOF
 
 
   ###   34  2021-09-07 12:41:44 sudo -u crc XDG_RUNTIME_DIR=/run/user/$(id -u $otherUser) systemctl --user
-  sudo -u "${CRC_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${CRC_USER}") "${CRC_EXEC_PATH}" setup<<EOF
+  sudo -u "${CRC_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${CRC_USER})" "${CRC_EXEC_PATH}" setup<<EOF
 no
 EOF
-  sudo -u "${CRC_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${CRC_USER}") "${CRC_EXEC_PATH}" start
+  sudo -u "${CRC_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${CRC_USER})" "${CRC_EXEC_PATH}" start
 }
 
 sm_register() {
@@ -166,11 +164,11 @@ clean() {
 }
 
 install_operator_sdk() {
-  export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
-  export OS=$(uname | awk '{print tolower($0)}')
-  export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v1.12.0
-  curl -LO ${OPERATOR_SDK_DL_URL}/operator-sdk_${OS}_${ARCH}
-  chmod +x operator-sdk_${OS}_${ARCH} && sudo mv operator-sdk_${OS}_${ARCH} "${CRC_HOME_BIN}/operator-sdk"
+  ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n "$(uname -m)" ;; esac)
+  OS=$(uname | awk '{print tolower($0)}')
+  OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v1.12.0
+  curl -LO "${OPERATOR_SDK_DL_URL}/operator-sdk_${OS}_${ARCH}"
+  chmod +x "operator-sdk_${OS}_${ARCH}" && sudo mv "operator-sdk_${OS}_${ARCH}" "${CRC_HOME_BIN}/operator-sdk"
 }
 
 setup_crc() {
@@ -181,9 +179,9 @@ setup_crc() {
 while getopts "s:h" arg
 do
   case "${arg}" in
-    h) usage $0 0
+    h) usage "$0" 0
       ;;
-    *) usage $0 0
+    *) usage "$0" 0
       ;;
   esac
 done
