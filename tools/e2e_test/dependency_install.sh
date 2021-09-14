@@ -122,7 +122,7 @@ install_crc() {
 # CRC installation PATH update
 EOF
   printf 'export PATH="${PATH}:' >> "${CRC_HOME_BASHRC}"
-  printf "%s\n" "${CRC_HOME_BIN}" >> "${CRC_HOME_BASHRC}"
+  printf "%s\"\n" "${CRC_HOME_BIN}" >> "${CRC_HOME_BASHRC}"
   popd || exit
   popd || exit
   useradd "${CRC_USER}"
