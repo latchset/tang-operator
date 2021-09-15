@@ -186,6 +186,12 @@ index 9a41c6a..db12a82 100644
 +VERSION ?= 0.0.16
 ```
 
+Apart from previous changes, it is recommended to generate a "latest" tag for tang-operator bundle:
+```bash
+$ docker tag quay.io/sarroutb/tang-operator-bundle:v0.0.16 quay.io/sarroutb/tang-operator-bundle:latest
+$ docker push quay.io/sarroutb/tang-operator-bundle:latest
+```
+
 - Compile operator:
 
 Compile tang operator code, specifying new version,
