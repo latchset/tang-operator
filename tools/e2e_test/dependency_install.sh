@@ -39,7 +39,9 @@ CRC_HOME_BIN="${CRC_HOME}/bin"
 CRC_HOME_BASHRC="${CRC_HOME}/.bashrc"
 CRC_EXEC_PATH="${CRC_HOME_BIN}/${CRC_EXEC}"
 PULL_SECRET_PATH="$(dirname $(readlink -f $0))"
-PULL_SECRET_FILE="${PULL_SECRET_PATH}/public_pull_secret.txt"
+PULL_SECRET_FILENAME="public_pull_secret.txt"
+PULL_SECRET_FILE="${PULL_SECRET_PATH}/${PULL_SECRET_FILENAME}"
+PULL_SECRET_INSTALL_FILE="${TMPDIR}/${PULL_SECRET_FILENAME}"
 
 usage() {
   echo ""
@@ -153,8 +155,9 @@ EOF
   sudo -u "${CRC_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${CRC_USER})" "${CRC_EXEC_PATH}" setup<<EOF
 no
 EOF
-  test -f "${PULL_SECRET_FILE}" &&
-    sudo -u "${CRC_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${CRC_USER})" "${CRC_EXEC_PATH}" start -p "${PULL_SECRET}" ||
+  check_pull_secret
+  test -f "${PULL_SECRET_INSTALL_FILE}" &&
+    sudo -u "${CRC_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${CRC_USER})" "${CRC_EXEC_PATH}" start -p "${PULL_SECRET_INSTALL_FILE}" ||
     sudo -u "${CRC_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${CRC_USER})" "${CRC_EXEC_PATH}" start
 }
 
@@ -190,6 +193,19 @@ do
       ;;
   esac
 done
+
+check_pull_secret() {
+  test -f "${PULL_SECRET_FILE}"
+  if [ $? -eq 0 ];
+  then
+    echo "FILE SECRET:${PULL_SECRET_FILE} FOUND"
+    chmod 777 "${TMPDIR}"
+    cp "${PULL_SECRET_FILE}" "${PULL_SECRET_INSTALL_FILE}"
+    chmod 777 "${PULL_SECRET_INSTALL_FILE}"
+  else
+    echo "FILE SECRET:${PULL_SECRET_FILE} NOT FOUND"
+  fi
+}
 
 sm_register
 install_podman
