@@ -38,6 +38,8 @@ CRC_HOME="/home/${CRC_USER}"
 CRC_HOME_BIN="${CRC_HOME}/bin"
 CRC_HOME_BASHRC="${CRC_HOME}/.bashrc"
 CRC_EXEC_PATH="${CRC_HOME_BIN}/${CRC_EXEC}"
+PULL_SECRET_PATH="$(dirname $(readlink -f $0))"
+PULL_SECRET_FILE="${PULL_SECRET_PATH}/public_pull_secret.txt"
 
 usage() {
   echo ""
@@ -151,7 +153,9 @@ EOF
   sudo -u "${CRC_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${CRC_USER})" "${CRC_EXEC_PATH}" setup<<EOF
 no
 EOF
-  sudo -u "${CRC_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${CRC_USER})" "${CRC_EXEC_PATH}" start
+  test -f "${PULL_SECRET_FILE}" &&
+    sudo -u "${CRC_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${CRC_USER})" "${CRC_EXEC_PATH}" start -p "${PULL_SECRET}" ||
+    sudo -u "${CRC_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${CRC_USER})" "${CRC_EXEC_PATH}" start
 }
 
 sm_register() {
