@@ -49,6 +49,12 @@ RH_INSTALL=0
 RELEASE_K8S_URL="https://dl.k8s.io/release/"
 STABLE_K8S_URL_FILE="https://dl.k8s.io/release/stable.txt"
 BIN_LINUX_PATH="bin/linux/amd64"
+MINIKUBE_USER="minikube"
+MINIKUBE_HOME="/home/${MINIKUBE_USER}"
+MINIKUBE_HOME_BIN="${MINIKUBE_HOME}/bin"
+MINIKUBE_HOME_BASHRC="${MINIKUBE_HOME}/.bashrc"
+MINIKUBE_CLIENT="kubectl"
+OLM_INSTALL_TIMEOUT="5m"
 
 usage() {
   echo ""
@@ -96,6 +102,11 @@ install_podman() {
   yum install -y podman
 }
 
+install_jq() {
+  type jq && return 0
+  yum install -y jq
+}
+
 install_network_manager() {
   yum install -y NetworkManager
   systemctl enable --now NetworkManager
@@ -114,7 +125,7 @@ install_oc() {
 }
 
 install_crc() {
-  sudo -u crc /home/crc/bin/crc status && return 0
+  sudo -u "${CRC_USER}" /home/crc/bin/crc status && return 0
   test -f "${CRC_HOME_BIN}/${CRC_EXEC}" && return 0
   get_crc_tgz_with_wget
   pushd "${TMPDIR_NON_TMPFS}" || exit
@@ -135,18 +146,21 @@ EOF
   printf "%s\"\n" "${CRC_HOME_BIN}" >> "${CRC_HOME_BASHRC}"
   popd || exit
   popd || exit
-  useradd "${CRC_USER}"
+  sudo -u "${CRC_USER}" true 2>/dev/null || useradd "${CRC_USER}"
   passwd "${CRC_USER}"<<EOF
 "${CRC_PASSWORD}"
 "${CRC_PASSWORD}"
 EOF
   chown -R "${CRC_USER}.${CRC_USER}" "${CRC_HOME}"
-  cat<<EOF>>/etc/sudoers
+  grep -R "Add crc user to sudoers" /etc/sudoers
+  if [ $? -ne 0 ];
+  then
+    cat<<EOF>>/etc/sudoers
 
 ### Add crc user to sudoers
 "${CRC_USER}" ALL=(ALL) NOPASSWD:ALL
 EOF
-
+  fi
   # AVOID issues with systemctl and network manager
   sudo loginctl enable-linger
   sudo -u "${CRC_USER}" "${CRC_EXEC_PATH}" config set skip-check-daemon-systemd-unit true
@@ -174,6 +188,25 @@ sm_register() {
 clean() {
   test -d "${TMPDIR}" && rm -fr "${TMPDIR}"
   test -d "${TMPDIR_NON_TMPFS}" && rm -fr "${TMPDIR_NON_TMPFS}"
+  test -f "${MINIKUBE_CLIENT}.sha256" && rm "${MINIKUBE_CLIENT}.sha256"
+}
+
+create_minikube_user() {
+  sudo -u "${MINIKUBE_USER}" true 2>/dev/null || useradd "${MINIKUBE_USER}"
+  mkdir -p "${MINIKUBE_HOME_BIN}"
+  chown -R "${MINIKUBE_USER}.${MINIKUBE_USER}" "${MINIKUBE_HOME}"
+  cp "${HOME_BASHRC}" "${MINIKUBE_HOME_BASHRC}"
+  printf 'export XDG_RUNTIME_DIR="' >> "${MINIKUBE_HOME_BASHRC}"
+  printf "%s\"\n\n" "/run/user/$(id -u ${MINIKUBE_USER})" >> "${MINIKUBE_HOME_BASHRC}"
+  grep -R "Add minikube user to sudoers" /etc/sudoers
+  if [ $? -ne 0 ];
+  then
+    cat<<EOF>>/etc/sudoers
+
+### Add minikube user to sudoers
+"${MINIKUBE_USER}" ALL=(ALL) NOPASSWD:ALL
+EOF
+  fi
 }
 
 install_operator_sdk() {
@@ -181,7 +214,12 @@ install_operator_sdk() {
   OS=$(uname | awk '{print tolower($0)}')
   OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v1.12.0
   curl -LO "${OPERATOR_SDK_DL_URL}/operator-sdk_${OS}_${ARCH}"
-  chmod +x "operator-sdk_${OS}_${ARCH}" && sudo mv "operator-sdk_${OS}_${ARCH}" "${CRC_HOME_BIN}/operator-sdk"
+  if [ ${RH_INSTALL} -eq 1 ];
+  then
+    chmod +x "operator-sdk_${OS}_${ARCH}" && sudo mv "operator-sdk_${OS}_${ARCH}" "${CRC_HOME_BIN}/operator-sdk"
+  else
+    chmod +x "operator-sdk_${OS}_${ARCH}" && sudo mv "operator-sdk_${OS}_${ARCH}" "${MINIKUBE_HOME_BIN}/operator-sdk"
+  fi
 }
 
 setup_crc() {
@@ -191,11 +229,18 @@ setup_crc() {
 install_minikube() {
   curl -LO "${MINIKUBE_URL_FILE}"
   rpm -Uvh "${MINIKUBE_FILE}"
+  rm "${MINIKUBE_FILE}"
 }
 
 setup_minikube() {
-  minikube start
-  operator-sdk olm install
+  minikube_user_id=$(id "${MINIKUBE_USER}" | awk {'print $1'} | egrep -E "[0-9]{1,}" -o)
+  loginctl enable-linger ${minikube_user_id}
+  pushd /tmp
+  sudo -u "${MINIKUBE_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${MINIKUBE_USER})" podman ps
+  sudo -u "${MINIKUBE_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${MINIKUBE_USER})" minikube start
+  sudo -u "${MINIKUBE_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${MINIKUBE_USER})" podman ps
+  sudo -u "${MINIKUBE_USER}" XDG_RUNTIME_DIR="/run/user/$(id -u ${MINIKUBE_USER})" "${MINIKUBE_HOME_BIN}"/operator-sdk --timeout ${OLM_INSTALL_TIMEOUT} olm install
+  popd
 }
 
 install_kubectl() {
@@ -205,9 +250,16 @@ install_kubectl() {
       echo "WARNING: ARCHITECTURE NOT SUPPORTED:${ARCH}"
       return 1
   fi
-  curl -LO "${RELEASE_K8S_URL}/$(curl -L -s ${STABLE_K8S_URL_FILE})/${BIN_LINUX_PATH}/kubectl"
-  curl -LO "${RELEASE_K8S_URL}/$(curl -L -s ${STABLE_K8S_URL_FILE})/${BIN_LINUX_PATH}/kubectl.sha256"
-  echo "$(<kubectl.sha256) kubectl" | sha256sum --check
+  curl -LO "${RELEASE_K8S_URL}/$(curl -L -s ${STABLE_K8S_URL_FILE})/${BIN_LINUX_PATH}/${MINIKUBE_CLIENT}"
+  curl -LO "${RELEASE_K8S_URL}/$(curl -L -s ${STABLE_K8S_URL_FILE})/${BIN_LINUX_PATH}/${MINIKUBE_CLIENT}.sha256"
+  echo "$(<kubectl.sha256) ${MINIKUBE_CLIENT}" | sha256sum --check
+  mv ${MINIKUBE_CLIENT} ${MINIKUBE_HOME_BIN}
+  cat<<EOF>>"${MINIKUBE_HOME_BASHRC}"
+
+# Minikube installation PATH update
+EOF
+  printf 'export PATH="${PATH}:' >> "${MINIKUBE_HOME_BASHRC}"
+  printf "%s\"\n" "${MINIKUBE_HOME_BIN}" >> "${MINIKUBE_HOME_BASHRC}"
 }
 
 check_pull_secret() {
@@ -223,6 +275,11 @@ check_pull_secret() {
   fi
 }
 
+set_minikube_permission() {
+  chown "${MINIKUBE_USER}.${MINIKUBE_USER}" ${MINIKUBE_HOME}/*
+  chmod 755 ${MINIKUBE_HOME_BIN}/*
+}
+
 # TODO: A parse pararams function could be added for this
 while getopts "s:ph" arg
 do
@@ -236,10 +293,16 @@ do
   esac
 done
 
+if [ ${RH_INSTALL} -eq 0 ];
+then
+  create_minikube_user
+fi
+install_operator_sdk
+install_podman
+install_jq
 if [ ${RH_INSTALL} -eq 1 ];
 then
   sm_register
-  install_podman
   install_libvirtd
   install_network_manager
   get_oc_rpm_with_wget
@@ -250,6 +313,6 @@ else
   install_minikube
   setup_minikube
   install_kubectl
+  set_minikube_permission
 fi
-install_operator_sdk
 clean
