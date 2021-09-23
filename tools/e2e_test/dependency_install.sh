@@ -42,14 +42,19 @@ PULL_SECRET_PATH="$(dirname $(readlink -f $0))"
 PULL_SECRET_FILENAME="public_pull_secret.txt"
 PULL_SECRET_FILE="${PULL_SECRET_PATH}/${PULL_SECRET_FILENAME}"
 PULL_SECRET_INSTALL_FILE="${TMPDIR}/${PULL_SECRET_FILENAME}"
+MINIKUBE_URL="https://storage.googleapis.com/minikube/releases/latest"
+MINIKUBE_FILE="minikube-latest.x86_64.rpm"
+MINIKUBE_URL_FILE="${MINIKUBE_URL}/${MINIKUBE_FILE}"
+RH_INSTALL=0
+RELEASE_K8S_URL="https://dl.k8s.io/release/"
+STABLE_K8S_URL_FILE="https://dl.k8s.io/release/stable.txt"
+BIN_LINUX_PATH="bin/linux/amd64"
 
 usage() {
   echo ""
-  echo "Usage: $1"
+  echo "Usage: $1 [-r redhat_installation (oc, crc)]"
   echo ""
-  echo "NOTE: secret is mandatory for CRC install, as it requires it for its installation"
-  echo "      It will be prompted after crc installation, in \"crc start\" step"
-  echo "      Secret can be retrieved in next URL: https://console.redhat.com/openshift/create/local"
+  echo "      -r: install RedHat tools (CRC, oc) instead of Minikube and kubectl"
   echo ""
   exit "$2"
 }
@@ -183,16 +188,27 @@ setup_crc() {
   sudo -u "${CRC_USER}" oc adm policy add-scc-to-group anyuid system:authenticated
 }
 
-# TODO: A parse pararams function could be added for this
-while getopts "s:h" arg
-do
-  case "${arg}" in
-    h) usage "$0" 0
-      ;;
-    *) usage "$0" 0
-      ;;
-  esac
-done
+install_minikube() {
+  curl -LO "${MINIKUBE_URL_FILE}"
+  rpm -Uvh "${MINIKUBE_FILE}"
+}
+
+setup_minikube() {
+  minikube start
+  operator-sdk olm install
+}
+
+install_kubectl() {
+  ARCH=$(uname -m)
+  if [ "${ARCH}" != "x86_64" ];
+  then
+      echo "WARNING: ARCHITECTURE NOT SUPPORTED:${ARCH}"
+      return 1
+  fi
+  curl -LO "${RELEASE_K8S_URL}/$(curl -L -s ${STABLE_K8S_URL_FILE})/${BIN_LINUX_PATH}/kubectl"
+  curl -LO "${RELEASE_K8S_URL}/$(curl -L -s ${STABLE_K8S_URL_FILE})/${BIN_LINUX_PATH}/kubectl.sha256"
+  echo "$(<kubectl.sha256) kubectl" | sha256sum --check
+}
 
 check_pull_secret() {
   test -f "${PULL_SECRET_FILE}"
@@ -207,13 +223,33 @@ check_pull_secret() {
   fi
 }
 
-sm_register
-install_podman
-install_libvirtd
-install_network_manager
-get_oc_rpm_with_wget
-install_oc
-install_crc
-setup_crc
+# TODO: A parse pararams function could be added for this
+while getopts "s:ph" arg
+do
+  case "${arg}" in
+    p) RH_INSTALL=1
+      ;;
+    h) usage "$0" 0
+      ;;
+    *) usage "$0" 0
+      ;;
+  esac
+done
+
+if [ ${RH_INSTALL} -eq 1 ];
+then
+  sm_register
+  install_podman
+  install_libvirtd
+  install_network_manager
+  get_oc_rpm_with_wget
+  install_oc
+  install_crc
+  setup_crc
+else
+  install_minikube
+  setup_minikube
+  install_kubectl
+fi
 install_operator_sdk
 clean
