@@ -18,7 +18,7 @@ set -x
 OPERATOR_SDK_DEFAULT_RELEASE_VERSION="v1.10.1"
 DEFAULT_BUNDLE_IMG="quay.io/sarroutb/tang-operator-bundle"
 DEFAULT_TIMEOUT="5m"
-MAKEFILE_BASE_PATH="https://raw.githubusercontent.com/sarroutbi/tang-operator/main/Makefile"
+MAKEFILE_BASE_PATH="https://raw.githubusercontent.com/latchset/tang-operator/main/Makefile"
 
 OPERATOR_SDK_RELEASE_VERSION="${1}"
 TIMEOUT="${2}"
