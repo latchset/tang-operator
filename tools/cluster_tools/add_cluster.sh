@@ -4,6 +4,7 @@ OPTIND=1
 CONFIG_FILE=""
 CONTEXT=""
 NAMESPACE=""
+alias cp='cp -rfv'
 
 function usage() {
   echo "$1 -f config-file [-c context] [-n namespace]"
@@ -34,8 +35,12 @@ then
 fi
 
 CONFIG_FILE_PATH=$(readlink -f "${CONFIG_FILE}")
-echo "cp ${HOME}/.kube/config.onlyMinikube ${HOME}/.kube/config"
-cp ${HOME}/.kube/config.onlyMinikube ${HOME}/.kube/config
+if [ -f ${HOME}/.kube/config.onlyMinikube ];
+then
+  echo "cp ${HOME}/.kube/config.onlyMinikube ${HOME}/.kube/config"
+  cp ${HOME}/.kube/config.onlyMinikube ${HOME}/.kube/config
+fi
+
 export KUBECONFIG=${HOME}/.kube/config:${CONFIG_FILE_PATH}
 echo "export KUBECONFIG=${HOME}/.kube/config:${CONFIG_FILE_PATH}"
 export KUBECONFIG=${HOME}/.kube/config:${CONFIG_FILE_PATH}
