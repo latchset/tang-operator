@@ -101,6 +101,8 @@ type TangServerStatus struct {
 	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Error"
 	// +optional
 	TangServerError TangServerStatusError `json:"tangservererror,omitempty"`
+	ActiveKeys      []string              `json:"activeKeys,omitempty"`
+	HiddenKeys      []string              `json:"hiddenKeys,omitempty"`
 }
 
 //+kubebuilder:object:root=true

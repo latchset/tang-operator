@@ -128,6 +128,14 @@ spec:
           status:
             description: TangServerStatus defines the observed state of TangServer
             properties:
+              activeKeys:
+                items:
+                  type: string
+                type: array
+              hiddenKeys:
+                items:
+                  type: string
+                type: array
               tangservererror:
                 description: Tang Server Error collects error on Tang Operator creation
                 type: string

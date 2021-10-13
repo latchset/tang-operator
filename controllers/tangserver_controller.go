@@ -292,6 +292,19 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 	deploymentReady := isDeploymentReady(deploymentFound)
 	if !deploymentReady {
 		log.Info("Deployment not ready", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
+	} else {
+		log.Info("Deployment ready", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
+		activeKeys := getActiveKeys(cr)
+		hiddenKeys := getHiddenKeys(cr)
+		log.Info("Obtained keys", "Active Keys", activeKeys, "Hidden Keys", hiddenKeys)
+		cr.Status.ActiveKeys = activeKeys
+		cr.Status.HiddenKeys = hiddenKeys
+		log.Info("Updating status with keys", "Active Keys", activeKeys, "Hidden Keys", hiddenKeys)
+		err := r.Client.Status().Update(context.Background(), cr)
+		if err != nil {
+			log.Error(err, "Unable to update advertised keys")
+			return ctrl.Result{}, err
+		}
 	}
 
 	// Create list options for listing deployment pods

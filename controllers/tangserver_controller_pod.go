@@ -143,3 +143,29 @@ func getPodTemplate(cr *daemonsv1alpha1.TangServer, labels map[string]string) *c
 		},
 	}
 }
+
+// getActiveKeys function returns advertised keys
+func getActiveKeys(cr *daemonsv1alpha1.TangServer) []string {
+	pvc := getPersistentVolumeClaim(cr)
+	advertisedKeys := make([]string, 2)
+	if pvc == "" {
+		return advertisedKeys
+	}
+	// TODO: fill with correct key information
+	advertisedKeys[0] = "FAKE_ACTIVE_KEY1"
+	advertisedKeys[1] = "FAKE_ACTIVE_KEY2"
+	return advertisedKeys
+}
+
+// getHiddenKeys function returns advertised keys
+func getHiddenKeys(cr *daemonsv1alpha1.TangServer) []string {
+	pvc := getPersistentVolumeClaim(cr)
+	advertisedKeys := make([]string, 2)
+	if pvc == "" {
+		return advertisedKeys
+	}
+	// TODO: fill with correct key information
+	advertisedKeys[0] = ".FAKE_HIDDEN_KEY1"
+	advertisedKeys[1] = ".FAKE_HIDDEN_KEY2"
+	return advertisedKeys
+}
