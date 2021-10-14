@@ -3,12 +3,13 @@ module github.com/sarroutbi/tang-operator
 go 1.16
 
 require (
-	github.com/go-logr/logr v0.3.0 // indirect
+	github.com/go-logr/logr v0.4.0
 	github.com/onsi/ginkgo v1.16.4
-	github.com/onsi/gomega v1.13.0
-	golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0 // indirect
-	k8s.io/api v0.20.2 // indirect
-	k8s.io/apimachinery v0.20.2
-	k8s.io/client-go v0.20.2
-	sigs.k8s.io/controller-runtime v0.8.3
+	github.com/onsi/gomega v1.15.0
+	k8s.io/api v0.22.2
+	k8s.io/apimachinery v0.22.2
+	k8s.io/client-go v0.22.2
+	sigs.k8s.io/controller-runtime v0.10.2
 )
+
+replace github.com/moby/spdystream => github.com/antoninbas/spdystream v0.2.1

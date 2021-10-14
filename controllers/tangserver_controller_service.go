@@ -17,6 +17,7 @@ limitations under the License.
 package controllers
 
 import (
+	"fmt"
 	"github.com/go-logr/logr"
 	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
@@ -26,12 +27,26 @@ import (
 
 // constants to use
 const (
-	DEFAULT_SERVICE_PORT   = 8081
+	DEFAULT_SERVICE_PORT   = 7500
 	DEFAULT_SERVICE_TYPE   = "Service"
 	DEFAULT_API_VERSION    = "v1"
 	DEFAULT_SERVICE_PREFIX = "service-"
 	DEFAULT_SERVICE_PROTO  = "http"
 )
+
+// getServiceName function returns service name
+func getServiceName(tangserver *daemonsv1alpha1.TangServer) string {
+	return DEFAULT_SERVICE_PREFIX + tangserver.Name
+}
+
+// getServicePort function returns service name
+func getServicePort(tangserver *daemonsv1alpha1.TangServer) uint32 {
+	servicePort := uint32(tangserver.Spec.ServiceListenPort)
+	if 0 == servicePort {
+		servicePort = DEFAULT_SERVICE_PORT
+	}
+	return servicePort
+}
 
 // getService function returns correctly created service
 func getService(tangserver *daemonsv1alpha1.TangServer, log logr.Logger) *corev1.Service {
@@ -39,11 +54,7 @@ func getService(tangserver *daemonsv1alpha1.TangServer, log logr.Logger) *corev1
 	labels := map[string]string{
 		"app": tangserver.Name,
 	}
-	servicePort := uint32(tangserver.Spec.ServiceListenPort)
-	if 0 == servicePort {
-		log.Info("Assigning default service port", "DEFAULT_SERVICE_PORT", DEFAULT_SERVICE_PORT)
-		servicePort = DEFAULT_SERVICE_PORT
-	}
+	servicePort := getServicePort(tangserver)
 	log.Info("Listening Port", "servicePort", servicePort)
 	return &corev1.Service{
 		TypeMeta: metav1.TypeMeta{
@@ -51,7 +62,7 @@ func getService(tangserver *daemonsv1alpha1.TangServer, log logr.Logger) *corev1
 			Kind:       DEFAULT_SERVICE_TYPE,
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      DEFAULT_SERVICE_PREFIX + tangserver.Name,
+			Name:      getServiceName(tangserver),
 			Namespace: tangserver.Namespace,
 			Labels:    labels,
 		},
@@ -66,5 +77,24 @@ func getService(tangserver *daemonsv1alpha1.TangServer, log logr.Logger) *corev1
 				},
 			},
 		},
+	}
+}
+
+// getService function returns correctly created service
+func getServiceUrl(tangserver *daemonsv1alpha1.TangServer) string {
+	return DEFAULT_SERVICE_PROTO + "://" + getServiceName(tangserver) + "." + tangserver.Namespace + ":" + fmt.Sprint(getServicePort(tangserver)) + "/adv"
+}
+
+// getServiceIpUrl function returns correctly created service
+func getServiceIpUrl(tangserver *daemonsv1alpha1.TangServer, ip string) string {
+	return DEFAULT_SERVICE_PROTO + "://" + ip + ":" + fmt.Sprint(getServicePort(tangserver)) + "/adv"
+}
+
+// getExternalServiceUrl function returns correctly created service
+func getExternalServiceUrl(tangserver *daemonsv1alpha1.TangServer, balancer corev1.LoadBalancerIngress) string {
+	if len(balancer.Hostname) > 0 {
+		return DEFAULT_SERVICE_PROTO + "://" + balancer.Hostname + ":" + fmt.Sprint(getServicePort(tangserver)) + "/adv"
+	} else {
+		return DEFAULT_SERVICE_PROTO + "://" + balancer.IP + ":" + fmt.Sprint(getServicePort(tangserver)) + "/adv"
 	}
 }

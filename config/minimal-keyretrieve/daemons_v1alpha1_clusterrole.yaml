@@ -1,0 +1,8 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pod-reader-executor
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods", "pods/log", "pods/exec", "pods/status"]
+  verbs: ["get", "watch", "list", "create", "update"]

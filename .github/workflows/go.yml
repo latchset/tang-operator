@@ -35,4 +35,4 @@ jobs:
       run: CLUSTER_TANG_OPERATOR_TEST=1 make test
 
     - name: Deploy and Scorecard
-      run: sh .github/workflows/scripts/retrieve_and_run_operator_sdk.sh "v1.10.1" "10m" "quay.io/sarroutb/tang-operator-bundle" "${GITHUB_REF}"
+      run: sh .github/workflows/scripts/retrieve_and_run_operator_sdk.sh "v1.12.0" "10m" "quay.io/sarroutb/tang-operator-bundle" "${GITHUB_HEAD_REF}"

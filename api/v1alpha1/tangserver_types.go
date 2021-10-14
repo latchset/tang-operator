@@ -31,7 +31,7 @@ type TangServerSpec struct {
 	// KeyPath is field of TangServer. It allows to specify the path where keys will be generated
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Key Path"
 	// +optional
-	KeyPath string `json:"keypath,omitempty"`
+	KeyPath string `json:"keyPath,omitempty"`
 
 	// Replicas is the Tang Server amount to bringup
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Amount of replicas to launch"
@@ -40,7 +40,7 @@ type TangServerSpec struct {
 	// Persistent Volume Claim to store the keys
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Persistent Volume Claim to attach to (default:tangserver-pvc)"
 	// +optional
-	PersistentVolumeClaim string `json:"persistentvolumeclaim,omitempty"`
+	PersistentVolumeClaim string `json:"persistentVolumeClaim,omitempty"`
 
 	// Image is the base container image of the TangServer to use
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Image of Container to deploy"
@@ -55,12 +55,12 @@ type TangServerSpec struct {
 	// HealthScript is the script to run for healthiness/readiness
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Health Script to execute"
 	// +optional
-	HealthScript string `json:"healthscript,omitempty"`
+	HealthScript string `json:"healthScript,omitempty"`
 
 	// PodListenPort is the port where pods will listen for traffic
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Port where Pod will listen "
 	// +optional
-	PodListenPort uint32 `json:"podlistenport,omitempty"`
+	PodListenPort uint32 `json:"podListenPort,omitempty"`
 
 	// Secret is the secret name to use to download image appropriately
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Secret name to use for container download"
@@ -70,17 +70,32 @@ type TangServerSpec struct {
 	// ServiceListenPort is the port where service will listen for traffic
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Port where service will listen"
 	// +optional
-	ServiceListenPort uint32 `json:"servicelistenport,omitempty"`
+	ServiceListenPort uint32 `json:"serviceListenPort,omitempty"`
 
 	// ResourceRequest is the resource request to perform for each pod
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Resources Request for Tang Server"
 	// +optional
-	ResourcesRequest ResourcesRequest `json:"resourcesrequest,omitempty"`
+	ResourcesRequest ResourcesRequest `json:"resourcesRequest,omitempty"`
 
 	// ResourceLimit is the resource limit to perform for each pod
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Resources Limit for Tang Server"
 	// +optional
-	ResourcesLimit ResourcesLimit `json:"resourceslimit,omitempty"`
+	ResourcesLimit ResourcesLimit `json:"resourcesLimit,omitempty"`
+
+	// KeyRefreshInterval
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Refresh Interval to update key status"
+	// +optional
+	KeyRefreshInterval uint32 `json:"keyRefreshInterval,omitempty"`
+
+	// HiddenKeys
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Hidden Keys contains a list with the keys (with sha1 or sha256) to hide"
+	// +optional
+	HiddenKeys []TangServerHiddenKeys `json:"hiddenKeys,omitempty"`
+
+	// RequiredActiveKeyPairs
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Required Active Key Pairs (1 by default)"
+	// +optional
+	RequiredActiveKeyPairs uint32 `json:"requiredActiveKeyPairs,omitempty"`
 }
 
 // ResourcesRequest contains the struct to provide resources requests to Tang Server
@@ -95,12 +110,81 @@ type ResourcesLimit struct {
 	Memory string `json:"memory,omitempty"`
 }
 
+// TangServerActiveKeys defines the active keys in a Tang Server
+type TangServerActiveKeys struct {
+	// Active Key sha1
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Active Key SHA1"
+	// +optional
+	Sha1 string `json:"sha1,omitempty"`
+	// Active Key sha256
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Active Key SHA256"
+	// +optional
+	Sha256 string `json:"sha256,omitempty"`
+	// Active Key Generation Time
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Active Key Generation Time"
+	Generated string `json:"generated,omitempty"`
+	// FileName provides information about the file name corresponding to the key
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Active Key file name"
+	// +optional
+	FileName string `json:"fileName,omitempty"`
+}
+
+// TangServerHiddenKeys defines the hidden keys in a Tang Server
+type TangServerHiddenKeys struct {
+	// Hidden Key sha1
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Hidden Key SHA1"
+	// +optional
+	Sha1 string `json:"sha1,omitempty"`
+	// Hidden Key sha256
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Hidden Key SHA256"
+	// +optional
+	Sha256 string `json:"sha256,omitempty"`
+	// Hidden Key Hiding Time
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Hidden Key Generation Time"
+	Generated string `json:"generated,omitempty"`
+	// Hidden Key Generation Time
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Hidden Key Hidden Time"
+	Hidden string `json:"hidden,omitempty"`
+	// FileName provides information about the file name corresponding to the key
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Hidden Key file name"
+	// +optional
+	FileName string `json:"fileName,omitempty"`
+}
+
 // TangServerStatus defines the observed state of TangServer
 type TangServerStatus struct {
-	// Tang Server Error collects error on Tang Operator creation
+	// TangServerError collects error on Tang Operator creation
 	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Error"
 	// +optional
-	TangServerError TangServerStatusError `json:"tangservererror,omitempty"`
+	TangServerError TangServerStatusError `json:"tangServerError,omitempty"`
+	// ActiveKeys provides information about the Active Keys in the Tang Server CR
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Active Keys"
+	// +optional
+	ActiveKeys []TangServerActiveKeys `json:"activeKeys,omitempty"`
+	// HiddenKeys provides information about the Hidden Keys in the Tang Server CR
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Hidden Keys"
+	// +optional
+	HiddenKeys []TangServerHiddenKeys `json:"hiddenKeys,omitempty"`
+	// Tang Server Running provides information about the Running Replicas
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Running Replicas"
+	// +optional
+	Running uint32 `json:"running"`
+	// Tang Server Ready provides information about the Ready Replicas
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Ready Replicas"
+	// +optional
+	Ready uint32 `json:"ready"`
+	// Tang Server Url provides information about the Url that can be read to get key advertisement
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Url"
+	// +optional
+	Url string `json:"url,omitempty"`
+	// Tang Server ServiceUrl provides information about the External Service Url
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server External Url"
+	// +optional
+	ServiceExternalUrl string `json:"serviceExternalUrl,omitempty"`
+	// Tang Server Active Key Retries is used to handle amount of retries that were executed when no active keys are being sent
+	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Active Key Retries"
+	// +optional
+	ActiveKeyRetries uint32 `json:"activeKeyRetries"`
 }
 
 //+kubebuilder:object:root=true

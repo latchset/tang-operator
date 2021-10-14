@@ -7,9 +7,9 @@ metadata:
   - finalizer.daemons.tangserver.redhat.com
 spec:
   # Add fields here
-  keypath: /var/db/tang
-  persistentvolumeclaim: tangserver-pvc
+  keyPath: /var/db/tang
+  persistentVolumeClaim: tangserver-pvc
   replicas: 1
   image: "registry.redhat.io/rhel8/tang"
   version: "latest"
-  healthscript: "/usr/bin/tangd-health-check"
+  healthScript: "/usr/bin/tangd-health-check"
