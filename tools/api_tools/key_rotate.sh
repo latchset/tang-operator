@@ -6,7 +6,7 @@ usage() {
   echo
   echo "Usage:"
   echo
-  echo "$1 -n namespace"
+  echo "$1 -n namespace [-c k8s_client]"
   echo
   exit "$2"
 }
