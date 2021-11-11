@@ -153,7 +153,7 @@ to be released, it is recommended to increase version appropriately.
 In this case, same version is used. Last released version can be observed in
 [Versions](#versions) section.
 
-To summarize, taking into account that the last released version is **0.0.16**
+To summarize, taking into account that the last released version is **0.0.17**
 compilation can be done with next command:
 
 ```bash
@@ -181,10 +181,10 @@ index 9a41c6a..db12a82 100644
 @@ -3,7 +3,7 @@
 # To re-generate a bundle for another specific version without changing the
 # standard setup, you can:
-# - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.16)
-# - use environment variables to overwrite this value (e.g export VERSION=0.0.16)
--VERSION ?= 0.0.15
-+VERSION ?= 0.0.16
+# - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.17)
+# - use environment variables to overwrite this value (e.g export VERSION=0.0.17)
+-VERSION ?= 0.0.16
++VERSION ?= 0.0.17
 ```
 
 Apart from previous changes, it is recommended to generate a "latest" tag for tang-operator bundle:
