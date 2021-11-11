@@ -430,14 +430,6 @@ func (r *TangServerReconciler) reconcileService(cr *daemonsv1alpha1.TangServer, 
 		if err != nil {
 			return ctrl.Result{}, err
 		}
-		url := getServiceUrl(cr)
-		log.Info("Updating status with Url", "Url", url)
-		cr.Status.Url = url
-		err := r.Client.Status().Update(context.Background(), cr)
-		if err != nil {
-			log.Error(err, "Unable to update TangServer status with URL")
-			return ctrl.Result{}, err
-		}
 		// Service created successfully - don't requeue
 		return ctrl.Result{}, nil
 	} else if err != nil {

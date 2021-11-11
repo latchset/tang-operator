@@ -173,11 +173,7 @@ type TangServerStatus struct {
 	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Ready Replicas"
 	// +optional
 	Ready uint32 `json:"ready"`
-	// Tang Server Url provides information about the Url that can be read to get key advertisement
-	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Url"
-	// +optional
-	Url string `json:"url,omitempty"`
-	// Tang Server ServiceUrl provides information about the External Service Url
+	// Tang Server Service External Url provides information about the External Service Url
 	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server External Url"
 	// +optional
 	ServiceExternalUrl string `json:"serviceExternalUrl,omitempty"`

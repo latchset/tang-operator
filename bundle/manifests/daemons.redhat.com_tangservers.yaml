@@ -221,15 +221,11 @@ spec:
                 format: int32
                 type: integer
               serviceExternalUrl:
-                description: Tang Server ServiceUrl provides information about the
-                  External Service Url
+                description: Tang Server Service External Url provides information
+                  about the External Service Url
                 type: string
               tangServerError:
                 description: TangServerError collects error on Tang Operator creation
-                type: string
-              url:
-                description: Tang Server Url provides information about the Url that
-                  can be read to get key advertisement
                 type: string
             type: object
         type: object
