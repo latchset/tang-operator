@@ -28,9 +28,9 @@ done
 test -z "${namespace}" && namespace="default"
 test -z "${oc_client}" && oc_client="oc"
 
-sha1_1=$("${oc_client}" -n nbde get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.activeKeys[0].sha1')
-sha1_2=$("${oc_client}" -n nbde get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.activeKeys[1].sha1')
-replicas=$("${oc_client}" -n nbde get tangservers.daemons.redhat.com  -o json | jq '.items[0].spec.replicas')
+sha1_1=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.activeKeys[0].sha1')
+sha1_2=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.activeKeys[1].sha1')
+replicas=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].spec.replicas')
 
 ftemp=$(mktemp)
 cat<<EOF>"${ftemp}"
