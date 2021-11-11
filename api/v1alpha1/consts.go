@@ -19,10 +19,13 @@ package v1alpha1
 type TangServerStatusError string
 
 const (
-	NoError              TangServerStatusError = "No Error"
-	CreateError          TangServerStatusError = "Error on pod creation"
-	DefaultTestName      string                = "tangserver-test"
-	DefaultTestNameNoUID string                = "tangserver-test-nouid"
+	NoError                TangServerStatusError = "No"
+	CreateError            TangServerStatusError = "Unable to create pod"
+	ActiveKeysError        TangServerStatusError = "Zero active keys read"
+	ActiveKeyNotFoundError TangServerStatusError = "Active key not found"
+	DefaultTestName        string                = "tangserver-test"
+	DefaultTestNameNoUID   string                = "tangserver-test-nouid"
+	DefaultActiveKeyPairs  uint32                = 1
 	// TODO: test why it can not be tested in non default namespace
 	DefaultTestNamespace string = "default"
 )

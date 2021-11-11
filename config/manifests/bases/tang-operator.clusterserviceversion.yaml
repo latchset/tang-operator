@@ -17,42 +17,139 @@ spec:
       specDescriptors:
       - description: HealthScript is the script to run for healthiness/readiness
         displayName: Health Script to execute
-        path: healthscript
+        path: healthScript
+      - description: HiddenKeys
+        displayName: Hidden Keys contains a list with the keys (with sha1 or sha256)
+          to hide
+        path: hiddenKeys
       - description: Image is the base container image of the TangServer to use
         displayName: Image of Container to deploy
         path: image
       - description: KeyPath is field of TangServer. It allows to specify the path
           where keys will be generated
         displayName: Key Path
-        path: keypath
+        path: keyPath
+      - description: KeyRefreshInterval
+        displayName: Refresh Interval to update key status
+        path: keyRefreshInterval
       - description: Persistent Volume Claim to store the keys
         displayName: Persistent Volume Claim to attach to (default:tangserver-pvc)
-        path: persistentvolumeclaim
+        path: persistentVolumeClaim
       - description: PodListenPort is the port where pods will listen for traffic
         displayName: 'Port where Pod will listen '
-        path: podlistenport
+        path: podListenPort
       - description: Replicas is the Tang Server amount to bringup
         displayName: Amount of replicas to launch
         path: replicas
+      - description: RequiredActiveKeyPairs
+        displayName: Required Active Key Pairs (1 by default)
+        path: requiredActiveKeyPairs
       - description: ResourceLimit is the resource limit to perform for each pod
         displayName: Resources Limit for Tang Server
-        path: resourceslimit
+        path: resourcesLimit
       - description: ResourceRequest is the resource request to perform for each pod
         displayName: Resources Request for Tang Server
-        path: resourcesrequest
+        path: resourcesRequest
       - description: Secret is the secret name to use to download image appropriately
         displayName: Secret name to use for container download
         path: secret
       - description: ServiceListenPort is the port where service will listen for traffic
         displayName: Port where service will listen
-        path: servicelistenport
+        path: serviceListenPort
       - description: Version is the version of the TangServer container to use (empty=>latest)
         displayName: Image Version of Container to deploy
         path: version
       statusDescriptors:
-      - description: Tang Server Error collects error on Tang Operator creation
+      - description: Tang Server Active Key Retries is used to handle amount of retries
+          that were executed when no active keys are being sent
+        displayName: Tang Server Active Key Retries
+        path: activeKeyRetries
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: ActiveKeys provides information about the Active Keys in the
+          Tang Server CR
+        displayName: Tang Server Active Keys
+        path: activeKeys
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: FileName provides information about the file name corresponding
+          to the key
+        displayName: Active Key file name
+        path: activeKeys[0].fileName
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Active Key Generation Time
+        displayName: Active Key Generation Time
+        path: activeKeys[0].generated
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Active Key sha1
+        displayName: Active Key SHA1
+        path: activeKeys[0].sha1
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Active Key sha256
+        displayName: Active Key SHA256
+        path: activeKeys[0].sha256
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: HiddenKeys provides information about the Hidden Keys in the
+          Tang Server CR
+        displayName: Tang Server Hidden Keys
+        path: hiddenKeys
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: FileName provides information about the file name corresponding
+          to the key
+        displayName: Hidden Key file name
+        path: hiddenKeys[0].fileName
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Hidden Key Hiding Time
+        displayName: Hidden Key Generation Time
+        path: hiddenKeys[0].generated
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Hidden Key Generation Time
+        displayName: Hidden Key Hidden Time
+        path: hiddenKeys[0].hidden
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Hidden Key sha1
+        displayName: Hidden Key SHA1
+        path: hiddenKeys[0].sha1
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Hidden Key sha256
+        displayName: Hidden Key SHA256
+        path: hiddenKeys[0].sha256
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Tang Server Ready provides information about the Ready Replicas
+        displayName: Tang Server Ready Replicas
+        path: ready
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Tang Server Running provides information about the Running Replicas
+        displayName: Tang Server Running Replicas
+        path: running
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Tang Server ServiceUrl provides information about the External
+          Service Url
+        displayName: Tang Server External Url
+        path: serviceExternalUrl
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: TangServerError collects error on Tang Operator creation
         displayName: Tang Server Error
-        path: tangservererror
+        path: tangServerError
+        x-descriptors:
+        - urn:alm:descriptor:text
+      - description: Tang Server Url provides information about the Url that can be
+          read to get key advertisement
+        displayName: Tang Server Url
+        path: url
         x-descriptors:
         - urn:alm:descriptor:text
       version: v1alpha1

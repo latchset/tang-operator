@@ -15,7 +15,7 @@
 #
 set -x
 
-OPERATOR_SDK_DEFAULT_RELEASE_VERSION="v1.10.1"
+OPERATOR_SDK_DEFAULT_RELEASE_VERSION="v1.12.0"
 DEFAULT_BUNDLE_IMG="quay.io/sarroutb/tang-operator-bundle"
 DEFAULT_TIMEOUT="5m"
 DEFAULT_GITHUB_BRANCH="main"
@@ -23,8 +23,11 @@ DEFAULT_GITHUB_BRANCH="main"
 OPERATOR_SDK_RELEASE_VERSION="${1}"
 TIMEOUT="${2}"
 BUNDLE_IMG="${3}"
+GITHUB_REF="${4}"
 GITHUB_BRANCH="${4##*/}"
 BUNDLE_VERSION="${5}"
+
+test -z "${GITHUB_BRANCH}" && GITHUB_BRANCH="main"
 
 MAKEFILE_BASE_PATH="https://raw.githubusercontent.com/latchset/tang-operator/${GITHUB_BRANCH}/Makefile"
 
@@ -39,6 +42,7 @@ dump_info() {
 OPERATOR_SDK_RELEASE_VERSION="${OPERATOR_SDK_RELEASE_VERSION}"
 TIMEOUT="${TIMEOUT}"
 BUNDLE_VERSION="${BUNDLE_IMG_VERSION}"
+GITHUB_REF="${GITHUB_REF}"
 GITHUB_BRANCH="${GITHUB_BRANCH}"
 BUNDLE_IMG_VERSION="${BUNDLE_IMG_VERSION}"
 ==================$0 INFO ===================
@@ -78,4 +82,4 @@ curl -L -o "$(pwd)/operator-sdk" "https://github.com/operator-framework/operator
 chmod +x "$(pwd)/operator-sdk"
 "$(pwd)"/operator-sdk olm install --timeout "${TIMEOUT}"
 "$(pwd)"/operator-sdk run bundle --timeout "${TIMEOUT}" "${BUNDLE_IMG_VERSION}"
-"$(pwd)"/operator-sdk scorecard "${BUNDLE_IMG_VERSION}"
+"$(pwd)"/operator-sdk scorecard --wait-time="${TIMEOUT}" "${BUNDLE_IMG_VERSION}"

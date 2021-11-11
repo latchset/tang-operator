@@ -67,21 +67,49 @@ spec:
           spec:
             description: TangServerSpec defines the desired state of TangServer
             properties:
-              healthscript:
+              healthScript:
                 description: HealthScript is the script to run for healthiness/readiness
                 type: string
+              hiddenKeys:
+                description: HiddenKeys
+                items:
+                  description: TangServerHiddenKeys defines the hidden keys in a Tang
+                    Server
+                  properties:
+                    fileName:
+                      description: FileName provides information about the file name
+                        corresponding to the key
+                      type: string
+                    generated:
+                      description: Hidden Key Hiding Time
+                      type: string
+                    hidden:
+                      description: Hidden Key Generation Time
+                      type: string
+                    sha1:
+                      description: Hidden Key sha1
+                      type: string
+                    sha256:
+                      description: Hidden Key sha256
+                      type: string
+                  type: object
+                type: array
               image:
                 description: Image is the base container image of the TangServer to
                   use
                 type: string
-              keypath:
+              keyPath:
                 description: KeyPath is field of TangServer. It allows to specify
                   the path where keys will be generated
                 type: string
-              persistentvolumeclaim:
+              keyRefreshInterval:
+                description: KeyRefreshInterval
+                format: int32
+                type: integer
+              persistentVolumeClaim:
                 description: Persistent Volume Claim to store the keys
                 type: string
-              podlistenport:
+              podListenPort:
                 description: PodListenPort is the port where pods will listen for
                   traffic
                 format: int32
@@ -90,7 +118,11 @@ spec:
                 description: Replicas is the Tang Server amount to bringup
                 format: int32
                 type: integer
-              resourceslimit:
+              requiredActiveKeyPairs:
+                description: RequiredActiveKeyPairs
+                format: int32
+                type: integer
+              resourcesLimit:
                 description: ResourceLimit is the resource limit to perform for each
                   pod
                 properties:
@@ -99,7 +131,7 @@ spec:
                   memory:
                     type: string
                 type: object
-              resourcesrequest:
+              resourcesRequest:
                 description: ResourceRequest is the resource request to perform for
                   each pod
                 properties:
@@ -111,7 +143,7 @@ spec:
               secret:
                 description: Secret is the secret name to use to download image appropriately
                 type: string
-              servicelistenport:
+              serviceListenPort:
                 description: ServiceListenPort is the port where service will listen
                   for traffic
                 format: int32
@@ -126,8 +158,78 @@ spec:
           status:
             description: TangServerStatus defines the observed state of TangServer
             properties:
-              tangservererror:
-                description: Tang Server Error collects error on Tang Operator creation
+              activeKeyRetries:
+                description: Tang Server Active Key Retries is used to handle amount
+                  of retries that were executed when no active keys are being sent
+                format: int32
+                type: integer
+              activeKeys:
+                description: ActiveKeys provides information about the Active Keys
+                  in the Tang Server CR
+                items:
+                  description: TangServerActiveKeys defines the active keys in a Tang
+                    Server
+                  properties:
+                    fileName:
+                      description: FileName provides information about the file name
+                        corresponding to the key
+                      type: string
+                    generated:
+                      description: Active Key Generation Time
+                      type: string
+                    sha1:
+                      description: Active Key sha1
+                      type: string
+                    sha256:
+                      description: Active Key sha256
+                      type: string
+                  type: object
+                type: array
+              hiddenKeys:
+                description: HiddenKeys provides information about the Hidden Keys
+                  in the Tang Server CR
+                items:
+                  description: TangServerHiddenKeys defines the hidden keys in a Tang
+                    Server
+                  properties:
+                    fileName:
+                      description: FileName provides information about the file name
+                        corresponding to the key
+                      type: string
+                    generated:
+                      description: Hidden Key Hiding Time
+                      type: string
+                    hidden:
+                      description: Hidden Key Generation Time
+                      type: string
+                    sha1:
+                      description: Hidden Key sha1
+                      type: string
+                    sha256:
+                      description: Hidden Key sha256
+                      type: string
+                  type: object
+                type: array
+              ready:
+                description: Tang Server Ready provides information about the Ready
+                  Replicas
+                format: int32
+                type: integer
+              running:
+                description: Tang Server Running provides information about the Running
+                  Replicas
+                format: int32
+                type: integer
+              serviceExternalUrl:
+                description: Tang Server ServiceUrl provides information about the
+                  External Service Url
+                type: string
+              tangServerError:
+                description: TangServerError collects error on Tang Operator creation
+                type: string
+              url:
+                description: Tang Server Url provides information about the Url that
+                  can be read to get key advertisement
                 type: string
             type: object
         type: object
