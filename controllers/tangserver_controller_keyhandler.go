@@ -24,6 +24,7 @@ import (
 
 type SHAType uint8
 type FileModType uint8
+type KeyAdvertisingType uint8
 
 const (
 	UNKNOWN_SHA SHAType = iota
@@ -35,6 +36,13 @@ const (
 	UNKNOWN_MOD FileModType = iota
 	CREATION
 	MODIFICATION
+)
+
+const (
+	UNKNOWN_ADVERTISED KeyAdvertisingType = iota
+	ALL_KEYS
+	ONLY_ADVERTISED
+	ONLY_UNADVERTISED
 )
 
 const DEFAULT_DEPLOYMENT_KEY_PATH = "/var/db/tang"
@@ -64,8 +72,37 @@ func getDefaultKeyPath(cr *daemonsv1alpha1.TangServer) string {
 	return DEFAULT_DEPLOYMENT_KEY_PATH
 }
 
+// keyToAdvertise returns if a key is to be advertised (is a signing key)
+func keyToAdvertise(keyInfo KeyObtainInfo, path string, log logr.Logger) bool {
+	command := "jose jwk use --input " + path + " --required --use=verify"
+	_, _, notAdvertisable := podCommandExec(command, "", keyInfo.PodName, keyInfo.Namespace, nil)
+	if notAdvertisable != nil {
+		log.Info("Key not advertisable", "key path", path)
+		return false
+	}
+	log.Info("Key advertisable", "key path", path)
+	return true
+}
+
+// ignoreKey function checks if key must be ignored
+func ignoreKey(keyInfo KeyObtainInfo, log logr.Logger, advertised KeyAdvertisingType, keypath string) bool {
+	if keyToAdvertise(keyInfo, keypath, log) {
+		if advertised == ONLY_UNADVERTISED {
+			log.Info("Key ignored", "key path", keypath)
+			return true
+		}
+	} else {
+		if advertised == ONLY_ADVERTISED {
+			log.Info("Key ignored", "key path", keypath)
+			return true
+		}
+	}
+	log.Info("Key not ignored", "key path", keypath)
+	return false
+}
+
 // readActiveKeys function return active key list
-func readActiveKeys(keyInfo KeyObtainInfo, log logr.Logger) ([]daemonsv1alpha1.TangServerActiveKeys, error) {
+func readActiveKeys(keyInfo KeyObtainInfo, log logr.Logger, onlyAdvertised KeyAdvertisingType) ([]daemonsv1alpha1.TangServerActiveKeys, error) {
 	command := "ls " + keyInfo.DbPath
 	stdo, stde, err := podCommandExec(command, "", keyInfo.PodName, keyInfo.Namespace, nil)
 	if err != nil {
@@ -82,6 +119,9 @@ func readActiveKeys(keyInfo KeyObtainInfo, log logr.Logger) ([]daemonsv1alpha1.T
 				k = strings.TrimLeft(strings.TrimRight(k, "\n"), "\n")
 				k = strings.TrimLeft(strings.TrimRight(k, "\r"), "\r")
 				fpath := keyInfo.DbPath + "/" + k
+				if ignoreKey(keyInfo, log, onlyAdvertised, fpath) {
+					continue
+				}
 				sha1 := getSHA(SHA1, keyInfo, fpath, log)
 				sha256 := getSHA(SHA256, keyInfo, fpath, log)
 				creationTime := getLastTime(CREATION, keyInfo, fpath, log)
@@ -99,7 +139,7 @@ func readActiveKeys(keyInfo KeyObtainInfo, log logr.Logger) ([]daemonsv1alpha1.T
 }
 
 // readHiddenKeys function return hidden key list
-func readHiddenKeys(keyInfo KeyObtainInfo, log logr.Logger) ([]daemonsv1alpha1.TangServerHiddenKeys, error) {
+func readHiddenKeys(keyInfo KeyObtainInfo, log logr.Logger, onlyAdvertised KeyAdvertisingType) ([]daemonsv1alpha1.TangServerHiddenKeys, error) {
 	command := "ls -a " + keyInfo.DbPath + "/"
 	stdo, stde, err := podCommandExec(command, "", keyInfo.PodName, keyInfo.Namespace, nil)
 	if err != nil {
@@ -117,6 +157,9 @@ func readHiddenKeys(keyInfo KeyObtainInfo, log logr.Logger) ([]daemonsv1alpha1.T
 					k = strings.TrimLeft(strings.TrimRight(k, "\n"), "\n")
 					k = strings.TrimLeft(strings.TrimRight(k, "\r"), "\r")
 					fpath := keyInfo.DbPath + "/" + k
+					if ignoreKey(keyInfo, log, onlyAdvertised, fpath) {
+						continue
+					}
 					sha1 := getSHA(SHA1, keyInfo, fpath, log)
 					sha256 := getSHA(SHA256, keyInfo, fpath, log)
 					hiddenKeys = append(hiddenKeys, daemonsv1alpha1.TangServerHiddenKeys{
@@ -166,12 +209,40 @@ func createNewPairOfKeys(k KeyObtainInfo, log logr.Logger) error {
 	return err
 }
 
+// rotateUnadvertisedKeys function rotate key file, moving it to hidden file
+// TODO: Rotate the key corresponding to a particular signing key
+//       Right now, all unadvertised keys will be rotated
+func rotateUnadvertisedKeys(krinfo KeyRotateInfo, log logr.Logger) error {
+	var ge error
+	log.Info("rotateUnadvertisedKeys", "Advertised Key Info", krinfo.KeyFileName)
+	keys, e := readActiveKeys(*krinfo.KeyInfo, log, ONLY_UNADVERTISED)
+	if e != nil {
+		log.Error(e, "Unable to read unadvertised keys", "Key Rotate Info", krinfo, "podname", krinfo.KeyInfo.PodName, "namespace", krinfo.KeyInfo.Namespace)
+		return e
+	}
+	ge = nil
+	for _, uk := range keys {
+		rk := KeyRotateInfo{
+			KeyInfo:     krinfo.KeyInfo,
+			KeyFileName: uk.FileName,
+		}
+		e := rotateKey(rk, log)
+		if ge == nil && e != nil {
+			log.Error(e, "Error rotating unadvertised key", "Rotate Key Info", rk)
+			ge = e
+		}
+	}
+	return ge
+}
+
 // rotateKey function rotate key file, moving it to hidden file
 func rotateKey(k KeyRotateInfo, log logr.Logger) error {
 	command := "mv " + k.KeyInfo.DbPath + "/" + k.KeyFileName + " " + k.KeyInfo.DbPath + "/." + k.KeyFileName
 	stdo, stde, err := podCommandExec(command, "", k.KeyInfo.PodName, k.KeyInfo.Namespace, nil)
 	if err != nil {
 		log.Error(err, "Unable to execute command in Pod", "command", command, "stdo", stdo, "stderror", stde, "podname", k.KeyInfo.PodName, "namespace", k.KeyInfo.Namespace)
+	} else {
+		log.Info("Move file command executed correctly", "command", command, "podname", k.KeyInfo.PodName, "namespace", k.KeyInfo.Namespace)
 	}
 	return err
 }
@@ -217,7 +288,11 @@ func getLastTime(fmod FileModType, keyInfo KeyObtainInfo, filePath string, log l
 func deleteHiddenKeys(keyInfo KeyObtainInfo, log logr.Logger) {
 	if len(keyInfo.TangServer.Status.ActiveKeys) > 0 {
 		command := "rm -frv"
-		for _, kf := range keyInfo.TangServer.Status.HiddenKeys {
+		ahk, e := readHiddenKeys(keyInfo, log, ALL_KEYS)
+		if e != nil {
+			log.Error(e, "Unable to read hidden keys", "podname", keyInfo.PodName, "namespace", keyInfo.Namespace)
+		}
+		for _, kf := range ahk {
 			command += " " + keyInfo.DbPath + "/" + kf.FileName
 		}
 		stdo, stde, err := podCommandExec(command, "", keyInfo.PodName, keyInfo.Namespace, nil)

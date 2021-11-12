@@ -233,14 +233,15 @@ func keyRotate(keyinfo KeyObtainInfo, log logr.Logger) bool {
 		for _, ak := range keyinfo.TangServer.Status.ActiveKeys {
 			if ak.Sha1 == hk.Sha1 || ak.Sha256 == hk.Sha256 {
 				log.Info("Key must be rotated", "sha1", hk.Sha1, "sha256", hk.Sha256)
-				k := KeyRotateInfo{
+				kr := KeyRotateInfo{
 					KeyInfo:     &keyinfo,
 					KeyFileName: ak.FileName,
 				}
-				if err := rotateKey(k, log); err == nil {
+				if err := rotateKey(kr, log); err == nil {
 					rotated = true
 					log.Info("Key rotated correctly", "sha1", hk.Sha1, "sha256", hk.Sha256)
 					keyinfo.TangServer.Status.TangServerError = daemonsv1alpha1.NoError
+					rotateUnadvertisedKeys(kr, log)
 				} else {
 					log.Error(err, "Key not rotated correctly", "sha1", hk.Sha1, "sha256", hk.Sha256)
 					keyinfo.TangServer.Status.TangServerError = daemonsv1alpha1.ActiveKeyNotFoundError
@@ -255,8 +256,8 @@ func keyRotate(keyinfo KeyObtainInfo, log logr.Logger) bool {
 func updateKeys(k KeyObtainInfo, log logr.Logger) {
 	newKeysCreated := createNewKeysIfNecessary(k, log)
 	// Read first hidden keys, as created will be retrieved from active keys (if exists)
-	hiddenKeys, _ := readHiddenKeys(k, log)
-	activeKeys, _ := readActiveKeys(k, log)
+	hiddenKeys, _ := readHiddenKeys(k, log, ONLY_ADVERTISED)
+	activeKeys, _ := readActiveKeys(k, log, ONLY_ADVERTISED)
 	k.TangServer.Status.ActiveKeys = activeKeys
 	k.TangServer.Status.HiddenKeys = hiddenKeys
 	if newKeysCreated {
@@ -279,7 +280,7 @@ func createNewKeysIfNecessary(k KeyObtainInfo, log logr.Logger) bool {
 	}
 	log.Info("createNewKeysIfNecessary", "Active Keys", uint32(len(k.TangServer.Status.ActiveKeys)), "Required Active Keys", requiredActiveKeyPairs)
 	// Only create if more than one required active key pairs. Otherwise, they are automatically created
-	if uint32(len(k.TangServer.Status.ActiveKeys)) < (requiredActiveKeyPairs*2) && (requiredActiveKeyPairs > 1) {
+	if uint32(len(k.TangServer.Status.ActiveKeys)) < requiredActiveKeyPairs && requiredActiveKeyPairs > 1 {
 		if err := createNewPairOfKeys(k, log); err != nil {
 			log.Error(err, "Unable to create new keys", "KeyObtainInfo", k)
 		} else {
@@ -295,8 +296,6 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 	// Define a new Deployment object
 	log.Info("reconcileDeployment")
 	deployment := getDeployment(cr)
-
-	cr.Status.TangServerError = daemonsv1alpha1.NoError
 
 	// Set tangserver instance as the owner and controller of the Deployment
 	if err := ctrl.SetControllerReference(cr, deployment, r.Scheme); err != nil {

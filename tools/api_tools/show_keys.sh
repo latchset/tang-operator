@@ -7,12 +7,12 @@ usage() {
   echo
   echo "Usage:"
   echo
-  echo "$1 -n namespace [-c k8s_client] [-m (using minikube)]"
+  echo "$1 -n namespace [-c k8s_client] [-m (using minikube)] [-v (verbose)]"
   echo
   exit "$2"
 }
 
-while getopts "n:c:hm" arg
+while getopts "n:c:hmv" arg
 do
 case "${arg}" in
   n) namespace=${OPTARG}
@@ -20,6 +20,8 @@ case "${arg}" in
   c) oc_client=${OPTARG}
   ;;
   m) using_minikube="yes"
+  ;;
+  v) set -x
   ;;
   h) usage "$0" 0
   ;;
@@ -44,7 +46,7 @@ getAdvUrl() {
 adv_url=$(getAdvUrl)
 adv=$(wget -O - ${adv_url} -o /dev/null)
 
-dumpWithHash() {
+dumpFromAdvWithHash() {
     local adv="$1"
     local hash="$2"
     jose fmt --json "${adv}" -g payload -y -o- | jose jwk use -i- -r -u verify -o- \
@@ -75,6 +77,6 @@ echo "${verify}" | jq
 echo "===/FORMATTED JOSE VERIFY==="
 echo
 echo "===SIGNING KEY==="
-echo "SHA1:$(dumpWithHash "${adv}" "S1")"
-echo "SHA256:$(dumpWithHash "${adv}" "S256")"
+echo "SHA1:$(dumpFromAdvWithHash "${adv}" "S1")"
+echo "SHA256:$(dumpFromAdvWithHash "${adv}" "S256")"
 echo "===/SIGNING KEY==="

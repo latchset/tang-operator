@@ -6,12 +6,12 @@ usage() {
   echo
   echo "Usage:"
   echo
-  echo "$1 -n namespace [-c k8s_client]"
+  echo "$1 -n namespace [-c k8s_client] [-v (verbose)]"
   echo
   exit "$2"
 }
 
-while getopts "n:c:h" arg
+while getopts "n:c:hv" arg
 do
 case "${arg}" in
   n) namespace=${OPTARG}
@@ -19,6 +19,8 @@ case "${arg}" in
   c) oc_client=${OPTARG}
   ;;
   h) usage "$0" 0
+  ;;
+  v) set -x
   ;;
   *) usage "$0" 1
   ;;
