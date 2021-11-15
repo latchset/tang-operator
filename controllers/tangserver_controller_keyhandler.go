@@ -285,12 +285,13 @@ func getLastTime(fmod FileModType, keyInfo KeyObtainInfo, filePath string, log l
 }
 
 // deleteHiddenKeys function return active key list
-func deleteHiddenKeys(keyInfo KeyObtainInfo, log logr.Logger) {
+func deleteHiddenKeys(keyInfo KeyObtainInfo, log logr.Logger) bool {
 	if len(keyInfo.TangServer.Status.ActiveKeys) > 0 {
 		command := "rm -frv"
 		ahk, e := readHiddenKeys(keyInfo, log, ALL_KEYS)
 		if e != nil {
 			log.Error(e, "Unable to read hidden keys", "podname", keyInfo.PodName, "namespace", keyInfo.Namespace)
+			return false
 		}
 		for _, kf := range ahk {
 			command += " " + keyInfo.DbPath + "/" + kf.FileName
@@ -299,8 +300,10 @@ func deleteHiddenKeys(keyInfo KeyObtainInfo, log logr.Logger) {
 		log.Info("Executing command in Pod", "command", command, "podname", keyInfo.PodName)
 		if err != nil {
 			log.Error(err, "Unable to execute command in Pod", "command", command, "stdo", stdo, "stderror", stde, "podname", keyInfo.PodName, "namespace", keyInfo.Namespace)
+			return false
 		} else {
 			log.Info("Command correctly executed", "output", stdo, "error", stde)
 		}
 	}
+	return true
 }

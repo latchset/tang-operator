@@ -160,11 +160,6 @@ spec:
           status:
             description: TangServerStatus defines the observed state of TangServer
             properties:
-              activeKeyRetries:
-                description: Tang Server Active Key Retries is used to handle amount
-                  of retries that were executed when no active keys are being sent
-                format: int32
-                type: integer
               activeKeys:
                 description: ActiveKeys provides information about the Active Keys
                   in the Tang Server CR

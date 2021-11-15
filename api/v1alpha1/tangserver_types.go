@@ -177,10 +177,6 @@ type TangServerStatus struct {
 	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server External Url"
 	// +optional
 	ServiceExternalUrl string `json:"serviceExternalUrl,omitempty"`
-	// Tang Server Active Key Retries is used to handle amount of retries that were executed when no active keys are being sent
-	// +operator-sdk:csv:customresourcedefinitions:type=status,xDescriptors="urn:alm:descriptor:text",displayName="Tang Server Active Key Retries"
-	// +optional
-	ActiveKeyRetries uint32 `json:"activeKeyRetries"`
 }
 
 //+kubebuilder:object:root=true

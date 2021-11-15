@@ -60,12 +60,6 @@ spec:
         displayName: Image Version of Container to deploy
         path: version
       statusDescriptors:
-      - description: Tang Server Active Key Retries is used to handle amount of retries
-          that were executed when no active keys are being sent
-        displayName: Tang Server Active Key Retries
-        path: activeKeyRetries
-        x-descriptors:
-        - urn:alm:descriptor:text
       - description: ActiveKeys provides information about the Active Keys in the
           Tang Server CR
         displayName: Tang Server Active Keys

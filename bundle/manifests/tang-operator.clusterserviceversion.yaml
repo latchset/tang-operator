@@ -27,7 +27,7 @@ metadata:
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.12.0+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: tang-operator.v0.0.18
+  name: tang-operator.v0.0.19
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -94,12 +94,6 @@ spec:
         displayName: Image Version of Container to deploy
         path: version
       statusDescriptors:
-      - description: Tang Server Active Key Retries is used to handle amount of retries
-          that were executed when no active keys are being sent
-        displayName: Tang Server Active Key Retries
-        path: activeKeyRetries
-        x-descriptors:
-        - urn:alm:descriptor:text
       - description: ActiveKeys provides information about the Active Keys in the
           Tang Server CR
         displayName: Tang Server Active Keys
@@ -292,7 +286,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: quay.io/sarroutb/tang-operator:v0.0.18
+                image: quay.io/sarroutb/tang-operator:v0.0.19
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -375,4 +369,4 @@ spec:
   maturity: alpha
   provider:
     name: Red Hat
-  version: 0.0.18
+  version: 0.0.19
