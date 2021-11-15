@@ -127,8 +127,9 @@ var _ = Describe("TangServer controller", func() {
 			mgr, _ := ctrl.NewManager(ctrl.GetConfigOrDie(), *getOptions(s))
 			nc, _ := client.New(ctrl.GetConfigOrDie(), *getClientOptions(s))
 			rec := TangServerReconciler{
-				Client: nc,
-				Scheme: s,
+				Client:   nc,
+				Scheme:   s,
+				Recorder: mgr.GetEventRecorderFor("tang-operator-controller"),
 			}
 			rec.SetupWithManager(mgr)
 			_, err := rec.Reconcile(ctx, ctrl.Request{
@@ -159,8 +160,9 @@ var _ = Describe("TangServer controller", func() {
 			mgr, _ := ctrl.NewManager(ctrl.GetConfigOrDie(), *getOptions(s))
 			nc, _ := client.New(ctrl.GetConfigOrDie(), *getClientOptions(s))
 			rec := TangServerReconciler{
-				Client: nc,
-				Scheme: s,
+				Client:   nc,
+				Scheme:   s,
+				Recorder: mgr.GetEventRecorderFor("tang-operator-controller"),
 			}
 			rec.SetupWithManager(mgr)
 			req := ctrl.Request{
