@@ -8,5 +8,5 @@ metadata:
 spec:
   # Add fields here
   replicas: 1
-  image: "registry.redhat.io/rhel8/tang"
+  image: "quay.io/sarroutb/tang-container"
   version: "latest"

@@ -90,7 +90,7 @@ func getLimits(cr *daemonsv1alpha1.TangServer) corev1.ResourceList {
 
 // getPodTemplate function returns pod specification according to tangserver spec
 func getPodTemplate(cr *daemonsv1alpha1.TangServer, labels map[string]string) *corev1.PodTemplateSpec {
-	probe := getProbe(cr)
+	lprobe := getLivenessProbe(cr)
 	return &corev1.PodTemplateSpec{
 		ObjectMeta: metav1.ObjectMeta{
 			Labels: labels,
@@ -106,8 +106,7 @@ func getPodTemplate(cr *daemonsv1alpha1.TangServer, labels map[string]string) *c
 							Name:          DEFAULT_TANGSERVER_NAME,
 						},
 					},
-					LivenessProbe:  probe,
-					ReadinessProbe: probe,
+					LivenessProbe: lprobe,
 					VolumeMounts: []corev1.VolumeMount{
 						{
 							MountPath: getDefaultKeyPath(cr),

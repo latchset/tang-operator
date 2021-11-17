@@ -23,13 +23,16 @@ import (
 
 const DEFAULT_DEPLOYMENT_HEALTH_CHECK = "/usr/bin/tangd-health-check"
 
-// TODO: check if this might be specified in TangServer types
-const DEFAULT_INITIALDELAYSECONDS = 5
-const DEFAULT_TIMEOUT_SECONDS = 5
-const DEFAULT_PERIOD_SECONDS = 15
+const DEFAULT_READY_INITIALDELAYSECONDS = 30
+const DEFAULT_READY_TIMEOUT_SECONDS = 5
+const DEFAULT_READY_PERIOD_SECONDS = 15
 
-// getProbe function returns appropriate probe taking into account tangserver spec
-func getProbe(cr *daemonsv1alpha1.TangServer) *corev1.Probe {
+const DEFAULT_LIVENESS_INITIALDELAYSECONDS = 5
+const DEFAULT_LIVENESS_TIMEOUT_SECONDS = 5
+const DEFAULT_LIVENESS_PERIOD_SECONDS = 30
+
+// getReadyProbe function returns appropriate probe taking into account tangserver spec
+func getReadyProbe(cr *daemonsv1alpha1.TangServer) *corev1.Probe {
 	healthScript := DEFAULT_DEPLOYMENT_HEALTH_CHECK
 	if cr.Spec.HealthScript != "" {
 		healthScript = cr.Spec.HealthScript
@@ -42,8 +45,28 @@ func getProbe(cr *daemonsv1alpha1.TangServer) *corev1.Probe {
 				},
 			},
 		},
-		InitialDelaySeconds: DEFAULT_INITIALDELAYSECONDS,
-		TimeoutSeconds:      DEFAULT_TIMEOUT_SECONDS,
-		PeriodSeconds:       DEFAULT_PERIOD_SECONDS,
+		InitialDelaySeconds: DEFAULT_READY_INITIALDELAYSECONDS,
+		TimeoutSeconds:      DEFAULT_READY_TIMEOUT_SECONDS,
+		PeriodSeconds:       DEFAULT_READY_PERIOD_SECONDS,
+	}
+}
+
+// getLivenessProbe function returns appropriate probe taking into account tangserver spec
+func getLivenessProbe(cr *daemonsv1alpha1.TangServer) *corev1.Probe {
+	healthScript := DEFAULT_DEPLOYMENT_HEALTH_CHECK
+	if cr.Spec.HealthScript != "" {
+		healthScript = cr.Spec.HealthScript
+	}
+	return &corev1.Probe{
+		Handler: corev1.Handler{
+			Exec: &corev1.ExecAction{
+				Command: []string{
+					healthScript,
+				},
+			},
+		},
+		InitialDelaySeconds: DEFAULT_LIVENESS_INITIALDELAYSECONDS,
+		TimeoutSeconds:      DEFAULT_LIVENESS_TIMEOUT_SECONDS,
+		PeriodSeconds:       DEFAULT_LIVENESS_PERIOD_SECONDS,
 	}
 }
