@@ -23,13 +23,13 @@ import (
 
 const DEFAULT_DEPLOYMENT_HEALTH_CHECK = "/usr/bin/tangd-health-check"
 
-const DEFAULT_READY_INITIALDELAYSECONDS = 30
+const DEFAULT_READY_INITIALDELAYSECONDS = 5
 const DEFAULT_READY_TIMEOUT_SECONDS = 5
 const DEFAULT_READY_PERIOD_SECONDS = 15
 
-const DEFAULT_LIVENESS_INITIALDELAYSECONDS = 5
+const DEFAULT_LIVENESS_INITIALDELAYSECONDS = 27
 const DEFAULT_LIVENESS_TIMEOUT_SECONDS = 5
-const DEFAULT_LIVENESS_PERIOD_SECONDS = 30
+const DEFAULT_LIVENESS_PERIOD_SECONDS = 16
 
 // getReadyProbe function returns appropriate probe taking into account tangserver spec
 func getReadyProbe(cr *daemonsv1alpha1.TangServer) *corev1.Probe {
