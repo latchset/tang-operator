@@ -27,7 +27,7 @@ metadata:
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.12.0+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: tang-operator.v0.0.21
+  name: tang-operator.v0.0.22
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -286,7 +286,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: quay.io/sarroutb/tang-operator:v0.0.21
+                image: quay.io/sec-eng-special/tang-operator:v0.0.22
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -362,11 +362,11 @@ spec:
   - tang
   links:
   - name: Tang Operator
-    url: https://github.com/sarroutbi/tang-operator
+    url: https://github.com/latchset/tang-operator
   maintainers:
   - email: sarroutb@redhat.com
     name: Sergio Arroutbi
   maturity: alpha
   provider:
     name: Red Hat
-  version: 0.0.21
+  version: 0.0.22

@@ -31,8 +31,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
-	"github.com/sarroutbi/tang-operator/controllers"
+	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
+	"github.com/latchset/tang-operator/controllers"
 	//+kubebuilder:scaffold:imports
 )
 

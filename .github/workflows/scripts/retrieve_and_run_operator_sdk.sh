@@ -16,7 +16,7 @@
 set -x
 
 OPERATOR_SDK_DEFAULT_RELEASE_VERSION="v1.12.0"
-DEFAULT_BUNDLE_IMG="quay.io/sarroutb/tang-operator-bundle"
+DEFAULT_BUNDLE_IMG="quay.io/sec-eng-special/tang-operator-bundle"
 DEFAULT_TIMEOUT="5m"
 DEFAULT_GITHUB_BRANCH="main"
 

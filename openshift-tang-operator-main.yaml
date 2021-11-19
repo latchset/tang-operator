@@ -10,9 +10,9 @@ images:
     bin:
       paths:
       - destination_dir: .
-        source_path: /go/src/github.com/sarroutbi/tang-operator/bin/manager
+        source_path: /go/src/github.com/latchset/tang-operator/bin/manager
       - destination_dir: .
-        source_path: /go/src/github.com/sarroutbi/tang-operator/config/docker/tang-operator
+        source_path: /go/src/github.com/latchset/tang-operator/config/docker/tang-operator
   to: tang-operator-manager
 promotion:
   name: tang-operator-manager

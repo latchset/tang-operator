@@ -1,4 +1,4 @@
-module github.com/sarroutbi/tang-operator
+module github.com/latchset/tang-operator
 
 go 1.16
 

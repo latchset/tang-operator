@@ -5,7 +5,7 @@ plugins:
   manifests.sdk.operatorframework.io/v2: {}
   scorecard.sdk.operatorframework.io/v2: {}
 projectName: tang-operator
-repo: github.com/sarroutbi/tang-operator
+repo: github.com/latchset/tang-operator
 resources:
 - api:
     crdVersion: v1
@@ -14,6 +14,6 @@ resources:
   domain: redhat.com
   group: daemons
   kind: TangServer
-  path: github.com/sarroutbi/tang-operator/api/v1alpha1
+  path: github.com/latchset/tang-operator/api/v1alpha1
   version: v1alpha1
 version: "3"

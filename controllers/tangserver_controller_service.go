@@ -19,7 +19,7 @@ package controllers
 import (
 	"fmt"
 	"github.com/go-logr/logr"
-	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
+	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"

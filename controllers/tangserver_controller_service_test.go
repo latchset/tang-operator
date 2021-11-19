@@ -18,9 +18,9 @@ package controllers
 
 import (
 	"context"
+	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )

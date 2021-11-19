@@ -18,7 +18,7 @@ package controllers
 
 import (
 	"github.com/go-logr/logr"
-	daemonsv1alpha1 "github.com/sarroutbi/tang-operator/api/v1alpha1"
+	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
 	"strings"
 )
 
