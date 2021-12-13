@@ -230,10 +230,28 @@ func mustRedeploy(new *appsv1.Deployment, prev *appsv1.Deployment) bool {
 	return false
 }
 
-// KeyRotate rotate keys if user specifies so in the spec
-func (r *TangServerReconciler) KeyRotate(keyinfo KeyObtainInfo, log logr.Logger) bool {
+// HandleHiddenKeys rotate keys if user specifies so in the spec
+func (r *TangServerReconciler) HandleHiddenKeys(keyinfo KeyObtainInfo, log logr.Logger) bool {
 	rotated := false
-	// check if key is in active keys
+	// check hidden keys to be maintained (and delete those in the status non specified)
+	keepKeyMap := make(KeySelectiveMap, 0)
+	for _, hk := range keyinfo.TangServer.Spec.HiddenKeys {
+		for _, hsk := range keyinfo.TangServer.Status.HiddenKeys {
+			if hk.Sha1 == hsk.Sha1 {
+				keepKeyMap[hk.Sha1] = hk.Sha1
+				keepKeyMap[hsk.Sha256] = hsk.Sha256
+			} else if hk.Sha256 == hsk.Sha256 {
+				keepKeyMap[hk.Sha256] = hk.Sha256
+				keepKeyMap[hsk.Sha1] = hsk.Sha1
+			}
+		}
+	}
+	// only delete selectively if have something to keep
+	if len(keepKeyMap) > 0 {
+		deleteHiddenKeysSelectively(keepKeyMap, keyinfo, log)
+	}
+
+	// check if key is in active keys and rotate it
 	for _, hk := range keyinfo.TangServer.Spec.HiddenKeys {
 		for _, ak := range keyinfo.TangServer.Status.ActiveKeys {
 			if ak.Sha1 == hk.Sha1 || ak.Sha256 == hk.Sha256 {
@@ -401,21 +419,21 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 		if cr.Spec.HiddenKeys == nil {
 			log.Info("No hidden keys specified")
 		} else if len(cr.Spec.HiddenKeys) == 0 {
-			log.Info("Hidden keys specified with len 0, deleting hidden keys")
-			if deleteHiddenKeys(k, log) {
+			log.Info("Hidden keys specified with len 0, deleting all hidden keys")
+			if deleteAllHiddenKeys(k, log) {
 				r.Recorder.Event(cr, "Normal", "HiddenKeysDeletion", fmt.Sprintf("Hidden keys deleted correctly"))
 			} else {
 				r.Recorder.Event(cr, "Error", "HiddenKeysDeletion", fmt.Sprintf("Hidden keys not deleted correctly"))
 			}
 		} else if len(cr.Spec.HiddenKeys) > 0 {
-			rotated := r.KeyRotate(k, log)
+			rotated := r.HandleHiddenKeys(k, log)
 			if rotated {
-				log.Info("Keys were rotated", "Keys", cr.Spec.HiddenKeys)
+				log.Info("Key(s) rotated", "Keys", cr.Spec.HiddenKeys)
 				// if keys are rotated, set the counter of active keys retries to zero
 				// just in case no active keys exist
 				activeKeyRetries = 0
 			} else {
-				log.Info("Keys were not rotated", "Keys", cr.Spec.HiddenKeys)
+				log.Info("Key(s) not rotated", "Keys", cr.Spec.HiddenKeys)
 			}
 		}
 		r.UpdateKeys(k, log)
