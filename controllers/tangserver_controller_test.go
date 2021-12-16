@@ -25,10 +25,13 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes/scheme"
+	"k8s.io/client-go/tools/record"
 	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
+
+const FAKE_RECORDER_BUFFER = 1000
 
 // getOptions returns fake options for local controller testing
 func getOptions(scheme *runtime.Scheme) *ctrl.Options {
@@ -129,7 +132,7 @@ var _ = Describe("TangServer controller", func() {
 			rec := TangServerReconciler{
 				Client:   nc,
 				Scheme:   s,
-				Recorder: mgr.GetEventRecorderFor("tang-operator-controller"),
+				Recorder: record.NewFakeRecorder(FAKE_RECORDER_BUFFER),
 			}
 			rec.SetupWithManager(mgr)
 			_, err := rec.Reconcile(ctx, ctrl.Request{
@@ -162,7 +165,7 @@ var _ = Describe("TangServer controller", func() {
 			rec := TangServerReconciler{
 				Client:   nc,
 				Scheme:   s,
-				Recorder: mgr.GetEventRecorderFor("tang-operator-controller"),
+				Recorder: record.NewFakeRecorder(FAKE_RECORDER_BUFFER),
 			}
 			rec.SetupWithManager(mgr)
 			req := ctrl.Request{

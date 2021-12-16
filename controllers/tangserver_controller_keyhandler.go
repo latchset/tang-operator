@@ -60,11 +60,17 @@ type KeyObtainInfo struct {
 	TangServer *daemonsv1alpha1.TangServer
 }
 
+type KeyAssociationInfo struct {
+	KeyInfo  *KeyObtainInfo
+	KeyAssoc KeyAssociation
+}
+
 type KeyRotateInfo struct {
 	KeyInfo     *KeyObtainInfo
 	KeyFileName string
 }
 
+// getDefaultKeyPath returns directory where keys are dumped, typically /var/db/tang
 func getDefaultKeyPath(cr *daemonsv1alpha1.TangServer) string {
 	if cr.Spec.KeyPath != "" {
 		return cr.Spec.KeyPath
@@ -101,6 +107,29 @@ func ignoreKey(keyInfo KeyObtainInfo, log logr.Logger, advertised KeyAdvertising
 	return false
 }
 
+// writeStatusFile function
+func writeStatusFile(keyInfo KeyObtainInfo, sha1 string, sha256 string, statusSigning string, statusEncryption string, log logr.Logger) error {
+	if len(sha1) > 0 && len(sha256) > 0 && len(statusSigning) > 0 && len(statusEncryption) > 0 {
+		log.Info("writeStatusFile", "sha1", sha1, "sha256", sha256, "statusSigning", statusSigning, "statusEncryption", statusEncryption)
+		k := KeyAssociationInfo{
+			KeyInfo: &keyInfo,
+			KeyAssoc: KeyAssociation{
+				Sha1:          sha1,
+				Sha256:        sha256,
+				SigningKey:    statusSigning,
+				EncriptionKey: statusEncryption,
+			},
+		}
+		log.Info("Dumping Key Association", "Key Association", k)
+		return dumpKeyAssociation(k, log)
+	}
+	return nil
+}
+
+func updateForbiddenMap(forbiddenKey string) {
+	FORBIDDEN_PATH_MAP[forbiddenKey] = "FORBIDDEN"
+}
+
 // readActiveKeys function return active key list
 func readActiveKeys(keyInfo KeyObtainInfo, log logr.Logger, onlyAdvertised KeyAdvertisingType) ([]daemonsv1alpha1.TangServerActiveKeys, error) {
 	command := "ls " + keyInfo.DbPath
@@ -111,6 +140,11 @@ func readActiveKeys(keyInfo KeyObtainInfo, log logr.Logger, onlyAdvertised KeyAd
 		log.Info("Executed active keys retrieval command correctly", "Active keys:", stdo)
 		keys := strings.Split(stdo, "\n")
 		activeKeys := make([]daemonsv1alpha1.TangServerActiveKeys, 0)
+		var statusSigning string
+		var statusEncryption string
+		var ignoredKey bool
+		var sha1 string
+		var sha256 string
 		for _, k := range keys {
 			if len(k) > 0 {
 				if _, forbidden := FORBIDDEN_PATH_MAP[k]; forbidden {
@@ -120,17 +154,23 @@ func readActiveKeys(keyInfo KeyObtainInfo, log logr.Logger, onlyAdvertised KeyAd
 				k = strings.TrimLeft(strings.TrimRight(k, "\r"), "\r")
 				fpath := keyInfo.DbPath + "/" + k
 				if ignoreKey(keyInfo, log, onlyAdvertised, fpath) {
-					continue
+					statusEncryption = fpath
+					ignoredKey = true
+				} else {
+					statusSigning = fpath
+					ignoredKey = false
 				}
-				sha1 := getSHA(SHA1, keyInfo, fpath, log)
-				sha256 := getSHA(SHA256, keyInfo, fpath, log)
-				creationTime := getLastTime(CREATION, keyInfo, fpath, log)
-				activeKeys = append(activeKeys, daemonsv1alpha1.TangServerActiveKeys{
-					Sha1:      sha1,
-					Sha256:    sha256,
-					Generated: creationTime,
-					FileName:  k,
-				})
+				if !ignoredKey {
+					sha1 = getSHA(SHA1, keyInfo, fpath, log)
+					sha256 = getSHA(SHA256, keyInfo, fpath, log)
+					activeKeys = append(activeKeys, daemonsv1alpha1.TangServerActiveKeys{
+						Sha1:      sha1,
+						Sha256:    sha256,
+						Generated: getLastTime(CREATION, keyInfo, fpath, log),
+						FileName:  k,
+					})
+				}
+				writeStatusFile(keyInfo, sha1, sha256, statusSigning, statusEncryption, log)
 			}
 		}
 		return activeKeys, nil
@@ -148,6 +188,11 @@ func readHiddenKeys(keyInfo KeyObtainInfo, log logr.Logger, onlyAdvertised KeyAd
 		log.Info("Executed hidden keys retrieval command correctly", "Hidden keys:", stdo)
 		keys := strings.Split(stdo, "\n")
 		hiddenKeys := make([]daemonsv1alpha1.TangServerHiddenKeys, 0)
+		var statusSigning string
+		var statusEncryption string
+		var ignoredKey bool
+		var sha1 string
+		var sha256 string
 		for _, k := range keys {
 			if len(k) > 0 {
 				if _, forbidden := FORBIDDEN_PATH_MAP[k]; forbidden {
@@ -158,18 +203,24 @@ func readHiddenKeys(keyInfo KeyObtainInfo, log logr.Logger, onlyAdvertised KeyAd
 					k = strings.TrimLeft(strings.TrimRight(k, "\r"), "\r")
 					fpath := keyInfo.DbPath + "/" + k
 					if ignoreKey(keyInfo, log, onlyAdvertised, fpath) {
-						continue
+						statusEncryption = fpath
+						ignoredKey = true
+					} else {
+						statusSigning = fpath
+						ignoredKey = false
 					}
-					sha1 := getSHA(SHA1, keyInfo, fpath, log)
-					sha256 := getSHA(SHA256, keyInfo, fpath, log)
-					hiddenKeys = append(hiddenKeys, daemonsv1alpha1.TangServerHiddenKeys{
-						Sha1:      sha1,
-						Sha256:    sha256,
-						Generated: getCreationTimeFromKeys(keyInfo, sha1, log),
-						Hidden:    getLastTime(MODIFICATION, keyInfo, fpath, log),
-						FileName:  k,
-					})
-
+					if !ignoredKey {
+						sha1 = getSHA(SHA1, keyInfo, fpath, log)
+						sha256 = getSHA(SHA256, keyInfo, fpath, log)
+						hiddenKeys = append(hiddenKeys, daemonsv1alpha1.TangServerHiddenKeys{
+							Sha1:      sha1,
+							Sha256:    sha256,
+							Generated: getCreationTimeFromKeys(keyInfo, sha1, log),
+							Hidden:    getLastTime(MODIFICATION, keyInfo, fpath, log),
+							FileName:  k,
+						})
+					}
+					writeStatusFile(keyInfo, sha1, sha256, statusSigning, statusEncryption, log)
 				}
 			}
 		}
@@ -235,6 +286,84 @@ func rotateUnadvertisedKeys(krinfo KeyRotateInfo, log logr.Logger) error {
 	return ge
 }
 
+// dumpKeyStatusFileWithHereDoc receives the key in string format and the file where it is to be dumped, and dumps it
+func dumpKeyStatusFileWithHereDoc(keyFile string, fileContent []byte, podName string, namespace string, log logr.Logger) error {
+	command := `cat<<EOF>` + keyFile + `\n` +
+		string(fileContent) + `\nEOF`
+	stdo, stde, err := podCommandExec(command, "", podName, namespace, nil)
+	if err != nil {
+		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	} else {
+		log.Info("Command executed successfully", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	}
+	return err
+}
+
+// dumpKeyStatusFileWithBashEchoRedirection receives the key in string format and the file where it is to be dumped, and dumps it
+func dumpKeyStatusFileWithBashEchoRedirection(keyFile string, fileContent []byte, podName string, namespace string, log logr.Logger) error {
+	command := "bash -c 'echo \"" + string(fileContent) + "\" >> " + keyFile + "'"
+	stdo, stde, err := podCommandExec(command, "", podName, namespace, nil)
+	if err != nil {
+		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	} else {
+		log.Info("Command executed successfully", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	}
+	return err
+}
+
+// dumpKeyStatusFileWithEchoRedirection receives the key in string format and the file where it is to be dumped, and dumps it
+func dumpKeyStatusFileWithEchoRedirection(keyFile string, fileContent []byte, podName string, namespace string, log logr.Logger) error {
+	command := `echo '` + string(fileContent) + `' > ` + keyFile
+	stdo, stde, err := podCommandExec(command, "", podName, namespace, nil)
+	if err != nil {
+		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	} else {
+		log.Info("Command executed successfully", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	}
+	return err
+}
+
+// dumpKeyStatusFileWithTee receives the key in string format and the file where it is to be dumped, and dumps it
+func dumpKeyStatusFileWithTee(keyFile string, fileContent []byte, podName string, namespace string, log logr.Logger) error {
+	command := "touch " + keyFile
+	stdo, stde, err := podCommandExec(command, "", podName, namespace, nil)
+	if err != nil {
+		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	} else {
+		log.Info("Command executed successfully", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	}
+	//unquoted := strings.Replace(string(fileContent), "\\", "", -1)
+	command = "tee " + keyFile + " <<< " + string(fileContent)
+	stdo, stde, err = podCommandExec(command, "", podName, namespace, nil)
+	if err != nil {
+		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	} else {
+		log.Info("Command executed successfully", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	}
+	return err
+}
+
+// dumpKeyStatusFileWithAwk receives the key in string format and the file where it is to be dumped, and dumps it
+func dumpKeyStatusFileWithAwk(keyFile string, fileContent []byte, podName string, namespace string, log logr.Logger) error {
+	command := "touch " + keyFile
+	stdo, stde, err := podCommandExec(command, "", podName, namespace, nil)
+	if err != nil {
+		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	} else {
+		log.Info("Command executed successfully", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	}
+	//unquoted := strings.Replace(string(fileContent), "\\", "", -1)
+	escapedString := strings.Replace(string(fileContent), "\"", "\\\"", -1)
+	command = `awk -i inplace 'BEGINFILE{print "` + escapedString + `"}{print}' ` + keyFile
+	stdo, stde, err = podCommandExec(command, "", podName, namespace, nil)
+	if err != nil {
+		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	} else {
+		log.Info("Command executed successfully", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
+	}
+	return err
+}
+
 // rotateKey function rotate key file, moving it to hidden file
 func rotateKey(k KeyRotateInfo, log logr.Logger) error {
 	command := "mv " + k.KeyInfo.DbPath + "/" + k.KeyFileName + " " + k.KeyInfo.DbPath + "/." + k.KeyFileName
@@ -281,11 +410,12 @@ func getLastTime(fmod FileModType, keyInfo KeyObtainInfo, filePath string, log l
 		log.Error(err, "Unable to execute command in Pod", "command", command, "stdo", stdo, "stderror", stde, "podname", keyInfo.PodName, "namespace", keyInfo.Namespace)
 		return ""
 	}
-	return strings.TrimLeft(strings.TrimRight(stdo, "\n"), "\n")
+	//return strings.TrimLeft(strings.TrimRight(stdo, "\n"), "\n")
+	return strings.TrimRight(strings.TrimLeft(strings.TrimLeft(strings.TrimRight(stdo, "\n"), "\n"), "'"), "'")
 }
 
-// deleteHiddenKeys function return active key list
-func deleteHiddenKeys(keyInfo KeyObtainInfo, log logr.Logger) bool {
+// deleteAllHiddenKeys function return active key list
+func deleteAllHiddenKeys(keyInfo KeyObtainInfo, log logr.Logger) bool {
 	if len(keyInfo.TangServer.Status.ActiveKeys) > 0 {
 		command := "rm -frv"
 		ahk, e := readHiddenKeys(keyInfo, log, ALL_KEYS)

@@ -30,11 +30,17 @@ done
 test -z "${namespace}" && namespace="default"
 test -z "${oc_client}" && oc_client="oc"
 
-sha1_1=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.activeKeys[0].sha1')
-# Keep the existing hidden sha1, if it does not exist, set with the active
-hsha1_1=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.hiddenKeys[0].sha1')
-test -z "${hsha1_1}" && hsha1_1="${hsha1_1}"
+sha1_1=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.hiddenKeys[0].sha1')
+sha1_2=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.hiddenKeys[1].sha1')
 replicas=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].spec.replicas')
+
+if [ "${sha1_2}" == "null" ] || [ "${sha1_2}" == "" ];
+then
+  echo "Less than 2 hidden keys exist, exiting ..."
+  exit 1 
+fi
+
+echo "Keeping key:[$sha1_1], deleting other keys"
 
 ftemp=$(mktemp)
 cat<<EOF>"${ftemp}"
@@ -49,7 +55,6 @@ spec:
   replicas: ${replicas}
   hiddenKeys:
   - sha1: ${sha1_1}
-  - sha1: ${hsha1_1}
 EOF
 
 "${oc_client}" apply -f "${ftemp}" -n "${namespace}"

@@ -126,7 +126,7 @@ func podCommandExec(command, containerName, podName, namespace string, stdin io.
 
 	parameterCodec := runtime.NewParameterCodec(scheme)
 	req.VersionedParams(&core_v1.PodExecOptions{
-		Command:   strings.Fields(command),
+		Command:   []string{"/bin/bash", "-c", command},
 		Container: containerName,
 		Stdin:     stdin != nil,
 		Stdout:    true,
