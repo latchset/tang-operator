@@ -138,9 +138,6 @@ func getPodTemplate(cr *daemonsv1alpha1.TangServer, labels map[string]string) *c
 					Name: getSecret(cr),
 				},
 			},
-			SecurityContext: &corev1.PodSecurityContext{
-				RunAsUser: &[]int64{0}[0],
-			},
 		},
 	}
 }
