@@ -15,7 +15,7 @@
 #
 set -x
 
-OPERATOR_SDK_DEFAULT_RELEASE_VERSION="v1.12.0"
+OPERATOR_SDK_DEFAULT_RELEASE_VERSION="v1.14.0"
 DEFAULT_BUNDLE_IMG="quay.io/sec-eng-special/tang-operator-bundle"
 DEFAULT_TIMEOUT="5m"
 DEFAULT_GITHUB_BRANCH="main"
@@ -30,10 +30,14 @@ BUNDLE_VERSION="${5}"
 test -z "${GITHUB_BRANCH}" && GITHUB_BRANCH="main"
 
 MAKEFILE_BASE_PATH="https://raw.githubusercontent.com/latchset/tang-operator/${GITHUB_BRANCH}/Makefile"
+MAKEFILE_BASE_PATH_FROM_SHA="https://raw.githubusercontent.com/latchset/tang-operator/${GITHUB_SHA}/Makefile"
 
 # Guess version from Makefile
 guess_version() {
-  MAKE_BUNDLE_VERSION="$(wget -O - "${MAKEFILE_BASE_PATH}" | grep "^VERSION " | awk -F "=" '{print $2}' | sed -e 's@ @@g' 2>/dev/null)"
+  MAKE_BUNDLE_VERSION="$(wget -o /dev/null -O - "${MAKEFILE_BASE_PATH}" | grep "^VERSION " | awk -F "=" '{print $2}' | sed -e 's@ @@g' 2>/dev/null)"
+  if [ -z "${MAKE_BUNDLE_VERSION}" ]; then
+    MAKE_BUNDLE_VERSION="$(wget -o /dev/null -O - "${MAKEFILE_BASE_PATH_FROM_SHA}" | grep "^VERSION " | awk -F "=" '{print $2}' | sed -e 's@ @@g' 2>/dev/null)"
+  fi
 }
 
 dump_info() {
@@ -41,9 +45,11 @@ dump_info() {
 ==================$0 INFO ===================
 OPERATOR_SDK_RELEASE_VERSION="${OPERATOR_SDK_RELEASE_VERSION}"
 TIMEOUT="${TIMEOUT}"
-BUNDLE_VERSION="${BUNDLE_IMG_VERSION}"
+GITHUB_SHA="${GITHUB_SHA}"
 GITHUB_REF="${GITHUB_REF}"
 GITHUB_BRANCH="${GITHUB_BRANCH}"
+BUNDLE_IMG="${BUNDLE_IMG}"
+BUNDLE_VERSION="${BUNDLE_VERSION}"
 BUNDLE_IMG_VERSION="${BUNDLE_IMG_VERSION}"
 ==================$0 INFO ===================
 EOF
@@ -71,7 +77,7 @@ fi
 
 if [ -z "${BUNDLE_VERSION}" ]; then
   guess_version
-  echo "INFO: using Makefile bundle image: ${BUNDLE_VERSION}"
+  echo "INFO: using Makefile bundle image: ${MAKE_BUNDLE_VERSION}"
   BUNDLE_VERSION="${MAKE_BUNDLE_VERSION}"
 fi
 
