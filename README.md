@@ -2,7 +2,7 @@
 
 ## Contents
 
-- [Introduction](#specification)
+- [Introduction](#introduction)
 - [Versions](#versions)
 - [Installation](#installation)
 - [Compilation](#compilation)
