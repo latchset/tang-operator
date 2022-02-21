@@ -115,7 +115,7 @@ spec:
                 format: int32
                 type: integer
               replicas:
-                description: Replicas is the Tang Server amount to bringup
+                description: Replicas is the Tang Server amount to bring up
                 format: int32
                 type: integer
               requiredActiveKeyPairs:

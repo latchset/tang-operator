@@ -33,7 +33,7 @@ type TangServerSpec struct {
 	// +optional
 	KeyPath string `json:"keyPath,omitempty"`
 
-	// Replicas is the Tang Server amount to bringup
+	// Replicas is the Tang Server amount to bring up
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Amount of replicas to launch"
 	Replicas uint32 `json:"replicas"`
 

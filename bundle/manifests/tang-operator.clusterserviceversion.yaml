@@ -72,7 +72,7 @@ spec:
       - description: PodListenPort is the port where pods will listen for traffic
         displayName: 'Port where Pod will listen '
         path: podListenPort
-      - description: Replicas is the Tang Server amount to bringup
+      - description: Replicas is the Tang Server amount to bring up
         displayName: Amount of replicas to launch
         path: replicas
       - description: RequiredActiveKeyPairs
