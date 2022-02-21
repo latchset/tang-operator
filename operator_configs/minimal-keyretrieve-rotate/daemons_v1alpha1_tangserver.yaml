@@ -8,5 +8,4 @@ metadata:
 spec:
   replicas: 1
   hiddenKeys:
-  - sha1:       yUV16cIqatR1jz1lE113NydMwRo
-  - sha256:     lXRhb_tognPz7z_0i7SRYr93UsROb2iMgbTBPtPo5kE
+  - sha1:       c4yrNFRUGsjIIu4I6S2XGk4MXvs
