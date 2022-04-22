@@ -36,7 +36,7 @@ test -z "${oc_client}" && oc_client="oc"
 getAdvUrl() {
   if [ "${using_minikube}" != "yes" ];
   then
-      "${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.serviceExternalUrl'
+      "${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.serviceExternalUrl' | tr -d '"'
   else
       port=$("${oc_client}" -n "${namespace}" get service -o json | jq '.items[0].spec.ports[0].nodePort')
       echo "http://$(minikube ip):${port}/adv"
