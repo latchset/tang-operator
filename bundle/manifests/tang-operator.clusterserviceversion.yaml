@@ -397,7 +397,7 @@ spec:
     url: https://github.com/latchset/tang-operator
   maintainers:
   - email: sarroutb@redhat.com
-    name: Sergio Arroutbi
+    name: Sergio Arroutbi Braojos
   maturity: alpha
   provider:
     name: Red Hat
