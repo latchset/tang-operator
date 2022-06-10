@@ -100,7 +100,11 @@ run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
 
 docker-build: test ## Build docker image with the manager.
+ifeq (,$(GOARCH))
 	docker build -t ${IMG} .
+else
+	docker build -t ${IMG} --build-arg=goarch=${GOARCH} .
+endif
 
 docker-push: ## Push docker image with the manager.
 	docker push ${IMG}
