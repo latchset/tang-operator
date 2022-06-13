@@ -266,6 +266,23 @@ scorecard tests to pass successfully
 Remember to **modify README.md** to include the new release version, and commit changes
 performed in the operator, together with README.md and Makefile changes
 
+## Cross-Compilation
+
+In order to cross compile tang-operator, prepend **GOARCH** with required architecture to
+**make docker-build**:
+
+```bash
+$ GOARCH=ppc64le make docker-build docker-push IMG="quay.io/sec-eng-special/tang-operator:v0.0.25"
+...
+Successfully built 4a88ba8e6426
+Successfully tagged sec-eng-special/tang-operator:v0.0.25
+docker push sec-eng-special/tang-operator:v0.0.25
+The push refers to repository [quay.io/sec-eng-special/tang-operator]
+79109912085a: Pushed
+417cb9b79ade: Layer already exists
+v0.0.25: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
+```
+
 ## Cleanup
 
 For operator removal, execution of option **cleanup** from sdk-operator is the
