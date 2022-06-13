@@ -1,7 +1,7 @@
 name: Multiarch build
 
 on:
-  push:
+  workflow_dispatch:
 
 env:
   IMAGE_NAME: tang-operator
