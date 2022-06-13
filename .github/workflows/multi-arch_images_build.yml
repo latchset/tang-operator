@@ -65,7 +65,7 @@ jobs:
           buildah manifest add ${{ env.IMAGE_NAME }} ${{ env.IMAGE_NAME }}:linux-ppc64le
           buildah manifest add ${{ env.IMAGE_NAME }} ${{ env.IMAGE_NAME }}:linux-s390x
           
-     # Authenticate to container image registry to push the image
+# Authenticate to container image registry to push the image
       - name: Podman Login
         uses: redhat-actions/podman-login@v1
         with:
