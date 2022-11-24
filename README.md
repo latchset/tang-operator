@@ -94,7 +94,7 @@ INFO[0031] OLM has successfully installed "tang-operator.v0.0.25"
 ```
 To install latest multi-arch image, execute:
 ```bash
-operator-sdk run bundle quay.io/sec-eng-special/tang-operator-bundle:multi-arch
+$ operator-sdk run bundle quay.io/sec-eng-special/tang-operator-bundle:multi-arch
 ```
 
 If the message **OLM has successfully installed** is displayed, it is normally a
