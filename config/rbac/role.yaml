@@ -23,8 +23,40 @@ rules:
   resources:
   - pods
   verbs:
+  - create
   - get
   - list
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods/exec
+  verbs:
+  - create
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods/log
+  verbs:
+  - create
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods/status
+  verbs:
+  - create
+  - get
+  - list
+  - update
   - watch
 - apiGroups:
   - ""

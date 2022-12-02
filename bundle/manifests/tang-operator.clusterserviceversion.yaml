@@ -28,7 +28,7 @@ metadata:
     operators.operatorframework.io/builder: operator-sdk-v1.14.0+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
     operatorframework.io/suggested-namespace: openshift-tang-operator
-  name: tang-operator.v0.0.24
+  name: tang-operator.v0.0.25
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -202,8 +202,40 @@ spec:
           resources:
           - pods
           verbs:
+          - create
           - get
           - list
+          - update
+          - watch
+        - apiGroups:
+          - ""
+          resources:
+          - pods/exec
+          verbs:
+          - create
+          - get
+          - list
+          - update
+          - watch
+        - apiGroups:
+          - ""
+          resources:
+          - pods/log
+          verbs:
+          - create
+          - get
+          - list
+          - update
+          - watch
+        - apiGroups:
+          - ""
+          resources:
+          - pods/status
+          verbs:
+          - create
+          - get
+          - list
+          - update
           - watch
         - apiGroups:
           - ""
@@ -287,7 +319,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: quay.io/sec-eng-special/tang-operator:v0.0.24
+                image: quay.io/sec-eng-special/tang-operator:v0.0.25
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -366,8 +398,8 @@ spec:
     url: https://github.com/latchset/tang-operator
   maintainers:
   - email: sarroutb@redhat.com
-    name: Sergio Arroutbi
+    name: Sergio Arroutbi Braojos
   maturity: alpha
   provider:
     name: Red Hat
-  version: 0.0.24
+  version: 0.0.25

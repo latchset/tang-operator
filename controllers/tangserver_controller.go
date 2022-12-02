@@ -20,25 +20,27 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"math/rand"
+	"os"
+	"time"
+
 	"github.com/go-logr/logr"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"math/rand"
-	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
-	"time"
 
 	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 
+	"reflect"
+
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 	_ "k8s.io/client-go/plugin/pkg/client/auth" // Check if really necessary
 	"k8s.io/client-go/tools/record"
-	"reflect"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
@@ -141,7 +143,10 @@ func (r *TangServerReconciler) checkCRReadyForDeletion(ctx context.Context, tang
 //+kubebuilder:rbac:groups=daemons.redhat.com,resources=tangservers/finalizers,verbs=update
 //+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch
+//+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch;create;update
+//+kubebuilder:rbac:groups=core,resources=pods/log,verbs=get;list;watch;create;update
+//+kubebuilder:rbac:groups=core,resources=pods/exec,verbs=get;list;watch;create;update
+//+kubebuilder:rbac:groups=core,resources=pods/status,verbs=get;list;watch;create;update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

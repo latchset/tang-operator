@@ -3,7 +3,7 @@
 # To re-generate a bundle for another specific version without changing the standard setup, you can:
 # - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.8)
 # - use environment variables to overwrite this value (e.g export VERSION=0.0.8
-VERSION ?= 0.0.24
+VERSION ?= 0.0.25
 
 # CHANNELS define the bundle channels used in the bundle.
 # Add a new line here if you would like to change its default config. (E.g CHANNELS = "preview,fast,stable")
@@ -100,7 +100,11 @@ run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
 
 docker-build: test ## Build docker image with the manager.
+ifeq (,$(GOARCH))
 	docker build -t ${IMG} .
+else
+	docker build -t ${IMG} --build-arg=goarch=${GOARCH} .
+endif
 
 docker-push: ## Push docker image with the manager.
 	docker push ${IMG}
