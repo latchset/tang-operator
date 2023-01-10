@@ -21,7 +21,7 @@ Up to date, it can be deployed as a CRD, containing its proper
 configuration values to perform appropriate tang server operations.
 
 An introductory video can be seen in next link:  
-[NBDE in Openshift: tang-operator basics](https://youtu.be/hmMSIkBoGoY)
+[NBDE in OpenShift: tang-operator basics](https://youtu.be/hmMSIkBoGoY)
 
 ## Versions
 
@@ -68,7 +68,7 @@ the status of the different Pods, Deployments and Services. Required
 OpenShift client to install is **oc**, whose installation can be
 checked in the [Links](#links) section.
 
-Once K8S/Openshift cluster is installed, tang operator can be installed
+Once K8S/OpenShift cluster is installed, tang operator can be installed
 with operator-sdk.
 operator-sdk installation is described in the [Links](#links) section.
 
