@@ -304,8 +304,7 @@ INFO[0002] Operator "tang-operator" uninstalled
 
 ## Tests
 
-Execution of operator tests is pretty simple. A k8s infrastructure (minikube/minishift)
-must be running to execute tang operator tests based on reconciliation.
+Execution of operator tests is pretty simple. These tests don't require any k8s infrastructure installed.
 Execute **make test** from top directory and available tests will be executed:
 
 ```bash
@@ -320,7 +319,8 @@ setting up env vars
 ok  github.com/latchset/tang-operator/controllers  6.541s  coverage: 24.8% of statements
 ```
 
-In order to execute tests that require having a cluster up and running, **CLUSTER_TANG_OPERATOR_TEST**
+In order to execute tests that require having a cluster ready, a k8s infrastructure (minikube/CRC)
+must be running. To execute tang operator tests based on reconciliation, **CLUSTER_TANG_OPERATOR_TEST**
 environment variable must be set:
 
 ```bash
@@ -398,6 +398,7 @@ State: pass
 ## Links
 
 [CodeReady Containers Installation](https://access.redhat.com/documentation/en-us/red_hat_codeready_containers/1.29/html/getting_started_guide/installation_gsg)\
+[Minikube Installation](https://minikube.sigs.k8s.io/docs/start/)
 [operator-sdk Installation](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)\
 [OpenShift CLI Installation](https://docs.openshift.com/container-platform/4.2/cli_reference/openshift_cli/getting-started-cli.html#cli-installing-cli_cli-developer-commands)\
 [Validating Operators using the scorecard tool](https://docs.okd.io/latest/operators/operator_sdk/osdk-scorecard.html)
