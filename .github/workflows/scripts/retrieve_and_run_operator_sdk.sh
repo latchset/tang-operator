@@ -88,6 +88,6 @@ curl -L -o "$(pwd)/operator-sdk" "https://github.com/operator-framework/operator
 chmod +x "$(pwd)/operator-sdk"
 "$(pwd)"/operator-sdk olm install --timeout "${TIMEOUT}"
 "$(pwd)"/operator-sdk olm status
-"$(pwd)"/operator-sdk run bundle --timeout "${TIMEOUT}" "${BUNDLE_IMG_VERSION}" --index-image=quay.io/operator-framework/opm:v1.23.0
+"$(pwd)"/operator-sdk run bundle --timeout "${TIMEOUT}" "${BUNDLE_IMG_VERSION}"
 "$(pwd)"/operator-sdk olm status
 "$(pwd)"/operator-sdk scorecard --wait-time="${TIMEOUT}" "${BUNDLE_IMG_VERSION}"
