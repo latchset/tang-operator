@@ -14,13 +14,25 @@
 
 ## Introduction
 
-This operator is a Proof of Concept of a tang operator,
-and how it is deployed in top of OpenShift.
+This operator helps on providing [NBDE](https://access.redhat.com/articles/6987053)
+for K8S/OpenShift. It deploys one or several tang containers automatically.
+The tang server container image to launch is configurable, and will use the latest one
+available by default. It has been developed using operator-sdk.
+
+The tang-operator avoids having to follow all tang installation steps, and leverages
+some of the features provided by OpenShift: multi-replica deployment, scale-in/out,
+scale up/down or traffic load balancing.
+
+This operator also allows automation of certain operations, which are error prone
+if executed manually. Examples of this operations are:
+- server deployment and configuration
+- key rotation
+- hidden keys deletion
 
 Up to date, it can be deployed as a CRD, containing its proper
 configuration values to perform appropriate tang server operations.
 
-An introductory video can be seen in next link:  
+An introductory video can be seen in next link:
 [NBDE in OpenShift: tang-operator basics](https://youtu.be/hmMSIkBoGoY)
 
 ## Versions
@@ -397,6 +409,7 @@ State: pass
 
 ## Links
 
+[NBDE](https://access.redhat.com/articles/6987053)\
 [CodeReady Containers Installation](https://access.redhat.com/documentation/en-us/red_hat_codeready_containers/1.29/html/getting_started_guide/installation_gsg)\
 [Minikube Installation](https://minikube.sigs.k8s.io/docs/start/)\
 [operator-sdk Installation](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)\
