@@ -47,7 +47,7 @@ tang operator-bundle are:
 - v0.0.5:  Version that publishes the service and exposes it on configurable port.
 - v0.0.6:  Types refactoring. Initial ginkgo based test.
 - v0.0.7:  Include finalizers to make deletion quicker.
-- v0.0.8:  Tang operator metadata homogeneization.
+- v0.0.8:  Tang operator metadata homogenization.
 - v0.0.9:  Tang operator shared storage.
 - v0.0.10: Code Refactoring I.
 - v0.0.11: Extend tests.
@@ -59,8 +59,8 @@ tang operator-bundle are:
 - v0.0.17: Key rotation/deletion management via spec file.
 - v0.0.18: Advertise only signing keys.
 - v0.0.19: Add Events writing with important information.
-- v0.0.20: Use tangd-healthcheck only for liveness.
-- v0.0.21: Use tangd-healthcheck for liveness and readiness, separating intervals.
+- v0.0.20: Use tangd-healthcheck only for aliveness.
+- v0.0.21: Use tangd-healthcheck for aliveness and readiness, separating intervals.
 - v0.0.22: Remove personal accounts and use organization ones.
 - v0.0.23: Selective hidden keys deletion.
 - v0.0.24: Execute tang container pod as non root user.
