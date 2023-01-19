@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+
 	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -113,6 +114,7 @@ var _ = Describe("TangServer controller deployment", func() {
 			Expect(deployment.TypeMeta.Kind, DEFAULT_DEPLOYMENT_TYPE)
 			Expect(deployment.ObjectMeta.Name, getDefaultName(tangServer))
 			Expect(deployment.Spec.Replicas, TangServerTestReplicaAmount)
+			Expect(getDeploymentReadyReplicas(deployment), deployment.Status.ReadyReplicas)
 			Expect(deployment.Spec.Template.Spec.Containers[0].Ports[0].ContainerPort, TangServerTestPodListenPort)
 			rcpu, _ := resource.ParseQuantity(TangServerTestResourceRequestCpu)
 			rmem, _ := resource.ParseQuantity(TangServerTestResourceRequestMem)
@@ -124,6 +126,10 @@ var _ = Describe("TangServer controller deployment", func() {
 			Expect(deployment.Spec.Template.Spec.Containers[0].Resources.Limits[corev1.ResourceMemory], lmem)
 			Expect(deployment.Spec.Template.Spec.ImagePullSecrets[0].Name, TangServerTestSecret)
 			Expect(deployment.Spec.Template.Spec.Volumes[0].VolumeSource.PersistentVolumeClaim.ClaimName, TangServerPrivateVolumeClaim)
+			Expect(isDeploymentReady(deployment), false)
+			deployment.Status.Replicas = TangServerTestReplicaAmount
+			deployment.Status.ReadyReplicas = deployment.Status.Replicas
+			Expect(isDeploymentReady(deployment), true)
 			k8sClient.Delete(ctx, tangServer)
 		})
 	})
