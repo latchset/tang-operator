@@ -18,18 +18,18 @@ jobs:
       with:
         go-version: 1.16
 
+    - name: Build
+      run: make
+
+    - name: Test
+      run: make test
+
     - name: Minikube Installation
       id: minikube
       uses: medyagh/setup-minikube@latest
 
     - name: Status
       run: minikube status
-
-    - name: Build
-      run: make
-
-    - name: Test
-      run: make test
 
     - name: Cluster Test
       run: CLUSTER_TANG_OPERATOR_TEST=1 make test
