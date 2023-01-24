@@ -8,5 +8,5 @@ metadata:
 spec:
   # Add fields here
   replicas: 1
-  image: "registry.redhat.io/rhel8/tang"
+  image: "registry.redhat.io/rhel9/tang"
   version: "latest"
