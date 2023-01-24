@@ -20,7 +20,7 @@ import (
 	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
 )
 
-const DEFAULT_APP_IMAGE = "registry.redhat.io/rhel8/tang"
+const DEFAULT_APP_IMAGE = "registry.redhat.io/rhel9/tang"
 const DEFAULT_APP_VERSION = "latest"
 
 func getCompleteImageNameAndVersion(appImage string, appVersion string) string {

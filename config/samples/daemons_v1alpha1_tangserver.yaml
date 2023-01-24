@@ -10,6 +10,6 @@ spec:
   keyPath: /var/db/tang
   persistentVolumeClaim: tangserver-pvc
   replicas: 1
-  image: "registry.redhat.io/rhel8/tang"
+  image: "registry.redhat.io/rhel9/tang"
   version: "latest"
   healthScript: "/usr/bin/tangd-health-check"
