@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-set -x
+set -x -e
 
 OPERATOR_SDK_DEFAULT_RELEASE_VERSION="v1.14.0"
 DEFAULT_BUNDLE_IMG="quay.io/sec-eng-special/tang-operator-bundle"
