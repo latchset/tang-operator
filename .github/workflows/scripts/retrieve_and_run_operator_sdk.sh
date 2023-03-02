@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-set -x
+set -x -e
 
 OPERATOR_SDK_DEFAULT_RELEASE_VERSION="v1.14.0"
 DEFAULT_BUNDLE_IMG="quay.io/sec-eng-special/tang-operator-bundle"
@@ -87,5 +87,7 @@ dump_info
 curl -L -o "$(pwd)/operator-sdk" "https://github.com/operator-framework/operator-sdk/releases/download/${OPERATOR_SDK_RELEASE_VERSION}/operator-sdk_linux_amd64"
 chmod +x "$(pwd)/operator-sdk"
 "$(pwd)"/operator-sdk olm install --timeout "${TIMEOUT}"
+"$(pwd)"/operator-sdk olm status
 "$(pwd)"/operator-sdk run bundle --timeout "${TIMEOUT}" "${BUNDLE_IMG_VERSION}"
+"$(pwd)"/operator-sdk olm status
 "$(pwd)"/operator-sdk scorecard --wait-time="${TIMEOUT}" "${BUNDLE_IMG_VERSION}"

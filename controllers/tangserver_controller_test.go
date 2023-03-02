@@ -18,6 +18,8 @@ package controllers
 
 import (
 	"context"
+	"os"
+
 	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -26,7 +28,6 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/tools/record"
-	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -179,5 +180,42 @@ var _ = Describe("TangServer controller", func() {
 			_, err = rec.Reconcile(ctx, req)
 			Expect(err, nil)
 		})
+		It("Reconcile with deletion time executed with no error", func() {
+			if !isCluster() {
+				Skip("Avoiding test that requires cluster")
+			}
+			By("By creating a new TangServer with default specs")
+			ctx := context.Background()
+			tangServer := &daemonsv1alpha1.TangServer{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      TangserverName,
+					Namespace: TangserverNamespace,
+				},
+				Spec: daemonsv1alpha1.TangServerSpec{
+					KeyPath: "/",
+				},
+			}
+			n := metav1.Now()
+			tangServer.ObjectMeta.SetDeletionTimestamp(&n)
+			s := scheme.Scheme
+			s.AddKnownTypes(daemonsv1alpha1.GroupVersion, tangServer)
+			mgr, _ := ctrl.NewManager(ctrl.GetConfigOrDie(), *getOptions(s))
+			nc, _ := client.New(ctrl.GetConfigOrDie(), *getClientOptions(s))
+			rec := TangServerReconciler{
+				Client:   nc,
+				Scheme:   s,
+				Recorder: record.NewFakeRecorder(FAKE_RECORDER_BUFFER),
+			}
+			rec.SetupWithManager(mgr)
+			req := ctrl.Request{
+				NamespacedName: types.NamespacedName{
+					Name:      TangserverName,
+					Namespace: TangserverNamespace,
+				},
+			}
+			_, err := rec.Reconcile(ctx, req)
+			Expect(err, nil)
+		})
+
 	})
 })

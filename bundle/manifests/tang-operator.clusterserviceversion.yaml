@@ -16,7 +16,7 @@ metadata:
           },
           "spec": {
             "healthScript": "/usr/bin/tangd-health-check",
-            "image": "registry.redhat.io/rhel8/tang",
+            "image": "registry.redhat.io/rhel9/tang",
             "keyPath": "/var/db/tang",
             "persistentVolumeClaim": "tangserver-pvc",
             "replicas": 1,
@@ -25,10 +25,11 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    operators.operatorframework.io/builder: operator-sdk-v1.14.0+git
+    createdAt: "2023-01-24T11:58:36Z"
+    operators.operatorframework.io/builder: operator-sdk-v1.26.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
     operatorframework.io/suggested-namespace: openshift-tang-operator
-  name: tang-operator.v0.0.25
+  name: tang-operator.v0.0.26
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -289,7 +290,9 @@ spec:
           - create
         serviceAccountName: tang-operator-controller-manager
       deployments:
-      - name: tang-operator-controller-manager
+      - label:
+          control-plane: controller-manager
+        name: tang-operator-controller-manager
         spec:
           replicas: 1
           selector:
@@ -319,7 +322,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: quay.io/sec-eng-special/tang-operator:v0.0.25
+                image: quay.io/sec-eng-special/tang-operator:v0.0.26
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -402,4 +405,4 @@ spec:
   maturity: alpha
   provider:
     name: Red Hat
-  version: 0.0.25
+  version: 0.0.26

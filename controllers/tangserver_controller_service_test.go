@@ -18,9 +18,12 @@ package controllers
 
 import (
 	"context"
+	"strings"
+
 	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
@@ -29,11 +32,13 @@ var _ = Describe("TangServer controller service", func() {
 
 	// Define utility constants for object names
 	const (
-		TangserverName = "test-tangserver-service"
+		TangServerName = "test-tangserver-service"
 		// TODO: test why it can not be tested in non default namespace
-		TangserverNamespace             = "default"
-		TangserverResourceVersion       = "1"
+		TangServerNamespace             = "default"
+		TangServerResourceVersion       = "1"
 		TangServerTestServiceListenPort = 8090
+		TangServerTestIp                = "1.2.3.4"
+		TangServerTestHostname          = "mylocalhost"
 	)
 
 	Context("When Creating TangServer", func() {
@@ -42,8 +47,8 @@ var _ = Describe("TangServer controller service", func() {
 			ctx := context.Background()
 			tangServer := &daemonsv1alpha1.TangServer{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:      TangserverName,
-					Namespace: TangserverNamespace,
+					Name:      TangServerName,
+					Namespace: TangServerNamespace,
 				},
 				Spec: daemonsv1alpha1.TangServerSpec{},
 			}
@@ -60,8 +65,8 @@ var _ = Describe("TangServer controller service", func() {
 			ctx := context.Background()
 			tangServer := &daemonsv1alpha1.TangServer{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:      TangserverName,
-					Namespace: TangserverNamespace,
+					Name:      TangServerName,
+					Namespace: TangServerNamespace,
 				},
 				Spec: daemonsv1alpha1.TangServerSpec{
 					ServiceListenPort: TangServerTestServiceListenPort,
@@ -73,6 +78,36 @@ var _ = Describe("TangServer controller service", func() {
 			Expect(service.TypeMeta.Kind, DEFAULT_SERVICE_TYPE)
 			Expect(service.ObjectMeta.Name, getDefaultName(tangServer))
 			Expect(service.Spec.Ports[0].Port, TangServerTestServiceListenPort)
+			k8sClient.Delete(ctx, tangServer)
+		})
+		It("Should return a correct service url and related", func() {
+			By("By creating a new TangServer")
+			ctx := context.Background()
+			tangServer := &daemonsv1alpha1.TangServer{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      TangServerName,
+					Namespace: TangServerNamespace,
+				},
+				Spec: daemonsv1alpha1.TangServerSpec{
+					ServiceListenPort: TangServerTestServiceListenPort,
+				},
+			}
+			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
+			serviceUrl := getServiceUrl(tangServer)
+			Expect(len(serviceUrl) > 0)
+			serviceIpUrl := getServiceIpUrl(tangServer, TangServerTestIp)
+			Expect(len(serviceIpUrl) > 0)
+			Expect(strings.Contains(serviceIpUrl, TangServerTestIp))
+			loadBalancer := corev1.LoadBalancerIngress{
+				Hostname: TangServerTestHostname,
+			}
+			serviceIpExternalServiceUrl := getExternalServiceUrl(tangServer, loadBalancer)
+			Expect(strings.Contains(serviceIpExternalServiceUrl, TangServerTestHostname))
+			loadBalancer = corev1.LoadBalancerIngress{
+				IP: TangServerTestIp,
+			}
+			serviceIpExternalServiceUrl = getExternalServiceUrl(tangServer, loadBalancer)
+			Expect(strings.Contains(serviceIpExternalServiceUrl, TangServerTestIp))
 			k8sClient.Delete(ctx, tangServer)
 		})
 	})
