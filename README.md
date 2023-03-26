@@ -40,32 +40,32 @@ An introductory video can be seen in next link:
 Versions released up to date of the tang operator and the
 tang operator-bundle are:
 
-- v0.0.1:  Hello world version.
-- v0.0.2:  Basic version with no fields still updated.
-- v0.0.3:  First release correct version.
-- v0.0.4:  Version that fixes issues with deployments/pods/services permissions.
-- v0.0.5:  Version that publishes the service and exposes it on configurable port.
-- v0.0.6:  Types refactoring. Initial ginkgo based test.
-- v0.0.7:  Include finalizers to make deletion quicker.
-- v0.0.8:  Tang operator metadata homogenization.
-- v0.0.9:  Tang operator shared storage.
-- v0.0.10: Code Refactoring I.
-- v0.0.11: Extend tests.
-- v0.0.12: Fix default keypath.
-- v0.0.13: Add type for Persistent Volume Claim attach.
-- v0.0.14: Fix issue on non 8080 service port deployment.
-- v0.0.15: Add resource request/limits.
-- v0.0.16: Fix scale up issues.
-- v0.0.17: Key rotation/deletion management via spec file.
-- v0.0.18: Advertise only signing keys.
-- v0.0.19: Add Events writing with important information.
-- v0.0.20: Use tangd-healthcheck only for aliveness.
-- v0.0.21: Use tangd-healthcheck for aliveness and readiness, separating intervals.
-- v0.0.22: Remove personal accounts and use organization ones.
-- v0.0.23: Selective hidden keys deletion.
-- v0.0.24: Execute tang container pod as non root user.
-- v0.0.25: Allow key handling without cluster role configuration.
-- v0.0.26: Use RHEL9 tang container version.
+- v0.0.1:  Hello world version
+- v0.0.2:  Basic version with no fields still updated
+- v0.0.3:  First release correct version
+- v0.0.4:  Version that fixes issues with deployments/pods/services permissions
+- v0.0.5:  Version that publishes the service and exposes it on configurable port
+- v0.0.6:  Types refactoring. Initial ginkgo based test
+- v0.0.7:  Include finalizers to make deletion quicker
+- v0.0.8:  Tang operator metadata homogenization
+- v0.0.9:  Tang operator shared storage
+- v0.0.10: Code Refactoring
+- v0.0.11: Extend tests
+- v0.0.12: Fix default keypath
+- v0.0.13: Add type for Persistent Volume Claim attach
+- v0.0.14: Fix issue on non 8080 service port deployment
+- v0.0.15: Add resource request/limits
+- v0.0.16: Fix scale up issues
+- v0.0.17: Key rotation/deletion management via spec file
+- v0.0.18: Advertise only signing keys
+- v0.0.19: Add Events writing with important information
+- v0.0.20: Use tangd-healthcheck only for aliveness
+- v0.0.21: Use tangd-healthcheck for aliveness and readiness, separating intervals
+- v0.0.22: Remove personal accounts and use organization ones
+- v0.0.23: Selective hidden keys deletion
+- v0.0.24: Execute tang container pod as non root user
+- v0.0.25: Allow key handling without cluster role configuration
+- v0.0.26: Use RHEL9 tang container version
 
 ## Installation
 
