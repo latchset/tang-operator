@@ -372,11 +372,11 @@ commit to main or PR. The verify job perform following steps:
 * Test
 * Cluster Test
 * Deployment
-* Scorecard test execution
+* Scorecard Test Execution
 
 NOTE: CI/CD is in a "work in progress" state
 
-## scorecard
+## Scorecard
 
 Execution of operator-sdk scorecard tests are passing completely in version v0.0.26.
 In order to execute these tests, run next command:
