@@ -28,6 +28,7 @@ metadata:
     createdAt: "2023-01-24T11:58:36Z"
     operators.operatorframework.io/builder: operator-sdk-v1.26.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
+    operatorframework.io/suggested-namespace: openshift-tang-operator
   name: tang-operator.v0.0.26
   namespace: placeholder
 spec:
