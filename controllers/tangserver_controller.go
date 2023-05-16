@@ -235,8 +235,8 @@ func mustRedeploy(new *appsv1.Deployment, prev *appsv1.Deployment) bool {
 	return false
 }
 
-// HandleHiddenKeys rotate keys if user specifies so in the spec
-func (r *TangServerReconciler) HandleHiddenKeys(keyinfo KeyObtainInfo, log logr.Logger) bool {
+// handleHiddenKeys rotate keys if user specifies so in the spec
+func (r *TangServerReconciler) handleHiddenKeys(keyinfo KeyObtainInfo, log logr.Logger) bool {
 	rotated := false
 	// check hidden keys to be maintained (and delete those in the status non specified)
 	keepKeyMap := make(KeySelectiveMap, 0)
@@ -431,7 +431,7 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 				r.Recorder.Event(cr, "Error", "HiddenKeysDeletion", fmt.Sprintf("Hidden keys not deleted correctly"))
 			}
 		} else if len(cr.Spec.HiddenKeys) > 0 {
-			rotated := r.HandleHiddenKeys(k, log)
+			rotated := r.handleHiddenKeys(k, log)
 			if rotated {
 				log.Info("Key(s) rotated", "Keys", cr.Spec.HiddenKeys)
 				// if keys are rotated, set the counter of active keys retries to zero
