@@ -52,7 +52,7 @@ tang operator-bundle are:
 - v0.0.9:  Tang operator shared storage
 - v0.0.10: Code Refactoring
 - v0.0.11: Extend tests
-- v0.0.12: Fix default keypath
+- v0.0.12: Fix default key path
 - v0.0.13: Add type for Persistent Volume Claim attach
 - v0.0.14: Fix issue on non 8080 service port deployment
 - v0.0.15: Add resource request/limits
@@ -79,7 +79,7 @@ Instructions for **CRC** installation can be observed
 in the [Links](#links) section.
 Apart from cluster, the corresponding client is required to check
 the status of the different Pods, Deployments and Services. Required
-OpenShift client to install is **oc**, whose installation can be
+OpenShift client to install is `oc`, whose installation can be
 checked in the [Links](#links) section.
 
 Once K8S/OpenShift cluster is installed, tang operator can be installed
@@ -140,7 +140,7 @@ tang-operator-controller-manager-5c9488d8dd-mgmsf   2/2   Running   0        52s
 Note the **Completed** and **Running** state for the different tang operator pods.
 
 Once operator is correctly installed, appropriate configuration can be applied
-from **config** directory. Minimal installation, that just provides the number
+from `config` directory. Minimal installation, that just provides the number
 of replicas (1) to use, is the recommended tang operator configuration to apply:
 
 ```bash
@@ -149,7 +149,7 @@ namespace/nbde created
 tangserver.daemons.redhat.com/tangserver created
 ```
 
-In case tang operator is appropriately executed, **ndbe** namespace should contain
+In case tang operator is appropriately executed, **nbde** namespace should contain
 the service, deployment and pod associated to the tang operator:
 
 ```
@@ -166,7 +166,7 @@ NAME                               READY   STATUS    RESTARTS   AGE
 tsdp-tangserver-55f747757c-599j5   1/1     Running   0          40s
 ```
 
-Note the **Running** state for the tangserver pods.
+Note the **Running** state for the `tangserver` pods.
 
 ## Compilation
 
