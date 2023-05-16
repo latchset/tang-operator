@@ -1,5 +1,5 @@
 #!/bin/bash
-let counter=0
+counter=0
 oc apply -f config/minimal-keyretrieve
 while true;
 do
@@ -13,6 +13,6 @@ do
   oc -n nbde describe tangservers.daemons.redhat.com
   echo "====================== /$counter =================="
   sleep 5
-  let counter=$counter+1
+  ((counter+=1))
 done
 echo
