@@ -50,7 +50,7 @@ getAdvUrl() {
 }
 
 adv_url=$(getAdvUrl)
-adv=$(wget -O - ${adv_url} -o /dev/null)
+adv=$(wget -O - "${adv_url}" -o /dev/null)
 
 dumpFromAdvWithHash() {
     local adv="$1"
