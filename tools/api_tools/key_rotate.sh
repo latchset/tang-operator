@@ -6,7 +6,12 @@ usage() {
   echo
   echo "Usage:"
   echo
-  echo "$1 -n namespace [-c k8s_client] [-v (verbose)]"
+  echo "$1 [-n namespace] [-c k8s_client] [-v] [-h]"
+  echo
+  echo "-n: namespace (default by default)"
+  echo "-c: client for K8S (oc by default)"
+  echo "-v: verbose mode"
+  echo "-h: display help and exit"
   echo
   exit "$2"
 }
@@ -33,7 +38,7 @@ test -z "${oc_client}" && oc_client="oc"
 sha1_1=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.activeKeys[0].sha1')
 # Keep the existing hidden sha1, if it does not exist, set with the active
 hsha1_1=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.hiddenKeys[0].sha1')
-test -z "${hsha1_1}" && hsha1_1="${hsha1_1}"
+test -z "${hsha1_1}" && hsha1_1="${sha1_1}"
 replicas=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].spec.replicas')
 
 ftemp=$(mktemp)
