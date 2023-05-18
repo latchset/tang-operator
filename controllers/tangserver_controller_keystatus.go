@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"encoding/json"
+
 	"github.com/go-logr/logr"
 	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
 )
@@ -46,16 +47,8 @@ func keyStatusFile() string {
 	return KEY_STATUS_FILE_NAME
 }
 
-func keyStatusLockFile() string {
-	return KEY_STATUS_FILE_NAME + ".lock"
-}
-
 func keyStatusFilePathWithTangServer(ts *daemonsv1alpha1.TangServer) string {
 	return getDefaultKeyPath(ts) + "/" + KEY_STATUS_FILE_NAME
-}
-
-func keyStatusLockFilePathWithTangServer(ts *daemonsv1alpha1.TangServer) string {
-	return getDefaultKeyPath(ts) + "/" + KEY_STATUS_FILE_NAME + ".lock"
 }
 
 func keyStatusFilePath(k KeyAssociationInfo) string {
@@ -148,6 +141,9 @@ func dumpKeyAssociation(k KeyAssociationInfo, log logr.Logger) error {
 	KeyStatusMap.KeyStatusSha1Map[k.KeyAssoc.Sha1] = k.KeyAssoc
 	KeyStatusMap.KeyStatusSha256Map[k.KeyAssoc.Sha256] = k.KeyAssoc
 	keyStatus, err := json.Marshal(KeyStatusMap)
+	if err != nil {
+		log.Error(err, "Error on KeyStatusMap marshalling", "file", statusFile, "keyStatusMap", KeyStatusMap)
+	}
 	log.Info("Dumping key status to file", "file", statusFile, "keyStatus", string(keyStatus))
 	err = dumpKeyStatusFileWithEchoRedirection(statusFile, keyStatus, k.KeyInfo.PodName, k.KeyInfo.Namespace, log)
 	if err != nil {

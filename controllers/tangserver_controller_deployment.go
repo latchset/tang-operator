@@ -39,7 +39,7 @@ func getDeployment(cr *daemonsv1alpha1.TangServer) *appsv1.Deployment {
 		"app": cr.Name,
 	}
 	replicas := int32(cr.Spec.Replicas)
-	if 0 == replicas {
+	if replicas == 0 {
 		replicas = DEFAULT_REPLICA_AMOUNT
 	}
 

@@ -313,7 +313,7 @@ func (r *TangServerReconciler) CreateNewKeysIfNecessary(k KeyObtainInfo, log log
 	if uint32(len(k.TangServer.Status.ActiveKeys)) < requiredActiveKeyPairs && requiredActiveKeyPairs > 1 {
 		if err := createNewPairOfKeys(k, log); err != nil {
 			log.Error(err, "Unable to create new keys", "KeyObtainInfo", k)
-			r.Recorder.Event(k.TangServer, "Error", "NewKeys", fmt.Sprintf("Unable to create new pair of keys"))
+			r.Recorder.Event(k.TangServer, "Error", "NewKeys", "Unable to create new pair of keys")
 		} else {
 			log.Info("New Active Keys Created", "KeyObtainInfo", k, "Active Keys", uint32(len(k.TangServer.Status.ActiveKeys)), "Required Active Keys", requiredActiveKeyPairs)
 			r.Recorder.Event(k.TangServer, "Normal", "NewKeys", fmt.Sprintf("Created %d active pair of keys", uint32(len(k.TangServer.Status.ActiveKeys))))
@@ -360,7 +360,7 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 			err = r.Update(context.Background(), deployment)
 			if err != nil {
 				log.Error(err, "Failed to redeploy", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
-				r.Recorder.Event(cr, "Error", "Redeploy", fmt.Sprintf("Failed to redeploy"))
+				r.Recorder.Event(cr, "Error", "Redeploy", "Failed to redeploy")
 				return ctrl.Result{}, err
 			}
 		}
@@ -426,9 +426,9 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 		} else if len(cr.Spec.HiddenKeys) == 0 {
 			log.Info("Hidden keys specified with len 0, deleting all hidden keys")
 			if deleteAllHiddenKeys(k, log) {
-				r.Recorder.Event(cr, "Normal", "HiddenKeysDeletion", fmt.Sprintf("Hidden keys deleted correctly"))
+				r.Recorder.Event(cr, "Normal", "HiddenKeysDeletion", "Hidden keys deleted correctly")
 			} else {
-				r.Recorder.Event(cr, "Error", "HiddenKeysDeletion", fmt.Sprintf("Hidden keys not deleted correctly"))
+				r.Recorder.Event(cr, "Error", "HiddenKeysDeletion", "Hidden keys not deleted correctly")
 			}
 		} else if len(cr.Spec.HiddenKeys) > 0 {
 			rotated := r.handleHiddenKeys(k, log)
@@ -446,7 +446,7 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 	err = r.Client.Status().Update(context.Background(), cr)
 	if err != nil {
 		log.Error(err, "Unable to update TangServer status")
-		r.Recorder.Event(cr, "Error", "Update", fmt.Sprintf("Unable to update TangServer status"))
+		r.Recorder.Event(cr, "Error", "Update", "Unable to update TangServer status")
 		return ctrl.Result{}, err
 	}
 	return ctrl.Result{}, nil
@@ -485,7 +485,7 @@ func (r *TangServerReconciler) reconcileService(cr *daemonsv1alpha1.TangServer, 
 			err := r.Client.Status().Update(context.Background(), cr)
 			if err != nil {
 				log.Error(err, "Unable to update TangServer status with Service IP URL")
-				r.Recorder.Event(cr, "Error", "Update", fmt.Sprintf("Unable to update TangServer status with Service IP URL"))
+				r.Recorder.Event(cr, "Error", "Update", "Unable to update TangServer status with Service IP URL")
 				return ctrl.Result{}, err
 			}
 		} else {
@@ -510,7 +510,7 @@ func (r *TangServerReconciler) reconcilePeriodic(cr *daemonsv1alpha1.TangServer,
 		err := r.Client.Status().Update(context.Background(), cr)
 		if err != nil {
 			log.Error(err, "Unable to update TangServer status with active key retries and error")
-			r.Recorder.Event(cr, "Error", "Update", fmt.Sprintf("Unable to update TangServer status clearing active key retries and error"))
+			r.Recorder.Event(cr, "Error", "Update", "Unable to update TangServer status clearing active key retries and error")
 		}
 		return ctrl.Result{RequeueAfter: time.Duration(DEFAULT_RECONCILE_TIMER_NO_ACTIVE_KEYS) * time.Second}, true
 	} else {
@@ -519,7 +519,7 @@ func (r *TangServerReconciler) reconcilePeriodic(cr *daemonsv1alpha1.TangServer,
 		err := r.Client.Status().Update(context.Background(), cr)
 		if err != nil {
 			log.Error(err, "Unable to update TangServer status clearing active key retries and error")
-			r.Recorder.Event(cr, "Error", "Update", fmt.Sprintf("Unable to update TangServer status clearing active key retries and error"))
+			r.Recorder.Event(cr, "Error", "Update", "Unable to update TangServer status clearing active key retries and error")
 		}
 	}
 	return ctrl.Result{}, false

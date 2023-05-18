@@ -17,9 +17,10 @@ limitations under the License.
 package controllers
 
 import (
+	"strings"
+
 	"github.com/go-logr/logr"
 	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
-	"strings"
 )
 
 type SHAType uint8
@@ -286,76 +287,10 @@ func rotateUnadvertisedKeys(krinfo KeyRotateInfo, log logr.Logger) error {
 	return ge
 }
 
-// dumpKeyStatusFileWithHereDoc receives the key in string format and the file where it is to be dumped, and dumps it
-func dumpKeyStatusFileWithHereDoc(keyFile string, fileContent []byte, podName string, namespace string, log logr.Logger) error {
-	command := `cat<<EOF>` + keyFile + `\n` +
-		string(fileContent) + `\nEOF`
-	stdo, stde, err := podCommandExec(command, "", podName, namespace, nil)
-	if err != nil {
-		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
-	} else {
-		log.Info("Command executed successfully", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
-	}
-	return err
-}
-
-// dumpKeyStatusFileWithBashEchoRedirection receives the key in string format and the file where it is to be dumped, and dumps it
-func dumpKeyStatusFileWithBashEchoRedirection(keyFile string, fileContent []byte, podName string, namespace string, log logr.Logger) error {
-	command := "bash -c 'echo \"" + string(fileContent) + "\" >> " + keyFile + "'"
-	stdo, stde, err := podCommandExec(command, "", podName, namespace, nil)
-	if err != nil {
-		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
-	} else {
-		log.Info("Command executed successfully", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
-	}
-	return err
-}
-
 // dumpKeyStatusFileWithEchoRedirection receives the key in string format and the file where it is to be dumped, and dumps it
 func dumpKeyStatusFileWithEchoRedirection(keyFile string, fileContent []byte, podName string, namespace string, log logr.Logger) error {
 	command := `echo '` + string(fileContent) + `' > ` + keyFile
 	stdo, stde, err := podCommandExec(command, "", podName, namespace, nil)
-	if err != nil {
-		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
-	} else {
-		log.Info("Command executed successfully", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
-	}
-	return err
-}
-
-// dumpKeyStatusFileWithTee receives the key in string format and the file where it is to be dumped, and dumps it
-func dumpKeyStatusFileWithTee(keyFile string, fileContent []byte, podName string, namespace string, log logr.Logger) error {
-	command := "touch " + keyFile
-	stdo, stde, err := podCommandExec(command, "", podName, namespace, nil)
-	if err != nil {
-		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
-	} else {
-		log.Info("Command executed successfully", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
-	}
-	//unquoted := strings.Replace(string(fileContent), "\\", "", -1)
-	command = "tee " + keyFile + " <<< " + string(fileContent)
-	stdo, stde, err = podCommandExec(command, "", podName, namespace, nil)
-	if err != nil {
-		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
-	} else {
-		log.Info("Command executed successfully", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
-	}
-	return err
-}
-
-// dumpKeyStatusFileWithAwk receives the key in string format and the file where it is to be dumped, and dumps it
-func dumpKeyStatusFileWithAwk(keyFile string, fileContent []byte, podName string, namespace string, log logr.Logger) error {
-	command := "touch " + keyFile
-	stdo, stde, err := podCommandExec(command, "", podName, namespace, nil)
-	if err != nil {
-		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
-	} else {
-		log.Info("Command executed successfully", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
-	}
-	//unquoted := strings.Replace(string(fileContent), "\\", "", -1)
-	escapedString := strings.Replace(string(fileContent), "\"", "\\\"", -1)
-	command = `awk -i inplace 'BEGINFILE{print "` + escapedString + `"}{print}' ` + keyFile
-	stdo, stde, err = podCommandExec(command, "", podName, namespace, nil)
 	if err != nil {
 		log.Error(err, "Unable to execute command in Pod", "command", command, "podname", podName, "namespace", namespace, "stdo", stdo, "stde", stde)
 	} else {
