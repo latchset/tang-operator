@@ -7,8 +7,14 @@ usage() {
   echo
   echo "Usage:"
   echo
-  echo "$1 -n namespace [-c k8s_client] [-m (using minikube)] [-v (verbose)]"
+  echo "$1 [-n] [-c] [-m] [-v] [-h]"
   echo
+  echo "-n: namespace (default by default)"
+  echo "-c: client for K8S (oc by default)"
+  echo "-m: minikube mode"
+  echo "-v: verbose mode"
+  echo "-h: display help and exit"
+  echo ""
   exit "$2"
 }
 
