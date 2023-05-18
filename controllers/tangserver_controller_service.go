@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"fmt"
+
 	"github.com/go-logr/logr"
 	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
@@ -42,7 +43,7 @@ func getServiceName(tangserver *daemonsv1alpha1.TangServer) string {
 // getServicePort function returns service name
 func getServicePort(tangserver *daemonsv1alpha1.TangServer) uint32 {
 	servicePort := uint32(tangserver.Spec.ServiceListenPort)
-	if 0 == servicePort {
+	if servicePort == 0 {
 		servicePort = DEFAULT_SERVICE_PORT
 	}
 	return servicePort
