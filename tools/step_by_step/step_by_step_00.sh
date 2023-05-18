@@ -84,7 +84,7 @@ prompt_command "operator-sdk run bundle --timeout 5m quay.io/sec-eng-special/tan
 prompt_command "${oc_client} apply -f ${project_root}/operator_configs/minimal-keyretrieve"
 
 counter=0
-while [ $counter -ne ${wait_up_secs} ];
+while [ $counter -ne "${wait_up_secs}" ];
 do
   ((counter++))
   echo -n -e "\rSleeping until pod and service is up and running ... ${counter}/${wait_up_secs}"
@@ -109,7 +109,7 @@ prompt_command "vi ${project_root}/operator_configs/minimal-keyretrieve-rotate/d
 prompt_command "${oc_client} apply -f ${project_root}/operator_configs/minimal-keyretrieve-rotate"
 
 counter=0
-while [ $counter -ne ${wait_secs} ]; do
+while [ $counter -ne "${wait_secs}" ]; do
   ((counter++))
   echo -n -e "\rSleeping until new active keys available ... ${counter}/${wait_secs}"
   sleep 1
