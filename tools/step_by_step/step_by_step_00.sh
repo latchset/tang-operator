@@ -98,7 +98,7 @@ prompt_command "${oc_client} -n ${namespace} get service"
 prompt_command "${oc_client} -n ${namespace} describe tangserver"
 
 # Step 4) clevis bind
-URL=$(${oc_client} -n ${namespace} describe tangserver | grep 'Service External URL:' | awk -F 'Service External URL: ' '{print $2}' | sed -e s@/adv@@g | tr -d ' ')
+URL=$(${oc_client} -n "${namespace}" describe tangserver | grep 'Service External URL:' | awk -F 'Service External URL: ' '{print $2}' | sed -e s@/adv@@g | tr -d ' ')
 prompt_command_vm_manually "sudo clevis luks bind -f -d ${device} tang '{\"url\":\"${URL}\"}'" "${clevis_ip}"
 
 # Step 5) in json format
