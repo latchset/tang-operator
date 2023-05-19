@@ -50,11 +50,11 @@ installDeps() {
 }
 
 guessPodName() {
-    "${K8SC}" -n "${NAMESPACE}" get pods | tail -1 | awk '{print $1}'
+    ${K8SC} -n "${NAMESPACE}" get pods | tail -1 | awk '{print $1}'
 }
 
 guessServiceName() {
-    "${K8SC}" -n "${NAMESPACE}" get service | tail -1 | awk '{print $1}'
+    ${K8SC} -n "${NAMESPACE}" get service | tail -1 | awk '{print $1}'
 }
 
 auth_curl() {
@@ -77,9 +77,9 @@ dumpInfo
 installDeps
 
 ### Delete previous executions
-"${K8SC}" -n "${NAMESPACE}" delete serviceaccount "${SA}"
+${K8SC} -n "${NAMESPACE}" delete serviceaccount "${SA}"
 ### Create specific service account
-"${K8SC}" -n "${NAMESPACE}" create serviceaccount "${SA}"
+${K8SC} -n "${NAMESPACE}" create serviceaccount "${SA}"
 ### Dump appropriate info to clusterrole
 cat <<EOF >>"${CLUSTERROLE_FILE}"
 kind: ClusterRole
@@ -94,44 +94,53 @@ rules:
 EOF
 
 ### Delete existing clusterrole
-"${K8SC}" -n "${NAMESPACE}" delete -f "${CLUSTERROLE_FILE}"
+${K8SC} -n "${NAMESPACE}" delete -f "${CLUSTERROLE_FILE}"
 
 ### Create clusterrole
-"${K8SC}" -n "${NAMESPACE}" apply -f "${CLUSTERROLE_FILE}"
+${K8SC} -n "${NAMESPACE}" apply -f "${CLUSTERROLE_FILE}"
 
 ### Delete previous rolebinding
-"${K8SC}" -n "${NAMESPACE}" delete rolebinding "${SA}:${CLUSTERROLE_NAME}"
+${K8SC} -n "${NAMESPACE}" delete rolebinding "${SA}:${CLUSTERROLE_NAME}"
 
 ### Bind clusterrole to service account
-"${K8SC}" -n "${NAMESPACE}" create rolebinding "${SA}:${CLUSTERROLE_NAME}" --clusterrole "${CLUSTERROLE_NAME}" --serviceaccount "${NAMESPACE}:${SA}"
+${K8SC} -n "${NAMESPACE}" create rolebinding "${SA}:${CLUSTERROLE_NAME}" --clusterrole "${CLUSTERROLE_NAME}" --serviceaccount "${NAMESPACE}:${SA}"
 
 ### Get the ServiceAccount's token Secret's name
-#SECRET=$("${K8SC}" -n "${NAMESPACE}" get serviceaccount "${SA}" -o json | jq -Mr '.secrets[].name | select(contains("token"))')
-SECRET=$("${K8SC}" -n "${NAMESPACE}" get serviceaccount "${SA}" -o json | jq -Mr '.secrets[].name')
+SECRET=$(${K8SC} -n "${NAMESPACE}" get serviceaccount "${SA}" -o json | jq -Mr '.secrets[].name')
 
 ### Extract the Bearer token from the Secret and decode
-TOKEN=$("${K8SC}" -n "${NAMESPACE}" get secret "${SECRET}" -o json | jq -Mr '.data.token' | base64 -d)
+TOKEN=$(${K8SC} -n "${NAMESPACE}" get secret "${SECRET}" -o json | jq -Mr '.data.token' | base64 -d)
 
 ### Extract, decode and write the ca.crt to a temporary location
-"${K8SC}" -n "${NAMESPACE}" get secret "${SECRET}" -o json | jq -Mr '.data["ca.crt"]' | base64 -d > "${CART_FILE}"
+${K8SC} -n "${NAMESPACE}" get secret "${SECRET}" -o json | jq -Mr '.data["ca.crt"]' | base64 -d > "${CART_FILE}"
 
 ### Get the API Server location
 APISERVER=https://$("${K8SC}" -n default get endpoints kubernetes --no-headers | awk '{ print $2 }')
 
 ### Test API
-### auth_curl "${APISERVER}/openapi/v2"
+echo "---Test API---"
+${K8SC} "/openapi/v2"
+echo "---Test API---"
 
 ### Extract logs from pod
-### auth_curl "${APISERVER}/api/v1/namespaces/${NAMESPACE}/pods/${PODNAME}/log"
+echo "---Extract logs from pod---"
+${K8SC} get --raw "/api/v1/namespaces/${NAMESPACE}/pods/${PODNAME}/log"
+echo "---Extract logs from pod---"
 
 ### Extract status of pod
-auth_curl "${APISERVER}/api/v1/namespaces/${NAMESPACE}/pods/${PODNAME}/status"
+echo "---Extract status of pod---"
+${K8SC} get --raw "${APISERVER}/api/v1/namespaces/${NAMESPACE}/pods/${PODNAME}/status"
+echo "---Extract status of pod---"
 
 ### Command execution
-auth_curl "${APISERVER}/api/v1/namespaces/${NAMESPACE}/pods/${PODNAME}/exec?command=/bin/bash&command=-c&command=${POD_COMMAND}&stdin=true&stderr=true&stdout=true&tty=true"
+echo "---Command execution---"
+${K8SC} get --raw "/api/v1/namespaces/${NAMESPACE}/pods/${PODNAME}/exec?command=/bin/bash&command=-c&command=${POD_COMMAND}&stdin=true&stderr=true&stdout=true&tty=true"
+echo "---Command execution---"
 
 ### Extract status of service
-auth_curl "${APISERVER}/api/v1/namespaces/${NAMESPACE}/services/${SERVICENAME}/status"
+echo "---Extract status of service---"
+${K8SC} get --raw "/api/v1/namespaces/${NAMESPACE}/services/${SERVICENAME}/status"
+echo "---Extract status of service---"
 
 rm "${CLUSTERROLE_FILE}"
 rm "${CART_FILE}"
