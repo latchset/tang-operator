@@ -50,15 +50,15 @@ installDeps() {
 }
 
 guessPodName() {
-    ${K8SC} -n ${NAMESPACE} get pods | tail -1 | awk {'print $1'}
+    "${K8SC}" -n "${NAMESPACE}" get pods | tail -1 | awk '{print $1}'
 }
 
 guessServiceName() {
-    ${K8SC} -n ${NAMESPACE} get service | tail -1 | awk {'print $1'}
+    "${K8SC}" -n "${NAMESPACE}" get service | tail -1 | awk '{print $1}'
 }
 
 auth_curl() {
-    curl --include \
+    curl --verbose --include \
          --no-buffer \
          --header "Connection: Upgrade" \
          --header "Upgrade: websocket" \
@@ -67,7 +67,7 @@ auth_curl() {
          --header "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
          --header "Sec-WebSocket-Version: 13" \
          --header "Authorization: Bearer ${TOKEN}" \
-         -s --cacert ${CART_FILE} "${1}"
+         -s --cacert "${CART_FILE}" "${1}"
 }
 
 test -z "${PODNAME}" && PODNAME=$(guessPodName)
@@ -77,11 +77,11 @@ dumpInfo
 installDeps
 
 ### Delete previous executions
-${K8SC} -n ${NAMESPACE} delete serviceaccount "${SA}"
+"${K8SC}" -n "${NAMESPACE}" delete serviceaccount "${SA}"
 ### Create specific service account
-${K8SC} -n ${NAMESPACE} create serviceaccount "${SA}"
+"${K8SC}" -n "${NAMESPACE}" create serviceaccount "${SA}"
 ### Dump appropriate info to clusterrole
-cat <<EOF >>${CLUSTERROLE_FILE}
+cat <<EOF >>"${CLUSTERROLE_FILE}"
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -92,20 +92,29 @@ rules:
   resources: ["pods", "pods/log", "pods/exec", "pods/status", "services", "services/status"]
   verbs: ["get", "watch", "list"]
 EOF
+
 ### Delete existing clusterrole
-${K8SC} -n ${NAMESPACE} delete -f ${CLUSTERROLE_FILE}
+"${K8SC}" -n "${NAMESPACE}" delete -f "${CLUSTERROLE_FILE}"
+
 ### Create clusterrole
-${K8SC} -n ${NAMESPACE} apply -f ${CLUSTERROLE_FILE}
+"${K8SC}" -n "${NAMESPACE}" apply -f "${CLUSTERROLE_FILE}"
+
 ### Delete previous rolebinding
-${K8SC} -n ${NAMESPACE} delete rolebinding ${SA}:${CLUSTERROLE_NAME}
+"${K8SC}" -n "${NAMESPACE}" delete rolebinding "${SA}:${CLUSTERROLE_NAME}"
+
 ### Bind clusterrole to service account
-${K8SC} -n ${NAMESPACE} create rolebinding ${SA}:${CLUSTERROLE_NAME} --clusterrole ${CLUSTERROLE_NAME} --serviceaccount ${NAMESPACE}:${SA}
+"${K8SC}" -n "${NAMESPACE}" create rolebinding "${SA}:${CLUSTERROLE_NAME}" --clusterrole "${CLUSTERROLE_NAME}" --serviceaccount "${NAMESPACE}:${SA}"
+
 ### Get the ServiceAccount's token Secret's name
-SECRET=$("${K8SC}" -n ${NAMESPACE} get serviceaccount ${SA} -o json | jq -Mr '.secrets[].name | select(contains("token"))')
+#SECRET=$("${K8SC}" -n "${NAMESPACE}" get serviceaccount "${SA}" -o json | jq -Mr '.secrets[].name | select(contains("token"))')
+SECRET=$("${K8SC}" -n "${NAMESPACE}" get serviceaccount "${SA}" -o json | jq -Mr '.secrets[].name')
+
 ### Extract the Bearer token from the Secret and decode
-TOKEN=$("${K8SC}" -n ${NAMESPACE} get secret ${SECRET} -o json | jq -Mr '.data.token' | base64 -d)
+TOKEN=$("${K8SC}" -n "${NAMESPACE}" get secret "${SECRET}" -o json | jq -Mr '.data.token' | base64 -d)
+
 ### Extract, decode and write the ca.crt to a temporary location
-"${K8SC}" -n ${NAMESPACE} get secret ${SECRET} -o json | jq -Mr '.data["ca.crt"]' | base64 -d > ${CART_FILE}
+"${K8SC}" -n "${NAMESPACE}" get secret "${SECRET}" -o json | jq -Mr '.data["ca.crt"]' | base64 -d > "${CART_FILE}"
+
 ### Get the API Server location
 APISERVER=https://$("${K8SC}" -n default get endpoints kubernetes --no-headers | awk '{ print $2 }')
 
