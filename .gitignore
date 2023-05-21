@@ -24,3 +24,6 @@ testbin/*
 *.swo
 *~
 *_secret_nevercommit_*
+
+# files related to cluster configuration
+*cluster*.txt
