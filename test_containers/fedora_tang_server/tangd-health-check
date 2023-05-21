@@ -45,7 +45,7 @@ enc="$(printf %s "${jwks}" \
 
 # Check for exchange keys.
 jose fmt --json "${enc}" --object --get keys --array \
-    || enc="$(printf {keys: [%s]} "${enc}")"
+        || enc=$(printf "{keys: [%s]}" "${enc}")
 #jose fmt --json="${enc}" --object --get keys --array --foreach=/dev/null \
 #    || die "No exchange keys found"
 
