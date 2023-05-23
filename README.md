@@ -16,7 +16,7 @@
 ## Introduction
 
 This operator helps on providing [NBDE](https://access.redhat.com/articles/6987053)
-for K8S/OpenShift. It deploys one or several tang servers automatically.
+for OpenShift/K8S. It deploys one or several tang servers automatically.
 The tang server container image to launch is configurable, and will use the latest one
 available by default. It has been developed using operator-sdk.
 
@@ -73,7 +73,7 @@ tang operator-bundle are:
 In order to install the tang operator, you must have previously installed
 an OpenShift/K8S cluster. For small computers, **CRC** (Code Ready Containers)
 project is recommended. In case normal OpenShift cluster is used, tang operator
-installation should not differ from the CRC one. 
+installation should not differ from the CRC one.
 
 Instructions for **CRC** installation can be observed
 in the [Links](#links) section.
@@ -82,7 +82,7 @@ the status of the different Pods, Deployments and Services. Required
 OpenShift client to install is `oc`, whose installation can be
 checked in the [Links](#links) section.
 
-Once K8S/OpenShift cluster is installed, tang operator can be installed
+Once OpenShift/K8S cluster is installed, tang operator can be installed
 with operator-sdk.
 operator-sdk installation is described in the [Links](#links) section.
 
@@ -318,7 +318,7 @@ INFO[0002] Operator "tang-operator" uninstalled
 
 ## Tests
 
-Execution of operator tests is pretty simple. These tests don't require any OpenShift&K8S infrastructure installed.
+Execution of operator tests is pretty simple. These tests don't require any OpenShift/K8S infrastructure installed.
 Execute **make test** from top directory and available tests will be executed:
 
 ```bash
@@ -333,7 +333,7 @@ setting up env vars
 ok  github.com/latchset/tang-operator/controllers  6.541s  coverage: 24.8% of statements
 ```
 
-In order to execute tests that require having a cluster ready, an OpenShift&K8S infrastructure (minikube/CRC)
+In order to execute tests that require having a cluster ready, an OpenShift/K8S infrastructure (minikube/CRC)
 must be running. To execute tang operator tests based on reconciliation, **CLUSTER_TANG_OPERATOR_TEST**
 environment variable must be set:
 
