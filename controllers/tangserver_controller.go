@@ -294,9 +294,7 @@ func (r *TangServerReconciler) UpdateKeys(k KeyObtainInfo, log logr.Logger) {
 		log.Info("New active keys created", "Active Keys", activeKeys, "Hidden Keys", hiddenKeys)
 	} else {
 		log.Info("No new active keys created", "Active Keys", activeKeys, "Hidden Keys", hiddenKeys)
-
 	}
-	log.Info("Updating status with keys", "Active Keys", activeKeys, "Hidden Keys", hiddenKeys)
 }
 
 // CreateNewKeysIfNecessary creates new keys if spec mandates so

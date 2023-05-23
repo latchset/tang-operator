@@ -56,7 +56,7 @@ EOF
 }
 
 if [ -z "${OPERATOR_SDK_RELEASE_VERSION}" ]; then
-  echo "INFO: operator-sdk release version is not set. Defaulting to ${OPERATOR_SDK_DEFAULT_RELEASE_VERSION}"
+  echo "INFO: operator-sdk release version is not set. Setting default version:${OPERATOR_SDK_DEFAULT_RELEASE_VERSION}"
   OPERATOR_SDK_RELEASE_VERSION="${OPERATOR_SDK_DEFAULT_RELEASE_VERSION}"
 fi
 
