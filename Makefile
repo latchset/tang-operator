@@ -94,7 +94,16 @@ test: manifests generate fmt vet ## Run tests.
 ##@ Build
 
 build: generate fmt vet ## Build manager binary.
+ifneq ($(V), )
+	@echo "GOPATH=${GOPATH}"
+	@echo "GOOS=${GOOS}"
+	@echo "GOARCH=${GOARCH}"
+	@echo "TANG_OPERATOR_CI=${TANG_OPERATOR_CI}"
+endif
 	go build -o bin/manager main.go
+ifneq ($(V), )
+	file bin/manager
+endif
 
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
@@ -124,12 +133,35 @@ deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in
 undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config.
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
 
-
+ifneq ($(GOARCH), )
+ifneq ($(GOOS), )
+CONTROLLER_GEN = $(GOPATH)/bin/$(GOOS)_$(GOARCH)/controller-gen
+else
+CONTROLLER_GEN = $(GOPATH)/bin/linux_$(GOARCH)/controller-gen
+endif
+else
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
+endif
+
+ifeq ($(TANG_OPERATOR_CI),1)
+CONTROLLER_GEN = $(GOPATH)/bin/controller-gen
+endif
 controller-gen: ## Download controller-gen locally if necessary.
 	$(call go-get-tool,$(CONTROLLER_GEN),sigs.k8s.io/controller-tools/cmd/controller-gen@v0.4.1)
 
+ifneq ($(GOARCH), )
+ifneq ($(GOOS), )
+KUSTOMIZE = $(GOPATH)/bin/$(GOOS)_$(GOARCH)/kustomize
+else
+KUSTOMIZE = $(GOPATH)/bin/linux_$(GOARCH)/kustomize
+endif
+else
 KUSTOMIZE = $(shell pwd)/bin/kustomize
+endif
+
+ifeq ($(TANG_OPERATOR_CI),1)
+KUSTOMIZE = $(GOPATH)/bin/kustomize
+endif
 kustomize: ## Download kustomize locally if necessary.
 	$(call go-get-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v3@v3.8.7)
 
@@ -141,8 +173,21 @@ set -e ;\
 TMP_DIR=$$(mktemp -d) ;\
 cd $$TMP_DIR ;\
 go mod init tmp ;\
-echo "Downloading $(2)" ;\
+echo "V=$$V TANG_OPERATOR_CI=$$TANG_OPERATOR_CI GOPATH=$$GOPATH GOARCH=$$GOARCH GOOS=$$GOOS Downloading $(2)" ;\
+if [ -n "${GOARCH}" ]; then \
+PREV_GOARCH=${GOARCH}; \
+if [ -n "${TANG_OPERATOR_CI}" ]; then \
+GOARCH= go get $(2) ;\
+else \
+go get $(2) ;\
+fi ;\
+GOARCH=${PREV_GOARCH}; \
+else \
 GOBIN=$(PROJECT_DIR)/bin go get $(2) ;\
+fi ;\
+if [ "$$V" == "1" ]; then \
+  find $$GOPATH -type f -iname controller-gen -exec file {} \; ;\
+fi; \
 rm -rf $$TMP_DIR ;\
 }
 endef
