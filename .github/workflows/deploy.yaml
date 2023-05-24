@@ -1,8 +1,9 @@
-name: verify
+---
+name: "Default compilation, tests and deploy"
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths-ignore:
       - '**.md'
   pull_request:
@@ -10,19 +11,19 @@ on:
       - '**.md'
 
 jobs:
-
-  verify:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
 
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.16
+        go-version: 1.17.6
 
     - name: Build
-      run: make
+      run: make build
 
     - name: Test
       run: make test
@@ -38,4 +39,7 @@ jobs:
       run: CLUSTER_TANG_OPERATOR_TEST=1 make test
 
     - name: Deploy and Scorecard
-      run: sh .github/workflows/scripts/retrieve_and_run_operator_sdk.sh "v1.28.0" "5m" "quay.io/sec-eng-special/tang-operator-bundle" "${GITHUB_HEAD_REF}"
+      run: |
+        sh .github/workflows/scripts/retrieve_and_run_operator_sdk.sh \
+          "v1.28.0" "5m" "quay.io/sec-eng-special/tang-operator-bundle" \
+          "${GITHUB_HEAD_REF}"
