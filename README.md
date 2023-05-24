@@ -16,11 +16,11 @@
 ## Introduction
 
 This operator helps on providing [NBDE](https://access.redhat.com/articles/6987053)
-for OpenShift/K8S. It deploys one or several tang servers automatically.
-The tang server container image to launch is configurable, and will use the latest one
+for OpenShift/K8S. It deploys one or several Tang servers automatically.
+The Tang server container image to launch is configurable, and will use the latest one
 available by default. It has been developed using operator-sdk.
 
-The tang-operator avoids having to follow all tang installation steps, and leverages
+The tang-operator avoids having to follow all Tang installation steps, and leverages
 some of the features provided by OpenShift: multi-replica deployment, scale-in/out,
 scale up/down or traffic load balancing.
 
@@ -31,15 +31,15 @@ if executed manually. Examples of this operations are:
 - hidden keys deletion
 
 Up to date, it can be deployed as a CRD, containing its proper
-configuration values to perform appropriate tang server operations.
+configuration values to perform appropriate Tang server operations.
 
 An introductory video can be seen in next link:
 [NBDE in OpenShift: tang-operator basics](https://youtu.be/hmMSIkBoGoY)
 
 ## Versions
 
-Versions released up to date of the tang operator and the
-tang operator-bundle are:
+Versions released up to date of the Tang operator and the
+Tang operator-bundle are:
 
 - v0.0.1:  Hello world version
 - v0.0.2:  Basic version with no fields still updated
@@ -64,15 +64,15 @@ tang operator-bundle are:
 - v0.0.21: Use tangd-healthcheck for aliveness and readiness, separating intervals
 - v0.0.22: Remove personal accounts and use organization ones
 - v0.0.23: Selective hidden keys deletion
-- v0.0.24: Execute tang container pod as non root user
+- v0.0.24: Execute Tang container pod as non root user
 - v0.0.25: Allow key handling without cluster role configuration
-- v0.0.26: Use RHEL9 tang container version
+- v0.0.26: Use RHEL9 Tang container version
 
 ## Installation
 
-In order to install the tang operator, you must have previously installed
+In order to install the Tang operator, you must have previously installed
 an OpenShift/K8S cluster. For small computers, **CRC** (Code Ready Containers)
-project is recommended. In case normal OpenShift cluster is used, tang operator
+project is recommended. In case normal OpenShift cluster is used, Tang operator
 installation should not differ from the CRC one.
 
 Instructions for **CRC** installation can be observed
@@ -82,11 +82,11 @@ the status of the different Pods, Deployments and Services. Required
 OpenShift client to install is `oc`, whose installation can be
 checked in the [Links](#links) section.
 
-Once OpenShift/K8S cluster is installed, tang operator can be installed
+Once OpenShift/K8S cluster is installed, Tang operator can be installed
 with operator-sdk.
 operator-sdk installation is described in the [Links](#links) section.
 
-In order to deploy the latest version of the tang operator, check latest released
+In order to deploy the latest version of the Tang operator, check latest released
 version in the [Versions](#versions) section, and install the appropriate version
 bundle. For example, in case latest version is **0.0.26**, the command to execute
 will be:
@@ -112,7 +112,7 @@ $ operator-sdk run bundle quay.io/sec-eng-special/tang-operator-bundle:multi-arc
 ```
 
 If the message **OLM has successfully installed** is displayed, it is normally a
-sign of a proper installation of the tang operator.
+sign of a proper installation of the Tang operator.
 
 If a message similar to **"failed open: failed to do request: context deadline exceeded"**,
 it is possible that a timeout is taking place. Try to increase the timeout in case
@@ -126,7 +126,7 @@ INFO[0008] Successfully created registry pod: quay-io-sec-eng-special-tang-opera
 INFO[0031] OLM has successfully installed "tang-operator.v0.0.26"
 ```
 
-Additionally, correct tang operator installation can be observed if an output like
+Additionally, correct Tang operator installation can be observed if an output like
 the following is observed when prompting for installed pods:
 
 ```bash
@@ -137,11 +137,11 @@ quay-io-tang-operator-bundle-v0.0.26                1/1   Running   0        90s
 tang-operator-controller-manager-5c9488d8dd-mgmsf   2/2   Running   0        52s
 ```
 
-Note the **Completed** and **Running** state for the different tang operator pods.
+Note the **Completed** and **Running** state for the different Tang operator pods.
 
 Once operator is correctly installed, appropriate configuration can be applied
 from `config` directory. Minimal installation, that just provides the number
-of replicas (1) to use, is the recommended tang operator configuration to apply:
+of replicas (1) to use, is the recommended Tang operator configuration to apply:
 
 ```bash
 $ oc apply -f config/minimal
@@ -149,8 +149,8 @@ namespace/nbde created
 tangserver.daemons.redhat.com/tangserver created
 ```
 
-In case tang operator is appropriately executed, **nbde** namespace should contain
-the service, deployment and pod associated to the tang operator:
+In case Tang operator is appropriately executed, **nbde** namespace should contain
+the service, deployment and pod associated to the Tang operator:
 
 ```
 $ oc -n nbde get services
@@ -170,10 +170,10 @@ Note the **Running** state for the `tangserver` pods.
 
 ## Compilation
 
-Compilation of tang operator can be released in top directory, by executing
+Compilation of Tang operator can be released in top directory, by executing
 **make docker-build**. The name of the image must be provided. In case there
 is no requirement to update the version, same version compared to the last
-version can be used. Otherwise, if new version of the tang operator is going
+version can be used. Otherwise, if new version of the Tang operator is going
 to be released, it is recommended to increase version appropriately.
 
 In this case, same version is used. Last released version can be observed in
@@ -221,7 +221,7 @@ $ docker push quay.io/sec-eng-special/tang-operator-bundle:latest
 
 - Compile operator:
 
-Compile tang operator code, specifying new version,
+Compile Tang operator code, specifying new version,
 by using **make docker-build** command:
 
 ```bash
@@ -334,7 +334,7 @@ ok  github.com/latchset/tang-operator/controllers  6.541s  coverage: 24.8% of st
 ```
 
 In order to execute tests that require having a cluster ready, an OpenShift/K8S infrastructure (minikube/CRC)
-must be running. To execute tang operator tests based on reconciliation, **CLUSTER_TANG_OPERATOR_TEST**
+must be running. To execute Tang operator tests based on reconciliation, **CLUSTER_TANG_OPERATOR_TEST**
 environment variable must be set:
 
 ```bash
