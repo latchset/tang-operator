@@ -93,8 +93,9 @@ func GetRESTClient() (*rest.RESTClient, error) {
 // :param string namespace: namespace of the Pod.
 // :param io.Reader stdin: Standard Input if necessary, otherwise `nil`
 // :return: string: Output of the command. (STDOUT)
-//          string: Errors. (STDERR)
-//           error: If any error has occurred otherwise `nil`
+//
+//	string: Errors. (STDERR)
+//	 error: If any error has occurred otherwise `nil`
 func podCommandExec(command, containerName, podName, namespace string, stdin io.Reader) (string, string, error) {
 	config, err := GetClusterClientConfig()
 	if err != nil {

@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 // Package v1alpha1 contains API Schema definitions for the daemons v1alpha1 API group
-//+kubebuilder:object:generate=true
-//+groupName=daemons.redhat.com
+// +kubebuilder:object:generate=true
+// +groupName=daemons.redhat.com
 package v1alpha1
 
 import (

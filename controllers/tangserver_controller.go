@@ -75,7 +75,7 @@ func isInstanceMarkedToBeDeleted(tangserver *daemonsv1alpha1.TangServer) bool {
 	return tangserver.GetDeletionTimestamp() != nil
 }
 
-//dumpToErrFile allows dumping string to error file
+// dumpToErrFile allows dumping string to error file
 func dumpToErrFile(msg string) {
 	f, err := os.OpenFile("/tmp/tangserver-error", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
@@ -157,8 +157,8 @@ func (r *TangServerReconciler) checkCRReadyForDeletion(ctx context.Context, tang
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.8.3/pkg/reconcile
-//+kubebuilder:rbac:groups=apps.redhat,resources=tangservers,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=apps.redhat,resources=tangservers/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=apps.redhat,resources=tangservers,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=apps.redhat,resources=tangservers/status,verbs=get;update;patch
 func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	l := log.FromContext(ctx)
 
