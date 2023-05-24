@@ -335,22 +335,6 @@ setting up env vars
 ok  github.com/latchset/tang-operator/controllers  6.541s  coverage: 24.8% of statements
 ```
 
-In order to execute tests that require having a cluster ready, an OpenShift/K8S infrastructure (minikube/CRC)
-must be running. To execute Tang operator tests based on reconciliation, **CLUSTER_TANG_OPERATOR_TEST**
-environment variable must be set:
-
-```bash
-$ CLUSTER_TANG_OPERATOR_TEST=1 make test
-...
-go fmt ./...
-go vet ./...
-...
-setting up env vars
-?   github.com/latchset/tang-operator      [no test files]
-?   github.com/latchset/tang-operator/api/v1alpha1 [no test files]
-ok  github.com/latchset/tang-operator/controllers  9.303s  coverage: 36.5% of statements
-```
-
 As shown previously, coverage is calculated after test execution. Coverage data is dumped
 to file **coverage.out**. To inspect coverage graphically, it can be observed by executing
 next command:
