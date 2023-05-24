@@ -263,7 +263,8 @@ func createNewPairOfKeys(k KeyObtainInfo, log logr.Logger) error {
 
 // rotateUnadvertisedKeys function rotate key file, moving it to hidden file
 // TODO: Rotate the key corresponding to a particular signing key
-//       Right now, all unadvertised keys will be rotated
+//
+//	Right now, all unadvertised keys will be rotated
 func rotateUnadvertisedKeys(krinfo KeyRotateInfo, log logr.Logger) error {
 	var ge error
 	log.Info("rotateUnadvertisedKeys", "Advertised Key Info", krinfo.KeyFileName)

@@ -170,6 +170,7 @@ Note the **Running** state for the `tangserver` pods.
 
 ## Compilation
 
+Minimum `go` version for compilation is **1.19.6**. Smaller versions might not work.
 Compilation of Tang operator can be released in top directory, by executing
 **make docker-build**. The name of the image must be provided. In case there
 is no requirement to update the version, same version compared to the last

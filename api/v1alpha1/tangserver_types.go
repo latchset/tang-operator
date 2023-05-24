@@ -179,8 +179,8 @@ type TangServerStatus struct {
 	ServiceExternalUrl string `json:"serviceExternalUrl,omitempty"`
 }
 
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
 // +kubebuilder:printcolumn:name="KeyPath",type="string",JSONPath=".spec.keypath",description="Directory to use for key generation"
 // +kubebuilder:printcolumn:name="Replicas",type="integer",JSONPath=".spec.replicas",description="Replicas to launch for a particular deployment"
 // +kubebuilder:printcolumn:name="Image",type="string",JSONPath=".spec.replicas",description="Container Image to use"
