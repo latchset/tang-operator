@@ -1,3 +1,5 @@
+---
+name: "Shellcheck"
 on:
   push:
     branches:
@@ -8,7 +10,6 @@ on:
     paths-ignore:
       - '**.md'
 
-name: shellcheck
 permissions: {}
 
 jobs:

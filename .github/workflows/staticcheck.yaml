@@ -1,5 +1,5 @@
 ---
-name: "staticcheck"
+name: "Staticcheck"
 on:
   push:
     branches:
@@ -10,8 +10,8 @@ on:
     paths:
       - '**.go'
 jobs:
-  ci:
-    name: "staticcheck"
+  staticcheck:
+    name: "Staticcheck"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
