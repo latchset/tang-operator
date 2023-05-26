@@ -28,6 +28,8 @@ GITHUB_BRANCH="${4##*/}"
 BUNDLE_VERSION="${5}"
 
 test -z "${GITHUB_BRANCH}" && GITHUB_BRANCH="main"
+ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n "$(uname -m)" ;; esac)
+OS=$(uname | awk '{print tolower($0)}')
 
 MAKEFILE_BASE_PATH="https://raw.githubusercontent.com/latchset/tang-operator/${GITHUB_BRANCH}/Makefile"
 MAKEFILE_BASE_PATH_FROM_SHA="https://raw.githubusercontent.com/latchset/tang-operator/${GITHUB_SHA}/Makefile"
@@ -51,6 +53,8 @@ GITHUB_BRANCH="${GITHUB_BRANCH}"
 BUNDLE_IMG="${BUNDLE_IMG}"
 BUNDLE_VERSION="${BUNDLE_VERSION}"
 BUNDLE_IMG_VERSION="${BUNDLE_IMG_VERSION}"
+ARCH=${ARCH}
+OS=${OS}
 ==================$0 INFO ===================
 EOF
 }
@@ -59,6 +63,8 @@ if [ -z "${OPERATOR_SDK_RELEASE_VERSION}" ]; then
   echo "INFO: operator-sdk release version is not set. Setting default version:${OPERATOR_SDK_DEFAULT_RELEASE_VERSION}"
   OPERATOR_SDK_RELEASE_VERSION="${OPERATOR_SDK_DEFAULT_RELEASE_VERSION}"
 fi
+
+OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/${OPERATOR_SDK_RELEASE_VERSION}
 
 if [ -z "${TIMEOUT}" ]; then
   echo "INFO: using default timeout: ${DEFAULT_TIMEOUT}"
@@ -84,7 +90,14 @@ fi
 BUNDLE_IMG_VERSION="${BUNDLE_IMG}:v${BUNDLE_VERSION}"
 dump_info
 
-curl -L -o "$(pwd)/operator-sdk" "https://github.com/operator-framework/operator-sdk/releases/download/${OPERATOR_SDK_RELEASE_VERSION}/operator-sdk_linux_amd64"
+curl -L -o "operator-sdk_${OS}_${ARCH}" -L "${OPERATOR_SDK_DL_URL}/operator-sdk_${OS}_${ARCH}"
+gpg --keyserver keyserver.ubuntu.com --recv-keys 052996E2A20B5C7E
+curl -LO "${OPERATOR_SDK_DL_URL}"/checksums.txt
+curl -LO "${OPERATOR_SDK_DL_URL}"/checksums.txt.asc
+gpg -u "Operator SDK (release) <cncf-operator-sdk@cncf.io>" --verify checksums.txt.asc
+grep "operator-sdk_${OS}_${ARCH}" checksums.txt | sha256sum -c -
+
+mv "operator-sdk_${OS}_${ARCH}" "$(pwd)/operator-sdk"
 chmod +x "$(pwd)/operator-sdk"
 "$(pwd)"/operator-sdk olm install --timeout "${TIMEOUT}"
 "$(pwd)"/operator-sdk olm status
