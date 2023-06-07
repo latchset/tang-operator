@@ -24,7 +24,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/go-logr/logr"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -106,26 +105,25 @@ func updateUID(cr *daemonsv1alpha1.TangServer, req ctrl.Request) {
 }
 
 // finalizeTangServerApp runs required tasks before deleting the objects owned by the CR
-func (r *TangServerReconciler) finalizeTangServer(log logr.Logger, cr *daemonsv1alpha1.TangServer) error {
+func (r *TangServerReconciler) finalizeTangServer(cr *daemonsv1alpha1.TangServer) error {
 	// TODO(user): Add the cleanup steps that the operator
 	// needs to do before the CR can be deleted. Examples
 	// of finalizers include performing backups and deleting
 	// resources that are not owned by this CR, like a PVC.
-	log.Info("Successfully finalized TangServer")
+	GetLogInstance().Info("Successfully finalized TangServer")
 	return nil
 }
 
 // checkCRReadyForDeletion will check if CR can be deleted appropriately
 func (r *TangServerReconciler) checkCRReadyForDeletion(ctx context.Context, tangserver *daemonsv1alpha1.TangServer) (ctrl.Result, error) {
-	l := log.FromContext(ctx)
 	if contains(tangserver.GetFinalizers(), DEFAULT_TANG_FINALIZER) {
 		// Run the finalizer logic
-		err := r.finalizeTangServer(l, tangserver)
+		err := r.finalizeTangServer(tangserver)
 		if err != nil {
 			// Don't remove the finalizer if we failed to finalize the object
 			return ctrl.Result{}, err
 		}
-		l.Info("TangServer finalizers completed")
+		GetLogInstance().Info("TangServer finalizers completed")
 		// Remove finalizer once the finalizer logic has run
 		controllerutil.RemoveFinalizer(tangserver, DEFAULT_TANG_FINALIZER)
 		err = r.Update(ctx, tangserver)
@@ -134,7 +132,7 @@ func (r *TangServerReconciler) checkCRReadyForDeletion(ctx context.Context, tang
 			return ctrl.Result{}, err
 		}
 	}
-	l.Info("TangServer can be deleted now")
+	GetLogInstance().Info("TangServer can be deleted now")
 	return ctrl.Result{}, nil
 }
 
@@ -161,6 +159,7 @@ func (r *TangServerReconciler) checkCRReadyForDeletion(ctx context.Context, tang
 // +kubebuilder:rbac:groups=apps.redhat,resources=tangservers/status,verbs=get;update;patch
 func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	l := log.FromContext(ctx)
+	SetLogInstance(l)
 
 	tangserver := &daemonsv1alpha1.TangServer{
 		ObjectMeta: metav1.ObjectMeta{
@@ -184,14 +183,14 @@ func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	}
 
 	// Reconcile Deployment object
-	result, err := r.reconcileDeployment(tangserver, l)
+	result, err := r.reconcileDeployment(tangserver)
 	if err != nil {
 		l.Error(err, "Error on deployment reconciliation", "Error:", err.Error())
 		dumpToErrFile("Error on deployment reconciliation, Error:" + err.Error() + "\n")
 		return result, err
 	}
 	// Reconcile Service object
-	result, err = r.reconcileService(tangserver, l)
+	result, err = r.reconcileService(tangserver)
 	if err != nil {
 		l.Error(err, "Error on service reconciliation")
 		return result, err
@@ -199,7 +198,7 @@ func (r *TangServerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 
 	// Reconcile finished, requeue for key refresh if necessary
 	var reconcile bool
-	if result, reconcile = r.reconcilePeriodic(tangserver, l); reconcile {
+	if result, reconcile = r.reconcilePeriodic(tangserver); reconcile {
 		return result, nil
 	}
 	return ctrl.Result{}, nil
@@ -236,7 +235,7 @@ func mustRedeploy(new *appsv1.Deployment, prev *appsv1.Deployment) bool {
 }
 
 // handleHiddenKeys rotate keys if user specifies so in the spec
-func (r *TangServerReconciler) handleHiddenKeys(keyinfo KeyObtainInfo, log logr.Logger) bool {
+func (r *TangServerReconciler) handleHiddenKeys(keyinfo KeyObtainInfo) bool {
 	rotated := false
 	// check hidden keys to be maintained (and delete those in the status non specified)
 	keepKeyMap := make(KeySelectiveMap, 0)
@@ -253,26 +252,27 @@ func (r *TangServerReconciler) handleHiddenKeys(keyinfo KeyObtainInfo, log logr.
 	}
 	// only delete selectively if have something to keep
 	if len(keepKeyMap) > 0 {
-		deleteHiddenKeysSelectively(keepKeyMap, keyinfo, log)
+		deleteHiddenKeysSelectively(keepKeyMap, keyinfo)
 	}
 
 	// check if key is in active keys and rotate it
 	for _, hk := range keyinfo.TangServer.Spec.HiddenKeys {
 		for _, ak := range keyinfo.TangServer.Status.ActiveKeys {
 			if ak.Sha1 == hk.Sha1 || ak.Sha256 == hk.Sha256 {
-				log.Info("Key must be rotated", "sha1", hk.Sha1, "sha256", hk.Sha256)
+				GetLogInstance().Info("Key must be rotated", "sha1", hk.Sha1,
+					"sha256", hk.Sha256)
 				kr := KeyRotateInfo{
 					KeyInfo:     &keyinfo,
 					KeyFileName: ak.FileName,
 				}
-				if err := rotateKey(kr, log); err == nil {
+				if err := rotateKey(kr); err == nil {
 					rotated = true
-					log.Info("Key rotated correctly", "sha1", hk.Sha1, "sha256", hk.Sha256)
+					GetLogInstance().Info("Key rotated correctly", "sha1", hk.Sha1, "sha256", hk.Sha256)
 					keyinfo.TangServer.Status.TangServerError = daemonsv1alpha1.NoError
 					r.Recorder.Event(keyinfo.TangServer, "Normal", "KeyRotation", fmt.Sprintf("Key Rotated Correctly, Key File: %s", ak.FileName))
-					rotateUnadvertisedKeys(kr, log)
+					rotateUnadvertisedKeys(kr)
 				} else {
-					log.Error(err, "Key not rotated correctly", "sha1", hk.Sha1, "sha256", hk.Sha256)
+					GetLogInstance().Error(err, "Key not rotated correctly", "sha1", hk.Sha1, "sha256", hk.Sha256)
 					r.Recorder.Event(keyinfo.TangServer, "Error", "KeyRotation", fmt.Sprintf("Key NOT Rotated Correctly, Key File: %s", ak.FileName))
 					keyinfo.TangServer.Status.TangServerError = daemonsv1alpha1.ActiveKeyNotFoundError
 				}
@@ -283,37 +283,39 @@ func (r *TangServerReconciler) handleHiddenKeys(keyinfo KeyObtainInfo, log logr.
 }
 
 // UpdateKeys updates keys in the CR status
-func (r *TangServerReconciler) UpdateKeys(k KeyObtainInfo, log logr.Logger) {
-	newKeysCreated := r.CreateNewKeysIfNecessary(k, log)
+func (r *TangServerReconciler) UpdateKeys(k KeyObtainInfo) {
+	newKeysCreated := r.CreateNewKeysIfNecessary(k)
 	// Read first hidden keys, as created will be retrieved from active keys (if exists)
-	hiddenKeys, _ := readHiddenKeys(k, log, ONLY_ADVERTISED)
-	activeKeys, _ := readActiveKeys(k, log, ONLY_ADVERTISED)
+	hiddenKeys, _ := readHiddenKeys(k, ONLY_ADVERTISED)
+	activeKeys, _ := readActiveKeys(k, ONLY_ADVERTISED)
 	k.TangServer.Status.ActiveKeys = activeKeys
 	k.TangServer.Status.HiddenKeys = hiddenKeys
 	if newKeysCreated {
-		log.Info("New active keys created", "Active Keys", activeKeys, "Hidden Keys", hiddenKeys)
+		GetLogInstance().Info("New active keys created", "Active Keys",
+			activeKeys, "Hidden Keys", hiddenKeys)
 	} else {
-		log.Info("No new active keys created", "Active Keys", activeKeys, "Hidden Keys", hiddenKeys)
+		GetLogInstance().Info("No new active keys created",
+			"Active Keys", activeKeys, "Hidden Keys", hiddenKeys)
 	}
 }
 
 // CreateNewKeysIfNecessary creates new keys if spec mandates so
-func (r *TangServerReconciler) CreateNewKeysIfNecessary(k KeyObtainInfo, log logr.Logger) bool {
+func (r *TangServerReconciler) CreateNewKeysIfNecessary(k KeyObtainInfo) bool {
 	requiredActiveKeyPairs := daemonsv1alpha1.DefaultActiveKeyPairs
 	if k.TangServer.Spec.RequiredActiveKeyPairs > 0 {
 		requiredActiveKeyPairs = k.TangServer.Spec.RequiredActiveKeyPairs
-		log.Info("Using specified required active keys", "Key Amount", requiredActiveKeyPairs)
+		GetLogInstance().Info("Using specified required active keys", "Key Amount", requiredActiveKeyPairs)
 	} else {
-		log.Info("Using default active keys", "Key Amount", requiredActiveKeyPairs)
+		GetLogInstance().Info("Using default active keys", "Key Amount", requiredActiveKeyPairs)
 	}
-	log.Info("createNewKeysIfNecessary", "Active Keys", uint32(len(k.TangServer.Status.ActiveKeys)), "Required Active Keys", requiredActiveKeyPairs)
+	GetLogInstance().Info("createNewKeysIfNecessary", "Active Keys", uint32(len(k.TangServer.Status.ActiveKeys)), "Required Active Keys", requiredActiveKeyPairs)
 	// Only create if more than one required active key pairs. Otherwise, they are automatically created
 	if uint32(len(k.TangServer.Status.ActiveKeys)) < requiredActiveKeyPairs && requiredActiveKeyPairs > 1 {
-		if err := createNewPairOfKeys(k, log); err != nil {
-			log.Error(err, "Unable to create new keys", "KeyObtainInfo", k)
+		if err := createNewPairOfKeys(k); err != nil {
+			GetLogInstance().Error(err, "Unable to create new keys", "KeyObtainInfo", k)
 			r.Recorder.Event(k.TangServer, "Error", "NewKeys", "Unable to create new pair of keys")
 		} else {
-			log.Info("New Active Keys Created", "KeyObtainInfo", k, "Active Keys", uint32(len(k.TangServer.Status.ActiveKeys)), "Required Active Keys", requiredActiveKeyPairs)
+			GetLogInstance().Info("New Active Keys Created", "KeyObtainInfo", k, "Active Keys", uint32(len(k.TangServer.Status.ActiveKeys)), "Required Active Keys", requiredActiveKeyPairs)
 			r.Recorder.Event(k.TangServer, "Normal", "NewKeys", fmt.Sprintf("Created %d active pair of keys", uint32(len(k.TangServer.Status.ActiveKeys))))
 			return true
 		}
@@ -322,9 +324,9 @@ func (r *TangServerReconciler) CreateNewKeysIfNecessary(k KeyObtainInfo, log log
 }
 
 // reconcileDeployment creates deployment appropriate for this CR
-func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServer, log logr.Logger) (ctrl.Result, error) {
+func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServer) (ctrl.Result, error) {
 	// Define a new Deployment object
-	log.Info("reconcileDeployment")
+	GetLogInstance().Info("reconcileDeployment")
 	deployment := getDeployment(cr)
 
 	// Set tangserver instance as the owner and controller of the Deployment
@@ -337,7 +339,7 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 	deploymentFound := &appsv1.Deployment{}
 	err := r.Get(context.Background(), types.NamespacedName{Name: deployment.Name, Namespace: deployment.Namespace}, deploymentFound)
 	if err != nil && errors.IsNotFound(err) {
-		log.Info("Creating a new Deployment", "Deployment.Namespace", deployment.Namespace, "Deployment.Name", deployment.Name)
+		GetLogInstance().Info("Creating a new Deployment", "Deployment.Namespace", deployment.Namespace, "Deployment.Name", deployment.Name)
 		err = r.Create(context.Background(), deployment)
 		if err != nil {
 			cr.Status.TangServerError = daemonsv1alpha1.CreateError
@@ -350,14 +352,14 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 		return ctrl.Result{}, err
 	} else {
 		// Deployment already exists
-		log.Info("Deployment already exists", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
-		log.Info("Checking redeployment")
+		GetLogInstance().Info("Deployment already exists", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
+		GetLogInstance().Info("Checking redeployment")
 		// Check if it is needed to be redeployed
 		if mustRedeploy(deployment, deploymentFound) {
-			log.Info("Updating deployment, must redeploy")
+			GetLogInstance().Info("Updating deployment, must redeploy")
 			err = r.Update(context.Background(), deployment)
 			if err != nil {
-				log.Error(err, "Failed to redeploy", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
+				GetLogInstance().Error(err, "Failed to redeploy", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
 				r.Recorder.Event(cr, "Error", "Redeploy", "Failed to redeploy")
 				return ctrl.Result{}, err
 			}
@@ -366,11 +368,11 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 
 	// Ensure deployment replicas match the desired state
 	if !reflect.DeepEqual(deploymentFound.Spec.Replicas, deployment.Spec.Replicas) {
-		log.Info("Current deployment do not match Tang Server configured Replicas")
+		GetLogInstance().Info("Current deployment do not match Tang Server configured Replicas")
 		// Update the replicas
 		err = r.Update(context.Background(), deployment)
 		if err != nil {
-			log.Error(err, "Failed to update Deployment.", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
+			GetLogInstance().Error(err, "Failed to update Deployment.", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
 			r.Recorder.Event(cr, "Error", "Update", fmt.Sprintf("Failed to update deployment, name:%s, namespace:%s", deploymentFound.Name, deploymentFound.Namespace))
 			return ctrl.Result{}, err
 		}
@@ -378,11 +380,11 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 
 	// Ensure deployment container image match the desired state, returns true if deployment needs to be updated
 	if checkDeploymentImage(deploymentFound, deployment) {
-		log.Info("Current deployment image version do not match TangServers configured version")
+		GetLogInstance().Info("Current deployment image version do not match TangServers configured version")
 		// Update the image
 		err = r.Update(context.Background(), deployment)
 		if err != nil {
-			log.Error(err, "Failed to update Deployment", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
+			GetLogInstance().Error(err, "Failed to update Deployment", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
 			r.Recorder.Event(cr, "Error", "Update", fmt.Sprintf("Failed to update deployment, name:%s, namespace:%s", deploymentFound.Name, deploymentFound.Namespace))
 			return ctrl.Result{}, err
 		}
@@ -391,12 +393,12 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 	// Check if the deployment is ready and update replicas as they get ready
 	deploymentReady := isDeploymentReady(deploymentFound)
 	ready := getDeploymentReadyReplicas(deploymentFound)
-	log.Info("Deployment Found Info", "Replicas", deploymentFound.Status.Replicas, "Ready", deploymentFound.Status.ReadyReplicas)
-	log.Info("Updating status with ready/running replicas", "Ready", ready, "Running", cr.Spec.Replicas, "DeploymentReady", deploymentReady)
+	GetLogInstance().Info("Deployment Found Info", "Replicas", deploymentFound.Status.Replicas, "Ready", deploymentFound.Status.ReadyReplicas)
+	GetLogInstance().Info("Updating status with ready/running replicas", "Ready", ready, "Running", cr.Spec.Replicas, "DeploymentReady", deploymentReady)
 	cr.Status.Running = cr.Spec.Replicas
 	cr.Status.Ready = ready
 	if !deploymentReady {
-		log.Info("Deployment not ready", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
+		GetLogInstance().Info("Deployment not ready", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
 	} else {
 		// Create list options to get deployment pods and extract podname
 		podList := &corev1.PodList{}
@@ -407,12 +409,12 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 		// List the pods for this deployment
 		err = r.List(context.Background(), podList, listOpts...)
 		if err != nil || len(podList.Items) == 0 {
-			log.Error(err, "Failed to list Pods, required for keys", "Deployment.Namespace",
+			GetLogInstance().Error(err, "Failed to list Pods, required for keys", "Deployment.Namespace",
 				deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
 			r.Recorder.Event(cr, "Error", "PodList", fmt.Sprintf("Failed to list pods in deployment, name:%s, namespace:%s", deploymentFound.Name, deploymentFound.Namespace))
 			return ctrl.Result{}, err
 		}
-		log.Info("Deployment ready", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
+		GetLogInstance().Info("Deployment ready", "Deployment.Namespace", deploymentFound.Namespace, "Deployment.Name", deploymentFound.Name)
 		k := KeyObtainInfo{
 			PodName:    podList.Items[0].Name,
 			Namespace:  deploymentFound.Namespace,
@@ -420,39 +422,39 @@ func (r *TangServerReconciler) reconcileDeployment(cr *daemonsv1alpha1.TangServe
 			TangServer: cr,
 		}
 		if cr.Spec.HiddenKeys == nil {
-			log.Info("No hidden keys specified")
+			GetLogInstance().Info("No hidden keys specified")
 		} else if len(cr.Spec.HiddenKeys) == 0 {
-			log.Info("Hidden keys specified with len 0, deleting all hidden keys")
-			if deleteAllHiddenKeys(k, log) {
+			GetLogInstance().Info("Hidden keys specified with len 0, deleting all hidden keys")
+			if deleteAllHiddenKeys(k) {
 				r.Recorder.Event(cr, "Normal", "HiddenKeysDeletion", "Hidden keys deleted correctly")
 			} else {
 				r.Recorder.Event(cr, "Error", "HiddenKeysDeletion", "Hidden keys not deleted correctly")
 			}
 		} else if len(cr.Spec.HiddenKeys) > 0 {
-			rotated := r.handleHiddenKeys(k, log)
+			rotated := r.handleHiddenKeys(k)
 			if rotated {
-				log.Info("Key(s) rotated", "Keys", cr.Spec.HiddenKeys)
+				GetLogInstance().Info("Key(s) rotated", "Keys", cr.Spec.HiddenKeys)
 				// if keys are rotated, set the counter of active keys retries to zero
 				// just in case no active keys exist
 				activeKeyRetries = 0
 			} else {
-				log.Info("Key(s) not rotated", "Keys", cr.Spec.HiddenKeys)
+				GetLogInstance().Info("Key(s) not rotated", "Keys", cr.Spec.HiddenKeys)
 			}
 		}
-		r.UpdateKeys(k, log)
+		r.UpdateKeys(k)
 	}
 	err = r.Client.Status().Update(context.Background(), cr)
 	if err != nil {
-		log.Error(err, "Unable to update TangServer status")
+		GetLogInstance().Error(err, "Unable to update TangServer status")
 		r.Recorder.Event(cr, "Error", "Update", "Unable to update TangServer status")
 		return ctrl.Result{}, err
 	}
 	return ctrl.Result{}, nil
 }
 
-func (r *TangServerReconciler) reconcileService(cr *daemonsv1alpha1.TangServer, log logr.Logger) (ctrl.Result, error) {
-	log.Info("reconcileService")
-	service := getService(cr, log)
+func (r *TangServerReconciler) reconcileService(cr *daemonsv1alpha1.TangServer) (ctrl.Result, error) {
+	GetLogInstance().Info("reconcileService")
+	service := getService(cr)
 
 	// Set TangServer instance as the owner and controller of the Service
 	if err := controllerutil.SetControllerReference(cr, service, r.Scheme); err != nil {
@@ -463,7 +465,7 @@ func (r *TangServerReconciler) reconcileService(cr *daemonsv1alpha1.TangServer, 
 	serviceFound := &corev1.Service{}
 	err := r.Get(context.Background(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, serviceFound)
 	if err != nil && errors.IsNotFound(err) {
-		log.Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
+		GetLogInstance().Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
 		err = r.Create(context.Background(), service)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -471,43 +473,43 @@ func (r *TangServerReconciler) reconcileService(cr *daemonsv1alpha1.TangServer, 
 		// Service created successfully - don't requeue
 		return ctrl.Result{}, nil
 	} else if err != nil {
-		log.Error(err, "Error on service Get")
+		GetLogInstance().Error(err, "Error on service Get")
 		r.Recorder.Event(cr, "Error", "Service", fmt.Sprintf("Error getting service: name:%s, namespace:%s", service.Name, service.Namespace))
 		return ctrl.Result{}, err
 	} else {
 		// Service already exists
-		log.Info("Service already exists", "Service.Namespace", serviceFound.Namespace, "Service.Name", serviceFound.Name)
+		GetLogInstance().Info("Service already exists", "Service.Namespace", serviceFound.Namespace, "Service.Name", serviceFound.Name)
 		if len(serviceFound.Status.LoadBalancer.Ingress) > 0 {
-			log.Info("Service Information", "Load Balancer IP", serviceFound.Status.LoadBalancer.Ingress[0].IP, "Load Balancer Hostname", serviceFound.Status.LoadBalancer.Ingress[0].Hostname)
+			GetLogInstance().Info("Service Information", "Load Balancer IP", serviceFound.Status.LoadBalancer.Ingress[0].IP, "Load Balancer Hostname", serviceFound.Status.LoadBalancer.Ingress[0].Hostname)
 			cr.Status.ServiceExternalUrl = getExternalServiceUrl(cr, serviceFound.Status.LoadBalancer.Ingress[0])
 			err := r.Client.Status().Update(context.Background(), cr)
 			if err != nil {
-				log.Error(err, "Unable to update TangServer status with Service IP URL")
+				GetLogInstance().Error(err, "Unable to update TangServer status with Service IP URL")
 				r.Recorder.Event(cr, "Error", "Update", "Unable to update TangServer status with Service IP URL")
 				return ctrl.Result{}, err
 			}
 		} else {
-			log.Info("Service Information, NO Ingress")
+			GetLogInstance().Info("Service Information, NO Ingress")
 		}
-		log.Info("Service Spec", "Spec", serviceFound.Spec)
-		log.Info("Service Status", "Status", serviceFound.Status)
+		GetLogInstance().Info("Service Spec", "Spec", serviceFound.Spec)
+		GetLogInstance().Info("Service Status", "Status", serviceFound.Status)
 	}
 	// Service reconcile finished
 	return ctrl.Result{}, nil
 }
 
-func (r *TangServerReconciler) reconcilePeriodic(cr *daemonsv1alpha1.TangServer, log logr.Logger) (ctrl.Result, bool) {
+func (r *TangServerReconciler) reconcilePeriodic(cr *daemonsv1alpha1.TangServer) (ctrl.Result, bool) {
 	if cr.Spec.KeyRefreshInterval != 0 {
-		log.Info("Key reconciliation non zero", "Refresh Interval", cr.Spec.KeyRefreshInterval)
+		GetLogInstance().Info("Key reconciliation non zero", "Refresh Interval", cr.Spec.KeyRefreshInterval)
 		return ctrl.Result{RequeueAfter: time.Duration(cr.Spec.KeyRefreshInterval) * time.Second}, true
 	} else if len(cr.Status.ActiveKeys) == 0 {
 		activeKeyRetries = activeKeyRetries + 1
 		cr.Status.TangServerError = daemonsv1alpha1.ActiveKeysError
-		log.Info("Retrying key retrieval", "Retries:", fmt.Sprint(activeKeyRetries))
+		GetLogInstance().Info("Retrying key retrieval", "Retries:", fmt.Sprint(activeKeyRetries))
 		r.Recorder.Event(cr, "Normal", "ActiveKeyRetrieval", fmt.Sprintf("Empty Active Key List Retries: %d", activeKeyRetries))
 		err := r.Client.Status().Update(context.Background(), cr)
 		if err != nil {
-			log.Error(err, "Unable to update TangServer status with active key retries and error")
+			GetLogInstance().Error(err, "Unable to update TangServer status with active key retries and error")
 			r.Recorder.Event(cr, "Error", "Update", "Unable to update TangServer status clearing active key retries and error")
 		}
 		return ctrl.Result{RequeueAfter: time.Duration(DEFAULT_RECONCILE_TIMER_NO_ACTIVE_KEYS) * time.Second}, true
@@ -516,7 +518,7 @@ func (r *TangServerReconciler) reconcilePeriodic(cr *daemonsv1alpha1.TangServer,
 		cr.Status.TangServerError = daemonsv1alpha1.NoError
 		err := r.Client.Status().Update(context.Background(), cr)
 		if err != nil {
-			log.Error(err, "Unable to update TangServer status clearing active key retries and error")
+			GetLogInstance().Error(err, "Unable to update TangServer status clearing active key retries and error")
 			r.Recorder.Event(cr, "Error", "Update", "Unable to update TangServer status clearing active key retries and error")
 		}
 	}

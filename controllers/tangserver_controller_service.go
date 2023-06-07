@@ -19,7 +19,6 @@ package controllers
 import (
 	"fmt"
 
-	"github.com/go-logr/logr"
 	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -50,13 +49,13 @@ func getServicePort(tangserver *daemonsv1alpha1.TangServer) uint32 {
 }
 
 // getService function returns correctly created service
-func getService(tangserver *daemonsv1alpha1.TangServer, log logr.Logger) *corev1.Service {
-	log.Info("getService")
+func getService(tangserver *daemonsv1alpha1.TangServer) *corev1.Service {
+	GetLogInstance().Info("getService")
 	labels := map[string]string{
 		"app": tangserver.Name,
 	}
 	servicePort := getServicePort(tangserver)
-	log.Info("Listening Port", "servicePort", servicePort)
+	GetLogInstance().Info("Listening Port", "servicePort", servicePort)
 	return &corev1.Service{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: DEFAULT_API_VERSION,

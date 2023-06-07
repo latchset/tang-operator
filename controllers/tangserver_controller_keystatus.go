@@ -19,7 +19,6 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/go-logr/logr"
 	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
 )
 
@@ -59,18 +58,18 @@ func keyStatusLockFilePath(k KeyAssociationInfo) string {
 	return getDefaultKeyPath(k.KeyInfo.TangServer) + "/" + KEY_STATUS_FILE_NAME + ".lock"
 }
 
-func deleteHiddenKeysSelectively(keepKeys KeySelectiveMap, keyinfo KeyObtainInfo, log logr.Logger) error {
+func deleteHiddenKeysSelectively(keepKeys KeySelectiveMap, keyinfo KeyObtainInfo) error {
 	// If Key Status File Exist, unmarshal it
 	statusFile := keyStatusFilePathWithTangServer(keyinfo.TangServer)
 	command := "cat " + statusFile
-	log.Info("deleteHiddenKeysSelectively", "Keys to keep", keepKeys)
+	GetLogInstance().Info("deleteHiddenKeysSelectively", "Keys to keep", keepKeys)
 	stdo, _, e := podCommandExec(command, "", keyinfo.PodName, keyinfo.Namespace, nil)
 	if e != nil {
-		log.Error(e, "deleteHiddenKeysSelectively: Unable to read status file", "statusFile", statusFile)
+		GetLogInstance().Error(e, "deleteHiddenKeysSelectively: Unable to read status file", "statusFile", statusFile)
 	} else {
 		var KeyStatusMap KeyAssociationMap
 		if err := json.Unmarshal([]byte(stdo), &KeyStatusMap); err != nil {
-			log.Error(err, "deleteHiddenKeysSelectively: Unable to unmarshal status file", "Status File", statusFile, "JSON content", stdo)
+			GetLogInstance().Error(err, "deleteHiddenKeysSelectively: Unable to unmarshal status file", "Status File", statusFile, "JSON content", stdo)
 			return err
 		}
 		// Join Both Sha Maps
@@ -88,11 +87,11 @@ func deleteHiddenKeysSelectively(keepKeys KeySelectiveMap, keyinfo KeyObtainInfo
 				for _, hsk := range keyinfo.TangServer.Status.HiddenKeys {
 					if k == hsk.Sha1 || k == hsk.Sha256 {
 						//delete signing and encryption hidden keys!!
-						log.Info("deleteHiddenKeysSelectively: deletePodFiles", "Key Association", v, "SHA1/SHA256 not found", k)
+						GetLogInstance().Info("deleteHiddenKeysSelectively: deletePodFiles", "Key Association", v, "SHA1/SHA256 not found", k)
 						if e := deletePodFile(keyinfo, v); e != nil {
-							log.Error(e, "deleteHiddenKeysSelectively: Error Deleting Key Association Files", "Key Association", v)
+							GetLogInstance().Error(e, "deleteHiddenKeysSelectively: Error Deleting Key Association Files", "Key Association", v)
 						} else {
-							log.Info("deleteHiddenKeysSelectively: Keys Deleted Correctly", "Key Association", v)
+							GetLogInstance().Info("deleteHiddenKeysSelectively: Keys Deleted Correctly", "Key Association", v)
 						}
 					}
 				}
@@ -102,21 +101,21 @@ func deleteHiddenKeysSelectively(keepKeys KeySelectiveMap, keyinfo KeyObtainInfo
 	return nil
 }
 
-func dumpKeyAssociation(k KeyAssociationInfo, log logr.Logger) error {
+func dumpKeyAssociation(k KeyAssociationInfo) error {
 	updateForbiddenMap(keyStatusFile())
 	// If lock file exists, do nothing
 	keyStatusLockFilePath := keyStatusLockFilePath(k)
 	command := "test -f " + keyStatusLockFilePath
 	_, _, err := podCommandExec(command, "", k.KeyInfo.PodName, k.KeyInfo.Namespace, nil)
 	if err == nil {
-		log.Info("Lock operation in progress")
+		GetLogInstance().Info("Lock operation in progress")
 		return nil
 	}
 	// Lock
 	command = "touch " + keyStatusLockFilePath
 	_, _, err = podCommandExec(command, "", k.KeyInfo.PodName, k.KeyInfo.Namespace, nil)
 	if err != nil {
-		log.Error(err, "Unable to lock status file")
+		GetLogInstance().Error(err, "Unable to lock status file")
 		return err
 	}
 	var KeyStatusMap KeyAssociationMap
@@ -131,9 +130,9 @@ func dumpKeyAssociation(k KeyAssociationInfo, log logr.Logger) error {
 	command = "cat " + statusFile
 	stdo, _, e := podCommandExec(command, "", k.KeyInfo.PodName, k.KeyInfo.Namespace, nil)
 	if e == nil {
-		log.Info("Updating status map with key status file")
+		GetLogInstance().Info("Updating status map with key status file")
 		if err = json.Unmarshal([]byte(stdo), &KeyStatusMap); err != nil {
-			log.Error(err, "Unable to unmarshal status file", "Status File", statusFile, "JSON content", stdo)
+			GetLogInstance().Error(err, "Unable to unmarshal status file", "Status File", statusFile, "JSON content", stdo)
 		}
 	}
 	delete(KeyStatusMap.KeyStatusSha1Map, k.KeyAssoc.Sha1)
@@ -142,19 +141,19 @@ func dumpKeyAssociation(k KeyAssociationInfo, log logr.Logger) error {
 	KeyStatusMap.KeyStatusSha256Map[k.KeyAssoc.Sha256] = k.KeyAssoc
 	keyStatus, err := json.Marshal(KeyStatusMap)
 	if err != nil {
-		log.Error(err, "Error on KeyStatusMap marshalling", "file", statusFile, "keyStatusMap", KeyStatusMap)
+		GetLogInstance().Error(err, "Error on KeyStatusMap marshalling", "file", statusFile, "keyStatusMap", KeyStatusMap)
 	}
-	log.Info("Dumping key status to file", "file", statusFile, "keyStatus", string(keyStatus))
-	err = dumpKeyStatusFileWithEchoRedirection(statusFile, keyStatus, k.KeyInfo.PodName, k.KeyInfo.Namespace, log)
+	GetLogInstance().Info("Dumping key status to file", "file", statusFile, "keyStatus", string(keyStatus))
+	err = dumpKeyStatusFileWithEchoRedirection(statusFile, keyStatus, k.KeyInfo.PodName, k.KeyInfo.Namespace)
 	if err != nil {
-		log.Error(err, "Error Dumping Key Status File", "file", statusFile, "keyStatus", string(keyStatus))
+		GetLogInstance().Error(err, "Error Dumping Key Status File", "file", statusFile, "keyStatus", string(keyStatus))
 	}
 
 	// Unlock
 	command = "rm -fr " + keyStatusLockFilePath
 	_, _, err = podCommandExec(command, "", k.KeyInfo.PodName, k.KeyInfo.Namespace, nil)
 	if err != nil {
-		log.Error(err, "Unable to delete lock status file")
+		GetLogInstance().Error(err, "Unable to delete lock status file")
 		return err
 	}
 	return err

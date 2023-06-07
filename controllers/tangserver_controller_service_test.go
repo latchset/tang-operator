@@ -53,7 +53,8 @@ var _ = Describe("TangServer controller service", func() {
 				Spec: daemonsv1alpha1.TangServerSpec{},
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
-			service := getService(tangServer, log.FromContext(ctx))
+			SetLogInstance(log.FromContext(ctx))
+			service := getService(tangServer)
 			Expect(service, Not(nil))
 			Expect(service.TypeMeta.Kind, DEFAULT_SERVICE_TYPE)
 			Expect(service.ObjectMeta.Name, getDefaultName(tangServer))
@@ -73,7 +74,8 @@ var _ = Describe("TangServer controller service", func() {
 				},
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
-			service := getService(tangServer, log.FromContext(ctx))
+			SetLogInstance(log.FromContext(ctx))
+			service := getService(tangServer)
 			Expect(service, Not(nil))
 			Expect(service.TypeMeta.Kind, DEFAULT_SERVICE_TYPE)
 			Expect(service.ObjectMeta.Name, getDefaultName(tangServer))
