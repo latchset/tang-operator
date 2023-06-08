@@ -67,7 +67,7 @@ Tang operator-bundle are:
 - v0.0.24: Execute Tang container pod as non root user
 - v0.0.25: Allow key handling without cluster role configuration
 - v0.0.26: Use RHEL9 Tang container version
-- v0.0.27: Update operator-sdk and supported Go version (1.19.6 and bigger)
+- v0.0.27: Update operator-sdk and supported Go version (1.19.6 and higher)
 - v0.0.28: Code refactor
 
 ## Installation
