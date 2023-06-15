@@ -29,3 +29,5 @@ CRD
 finalizers
 namespace
 nbde
+Staticcheck
+Shellcheck
