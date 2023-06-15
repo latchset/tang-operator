@@ -6,9 +6,11 @@ on:
     branches: [main]
     paths-ignore:
       - '**.md'
+      - '.wordlist.txt'
   pull_request:
     paths-ignore:
       - '**.md'
+      - '.wordlist.txt'
 
 jobs:
   deploy:
