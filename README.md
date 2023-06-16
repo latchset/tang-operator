@@ -338,7 +338,7 @@ go vet ./...
 setting up env vars
 ?       github.com/latchset/tang-operator       [no test files]
 ?       github.com/latchset/tang-operator/api/v1alpha1  [no test files]
-ok      github.com/latchset/tang-operator/controllers   8.650s  coverage: 13.2% of statements
+ok      github.com/latchset/tang-operator/controllers   9.720s  coverage: 14.0% of statements
 ```
 
 As shown previously, coverage is calculated after test execution. Coverage data is dumped
