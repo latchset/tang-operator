@@ -187,7 +187,7 @@ to be released, it is recommended to increase version appropriately.
 In this case, same version is used. Last released version can be observed in
 [Versions](#versions) section.
 
-To summarize, taking into account that the last released version is **v0.0.28**
+To summarize, taking into account that the last released version is **v0.0.28**,
 compilation can be done with next command:
 
 ```bash
@@ -204,7 +204,7 @@ v0.0.28: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 73
 
 In case a new release is planned to be done, the steps to follow will be:
 
-- Modify Makefile so that it contains the new version:
+- <ins>Modify Makefile so that it contains the new version</ins>:
 
 ```bash
 $ git diff Makefile
@@ -227,7 +227,7 @@ $ docker tag quay.io/sec-eng-special/tang-operator-bundle:v0.0.28 quay.io/sec-en
 $ docker push quay.io/sec-eng-special/tang-operator-bundle:latest
 ```
 
-- Compile operator:
+- <ins>Compile operator</ins>:
 
 Compile Tang operator code, specifying new version,
 by using **make docker-build** command:
@@ -243,7 +243,7 @@ The push refers to repository [quay.io/sec-eng-special/tang-operator]
 v0.0.28: digest: sha256:01620ab19faae54fb382a2ff285f589cf0bde6e168f14f07 size: 739
 ```
 
-- Bundle push:
+- <ins>Bundle push</ins>:
 
 In case the operator bundle is required to be pushed, generate
 the bundle with **make bundle**, specifying appropriate image,
@@ -287,7 +287,7 @@ make[1]: Leaving directory '/home/user/RedHat/TASKS/TANG_OPERATOR/tang-operator'
 **DO NOT COMMIT PREVIOUS CHANGE**, as this metadata information is required by
 scorecard tests to pass successfully
 
-- Commit changes:
+- <ins>Commit changes</ins>:
 
 Remember to **modify README.md** to include the new release version, and commit changes
 performed in the operator, together with README.md and Makefile changes
