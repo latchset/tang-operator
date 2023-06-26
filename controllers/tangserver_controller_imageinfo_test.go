@@ -49,7 +49,8 @@ var _ = Describe("TangServer controller image info", func() {
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
 			Expect(getImageNameAndVersion(tangServer), getCompleteImageNameAndVersion(DEFAULT_APP_IMAGE, DEFAULT_APP_VERSION))
-			k8sClient.Delete(ctx, tangServer)
+			err := k8sClient.Delete(ctx, tangServer)
+			Expect(err, nil)
 		})
 		It("Should be created with spec value", func() {
 			ctx := context.Background()
@@ -69,7 +70,8 @@ var _ = Describe("TangServer controller image info", func() {
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
 			Expect(getImageNameAndVersion(tangServer), getCompleteImageNameAndVersion(testImage, testVersion))
-			k8sClient.Delete(ctx, tangServer)
+			err := k8sClient.Delete(ctx, tangServer)
+			Expect(err, nil)
 		})
 		It("Should be created with version spec value", func() {
 			ctx := context.Background()
@@ -87,7 +89,8 @@ var _ = Describe("TangServer controller image info", func() {
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
 			Expect(getImageNameAndVersion(tangServer), getCompleteImageNameAndVersion(DEFAULT_APP_IMAGE, testVersion))
-			k8sClient.Delete(ctx, tangServer)
+			err := k8sClient.Delete(ctx, tangServer)
+			Expect(err, nil)
 		})
 		It("Should be created with image spec value", func() {
 			ctx := context.Background()
@@ -105,7 +108,8 @@ var _ = Describe("TangServer controller image info", func() {
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
 			Expect(getImageNameAndVersion(tangServer), getCompleteImageNameAndVersion(testImage, DEFAULT_APP_VERSION))
-			k8sClient.Delete(ctx, tangServer)
+			err := k8sClient.Delete(ctx, tangServer)
+			Expect(err, nil)
 		})
 	})
 })

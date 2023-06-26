@@ -135,8 +135,9 @@ var _ = Describe("TangServer controller", func() {
 				Scheme:   s,
 				Recorder: record.NewFakeRecorder(FAKE_RECORDER_BUFFER),
 			}
-			rec.SetupWithManager(mgr)
-			_, err := rec.Reconcile(ctx, ctrl.Request{
+			err := rec.SetupWithManager(mgr)
+			Expect(err, nil)
+			_, err = rec.Reconcile(ctx, ctrl.Request{
 				NamespacedName: types.NamespacedName{
 					Namespace: TangserverNamespace,
 					Name:      TangserverNameNoUID,
@@ -168,14 +169,15 @@ var _ = Describe("TangServer controller", func() {
 				Scheme:   s,
 				Recorder: record.NewFakeRecorder(FAKE_RECORDER_BUFFER),
 			}
-			rec.SetupWithManager(mgr)
+			err := rec.SetupWithManager(mgr)
+			Expect(err, nil)
 			req := ctrl.Request{
 				NamespacedName: types.NamespacedName{
 					Name:      TangserverName,
 					Namespace: TangserverNamespace,
 				},
 			}
-			_, err := rec.Reconcile(ctx, req)
+			_, err = rec.Reconcile(ctx, req)
 			Expect(err, nil)
 			_, err = rec.Reconcile(ctx, req)
 			Expect(err, nil)
@@ -206,14 +208,15 @@ var _ = Describe("TangServer controller", func() {
 				Scheme:   s,
 				Recorder: record.NewFakeRecorder(FAKE_RECORDER_BUFFER),
 			}
-			rec.SetupWithManager(mgr)
+			err := rec.SetupWithManager(mgr)
+			Expect(err, nil)
 			req := ctrl.Request{
 				NamespacedName: types.NamespacedName{
 					Name:      TangserverName,
 					Namespace: TangserverNamespace,
 				},
 			}
-			_, err := rec.Reconcile(ctx, req)
+			_, err = rec.Reconcile(ctx, req)
 			Expect(err, nil)
 		})
 

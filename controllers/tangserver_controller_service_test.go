@@ -59,7 +59,8 @@ var _ = Describe("TangServer controller service", func() {
 			Expect(service.TypeMeta.Kind, DEFAULT_SERVICE_TYPE)
 			Expect(service.ObjectMeta.Name, getDefaultName(tangServer))
 			Expect(service.Spec.Ports[0].Port, DEFAULT_SERVICE_PORT)
-			k8sClient.Delete(ctx, tangServer)
+			err := k8sClient.Delete(ctx, tangServer)
+			Expect(err, nil)
 		})
 		It("Should be created with specific service listen port", func() {
 			By("By creating a new TangServer with non empty listen port")
@@ -80,7 +81,8 @@ var _ = Describe("TangServer controller service", func() {
 			Expect(service.TypeMeta.Kind, DEFAULT_SERVICE_TYPE)
 			Expect(service.ObjectMeta.Name, getDefaultName(tangServer))
 			Expect(service.Spec.Ports[0].Port, TangServerTestServiceListenPort)
-			k8sClient.Delete(ctx, tangServer)
+			err := k8sClient.Delete(ctx, tangServer)
+			Expect(err, nil)
 		})
 		It("Should return a correct service url and related", func() {
 			By("By creating a new TangServer")
@@ -110,7 +112,8 @@ var _ = Describe("TangServer controller service", func() {
 			}
 			serviceIpExternalServiceUrl = getExternalServiceUrl(tangServer, loadBalancer)
 			Expect(strings.Contains(serviceIpExternalServiceUrl, TangServerTestIp))
-			k8sClient.Delete(ctx, tangServer)
+			err := k8sClient.Delete(ctx, tangServer)
+			Expect(err, nil)
 		})
 	})
 })

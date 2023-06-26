@@ -170,7 +170,9 @@ func readActiveKeys(keyInfo KeyObtainInfo, onlyAdvertised KeyAdvertisingType) ([
 						FileName:  k,
 					})
 				}
-				writeStatusFile(keyInfo, sha1, sha256, statusSigning, statusEncryption)
+				if err := writeStatusFile(keyInfo, sha1, sha256, statusSigning, statusEncryption); err != nil {
+					GetLogInstance().Error(err, "Unable to write status file", "keyInfo", keyInfo)
+				}
 			}
 		}
 		return activeKeys, nil
@@ -220,7 +222,9 @@ func readHiddenKeys(keyInfo KeyObtainInfo, onlyAdvertised KeyAdvertisingType) ([
 							FileName:  k,
 						})
 					}
-					writeStatusFile(keyInfo, sha1, sha256, statusSigning, statusEncryption)
+					if err := writeStatusFile(keyInfo, sha1, sha256, statusSigning, statusEncryption); err != nil {
+						GetLogInstance().Error(err, "Unable to write status file", "keyInfo", keyInfo)
+					}
 				}
 			}
 		}

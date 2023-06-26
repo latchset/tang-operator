@@ -49,7 +49,8 @@ var _ = Describe("TangServer controller keyhandler", func() {
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
 			Expect(getDefaultKeyPath(tangServer), DEFAULT_DEPLOYMENT_KEY_PATH)
-			k8sClient.Delete(ctx, tangServer)
+			err := k8sClient.Delete(ctx, tangServer)
+			Expect(err, nil)
 		})
 		It("Should be created with default script value", func() {
 			By("By creating a new TangServer with empty image specs")
@@ -66,7 +67,8 @@ var _ = Describe("TangServer controller keyhandler", func() {
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
 			Expect(getDefaultKeyPath(tangServer), TangServerTestKeyPath)
-			k8sClient.Delete(ctx, tangServer)
+			err := k8sClient.Delete(ctx, tangServer)
+			Expect(err, nil)
 		})
 	})
 })
