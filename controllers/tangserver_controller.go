@@ -252,7 +252,9 @@ func (r *TangServerReconciler) handleHiddenKeys(keyinfo KeyObtainInfo) bool {
 	}
 	// only delete selectively if have something to keep
 	if len(keepKeyMap) > 0 {
-		deleteHiddenKeysSelectively(keepKeyMap, keyinfo)
+		if err := deleteHiddenKeysSelectively(keepKeyMap, keyinfo); err != nil {
+			GetLogInstance().Error(err, "Unable to delete keys selectively", "keymap", keepKeyMap, "keyInfo", keyinfo)
+		}
 	}
 
 	// check if key is in active keys and rotate it
@@ -270,7 +272,9 @@ func (r *TangServerReconciler) handleHiddenKeys(keyinfo KeyObtainInfo) bool {
 					GetLogInstance().Info("Key rotated correctly", "sha1", hk.Sha1, "sha256", hk.Sha256)
 					keyinfo.TangServer.Status.TangServerError = daemonsv1alpha1.NoError
 					r.Recorder.Event(keyinfo.TangServer, "Normal", "KeyRotation", fmt.Sprintf("Key Rotated Correctly, Key File: %s", ak.FileName))
-					rotateUnadvertisedKeys(kr)
+					if err := rotateUnadvertisedKeys(kr); err != nil {
+						GetLogInstance().Error(err, "Unable to rotate unadvertised keys", "Rotating Key", kr)
+					}
 				} else {
 					GetLogInstance().Error(err, "Key not rotated correctly", "sha1", hk.Sha1, "sha256", hk.Sha256)
 					r.Recorder.Event(keyinfo.TangServer, "Error", "KeyRotation", fmt.Sprintf("Key NOT Rotated Correctly, Key File: %s", ak.FileName))

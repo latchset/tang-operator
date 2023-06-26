@@ -63,7 +63,8 @@ var _ = Describe("TangServer controller deployment", func() {
 			Expect(deployment.ObjectMeta.Name, getDefaultName(tangServer))
 			Expect(deployment.Spec.Replicas, DEFAULT_REPLICA_AMOUNT)
 			Expect(deployment.Spec.Template, Not(nil))
-			k8sClient.Delete(ctx, tangServer)
+			err := k8sClient.Delete(ctx, tangServer)
+			Expect(err, nil)
 		})
 		It("Should be created with specific replica amount", func() {
 			By("By creating a new TangServer with non empty replicas")
@@ -84,7 +85,8 @@ var _ = Describe("TangServer controller deployment", func() {
 			Expect(deployment.ObjectMeta.Name, getDefaultName(tangServer))
 			Expect(deployment.Spec.Replicas, TangServerTestReplicaAmount)
 			Expect(deployment.Spec.Template, Not(nil))
-			k8sClient.Delete(ctx, tangServer)
+			err := k8sClient.Delete(ctx, tangServer)
+			Expect(err, nil)
 		})
 		It("Should be created with listen port, secret and requests", func() {
 			By("By creating a new TangServer with non empty listen port and secret")
@@ -130,7 +132,8 @@ var _ = Describe("TangServer controller deployment", func() {
 			deployment.Status.Replicas = TangServerTestReplicaAmount
 			deployment.Status.ReadyReplicas = deployment.Status.Replicas
 			Expect(isDeploymentReady(deployment), true)
-			k8sClient.Delete(ctx, tangServer)
+			err := k8sClient.Delete(ctx, tangServer)
+			Expect(err, nil)
 		})
 	})
 })
