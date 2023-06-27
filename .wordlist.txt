@@ -6,6 +6,7 @@ finalizer
 finalizers
 Github
 GOARCH
+Golang
 grcov
 healthcheck
 keypath
