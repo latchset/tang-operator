@@ -1,9 +1,16 @@
 # tang-operator
-[![Default compilation, tests and deploy](https://github.com/latchset/tang-operator/actions/workflows/deploy.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/deploy.yaml)\
+
+## License
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+## Status
+
+[![Default compilation, tests and deploy](https://github.com/latchset/tang-operator/actions/workflows/deploy.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/deploy.yaml)
 [![Cross compilation](https://github.com/latchset/tang-operator/actions/workflows/cross_compile.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/cross_compile.yaml)\
-[![Golang CI lint](https://github.com/latchset/tang-operator/actions/workflows/golangci-lint.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/golangci-lint.yaml)\
+[![Golang CI lint](https://github.com/latchset/tang-operator/actions/workflows/golangci-lint.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/golangci-lint.yaml)
 [![Staticcheck](https://github.com/latchset/tang-operator/actions/workflows/staticcheck.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/staticcheck.yaml)\
-[![Shellcheck](https://github.com/latchset/tang-operator/actions/workflows/shellcheck.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/shellcheck.yaml)\
+[![Shellcheck](https://github.com/latchset/tang-operator/actions/workflows/shellcheck.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/shellcheck.yaml)
 [![Spellcheck](https://github.com/latchset/tang-operator/actions/workflows/spellcheck.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/spellcheck.yaml)
 
 ## Contents
