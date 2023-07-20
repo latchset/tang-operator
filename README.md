@@ -370,7 +370,6 @@ commit to main or PR. The verify job perform following steps:
 * Check Minikube Status
 * Build
 * Test
-* Cluster Test
 * Deployment
 * Scorecard Test Execution
 
