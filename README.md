@@ -362,18 +362,38 @@ files that are part of the controller.
 
 ## CI/CD
 
-tang-operator uses Github Actions to perform CI/CD task. A verification job will run for each
-commit to main or PR. The verify job perform following steps:
+tang-operator uses Github Actions to perform CI/CD (Continuous Integration/Continuous Delivery).
+There are different Github actions that will perform different tasks:
+
+### Default compilation, tests and deploy
+This is a complete verification job that will run for each commit to main or PR.
+It performs following steps:
 
 * Set up Go
+* Build
+* Unit Test
 * Minikube Installation
 * Check Minikube Status
-* Build
-* Test
 * Deployment
 * Scorecard Test Execution
 
-NOTE: CI/CD is in a "work in progress" state
+### Cross compilation
+This job cross compiles code in other supported architectures, in particular for `ppc64le`, `s390x`
+and `arm64`.
+
+### Shellcheck
+Shellcheck job checks that existing `bash` scripts in the projects contain no fails.
+
+### Spellcheck
+Spellcheck job checks for spell correctness in documentation (in particular, for Markdown files).
+
+### Golang CI lint
+This job performs static check of Golang code.
+
+### Staticcheck
+The purpose of this job performs is similar to the previous one, static check of Golang code.
+
+NOTE: CI/CD is in a continuous "work in progress" state
 
 ## Scorecard
 
