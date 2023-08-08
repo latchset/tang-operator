@@ -1,0 +1,11 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: tang-operator
+  namespace: openshift-operators
+spec:
+  displayName: tang-operator
+  publisher: Red Hat
+  sourceType: grpc
+  image: quay.io/sec-eng-special/tang-operator-index:VERSION_HERE
+
