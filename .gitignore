@@ -27,3 +27,6 @@ testbin/*
 
 # files related to cluster configuration
 *cluster*.txt
+
+# file autogenrated by tang_index.sh
+tang_catalog_source.yaml
