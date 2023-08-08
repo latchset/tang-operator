@@ -1,5 +1,8 @@
 #!/bin/bash
 echo "-------------------------------------"
+echo "oc project openshift-operators"
+oc project openshift-operators
+echo "-------------------------------------"
 echo "oc status"
 oc status
 echo "-------------------------------------"
