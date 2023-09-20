@@ -1,0 +1,53 @@
+---
+config:
+    # WARNING: `configVersion` indicates the schema version of the config file.
+    # This value tells RapiDAST what schema should be used to read this configuration.
+    # Therefore you should only change it if you update the configuration to a newer schema
+    # It is intended to keep backward compatibility (newer RapiDAST running an older config)
+    configVersion: 4
+
+   # `application` contains data related to the application, not to the scans.
+application:
+  shortName: "tangservers"
+  url: "https://api.ci-ln-ml9pxxk-76ef8.aws-2.ci.openshift.org:6443/apis/daemons.redhat.com/v1alpha1"
+
+# `general` is a section that will be applied to all scanners.
+general:
+
+    authentication:
+        type: "http_header"
+        parameters:
+            name: "Authorization"
+            # Ways to obtain token:
+            # oc get secret $(oc get secret | grep ^default-token | awk '{print $1}') -o json | jq -Mr '.data.token' | base64 -d
+            # oc whoami -t
+            value: "Bearer AUTH_TOKEN_HERE"
+
+    container:
+        # currently supported: `podman` and `none`
+        type: "none"
+
+scanners:
+    zap:
+        # parameters:
+        #     executable: "ZAP_2.13.0/zap.sh"
+        # define a scan through the ZAP scanner
+        apiScan:
+            apis:
+                apiUrl: "https://api.ci-ln-ml9pxxk-76ef8.aws-2.ci.openshift.org:6443/openapi/v3/apis/daemons.redhat.com/v1alpha1"
+
+        passiveScan:
+            # optional list of passive rules to disable
+            disabledRules: "2,10015,10027,10096,10024,10054"
+
+#        activeScan:
+#            # If no policy is chosen, a default ("API-scan-minimal") will be selected
+#            # The list of policies can be found in scanners/zap/policies/
+#            policy: "API-scan-minimal"
+
+        miscOptions:
+          # enableUI (default: false), requires a compatible runtime (e.g.: flatpak or no containment)
+          enableUI: False
+          # Defaults to True, set False to prevent auto update of ZAP plugins
+          updateAddons: False
+
