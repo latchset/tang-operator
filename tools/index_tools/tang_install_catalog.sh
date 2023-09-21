@@ -49,10 +49,10 @@ oc project openshift-operators
 echo "-------------------------------------"
 echo "oc status"
 oc status
-echo "-------------------------------------"
 if [ -z "${list_only}" ];
 then
     sleep 1
+    echo "-------------------------------------"
     echo "oc create -f tang_catalog_source.yaml"
     oc create -f tang_catalog_source.yaml
 fi
@@ -64,9 +64,9 @@ echo "-------------------------------------"
 sleep 1
 echo "oc get pods -nopenshift-marketplace"
 oc get pods -nopenshift-marketplace
-echo "-------------------------------------"
 if [ -z "${list_only}" ];
 then
+    echo "-------------------------------------"
     sleep 1
     echo "oc create -f tang_subscription.yaml"
     oc create -f tang_subscription.yaml
