@@ -80,6 +80,10 @@ echo "oc get pods -nopenshift-marketplace"
 oc get pods -nopenshift-marketplace
 echo "-------------------------------------"
 sleep 1
+if [ -z "${list_only}" ];
+then
+    sleep 9
+fi
 echo "oc get csv -n openshift-operators"
 oc get csv -n openshift-operators
 echo "-------------------------------------"
