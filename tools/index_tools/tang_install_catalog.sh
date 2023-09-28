@@ -38,17 +38,14 @@ do
 done
 
 echo "-------------------------------------"
-echo "oc project openshift-operators"
-oc project openshift-operators
-echo "-------------------------------------"
 echo "oc status"
 oc status
 if [ -z "${list_only}" ];
 then
     sleep 1
     echo "-------------------------------------"
-    echo "oc create -f tang_catalog_source.yaml"
-    oc create -f tang_catalog_source.yaml
+    echo "oc create -f tang_catalog_source.yaml -n openshift-operators"
+    oc create -f tang_catalog_source.yaml -n openshift-operators
 fi
 echo "-------------------------------------"
 sleep 1
@@ -62,20 +59,17 @@ if [ -z "${list_only}" ];
 then
     echo "-------------------------------------"
     sleep 1
-    echo "oc create -f tang_subscription.yaml"
-    oc create -f tang_subscription.yaml
+    echo "oc create -f tang_subscription.yaml -n openshift-operators"
+    oc create -f tang_subscription.yaml -n openshift-operators
 fi
 echo "-------------------------------------"
-echo "oc project"
-oc project
+sleep 1
+echo "oc get sub -n openshift-operators"
+oc get sub -n openshift-operators
 echo "-------------------------------------"
 sleep 1
-echo "oc get sub"
-oc get sub
-echo "-------------------------------------"
-sleep 1
-echo "oc get ip"
-oc get ip
+echo "oc get ip -n openshift-operators"
+oc get ip -n openshift-operators
 echo "-------------------------------------"
 sleep 1
 echo "oc get jobs -nopenshift-marketplace"
@@ -86,11 +80,11 @@ echo "oc get pods -nopenshift-marketplace"
 oc get pods -nopenshift-marketplace
 echo "-------------------------------------"
 sleep 1
-echo "oc get csv"
-oc get csv
+echo "oc get csv -n openshift-operators"
+oc get csv -n openshift-operators
 echo "-------------------------------------"
 sleep 1
-echo "oc get pods"
-oc get pods
+echo "oc get pods -n openshift-operators"
+oc get pods -n openshift-operators
 echo "-------------------------------------"
 sleep 1
