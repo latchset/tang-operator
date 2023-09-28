@@ -45,8 +45,10 @@ version=$2
 digest=$(echo "${CO_image_with_digest}" | awk -F: '{print $2}')
 sub_digest="${digest:0:12}"
 
-echo "Login into quay.io ..."
-"${CONTAINER_MGR}" login quay.io -u sarroutb
+test -z "${DO_NOT_LOGIN}" && {
+    echo "Login into quay.io ..."
+    "${CONTAINER_MGR}" login quay.io -u sarroutb
+}
 echo "sub_digest:${sub_digest}"
 
 #1. Mirror bundle container image
