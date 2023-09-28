@@ -44,8 +44,8 @@ if [ -z "${list_only}" ];
 then
     sleep 1
     echo "-------------------------------------"
-    echo "oc create -f tang_catalog_source.yaml -n openshift-operators"
-    oc create -f tang_catalog_source.yaml -n openshift-operators
+    echo "oc create -f tang_catalog_source.yaml"
+    oc create -f tang_catalog_source.yaml
 fi
 echo "-------------------------------------"
 sleep 1
