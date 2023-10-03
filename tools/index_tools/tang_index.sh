@@ -22,7 +22,7 @@
 #   ./tang_index.sh quay.io/sec-eng-special/tang-operator-bundle:1.0.0-0 1.0.0-0
 #
 #
-CONTAINER_MGR='docker'
+test -z "${CONTAINER_MGR}" && CONTAINER_MGR='podman'
 
 usage() {
     echo ' ./tang_index.sh quay.io/sec-eng-special/tang-operator-bundle:1.0.0-0 1.0.0-0'
@@ -59,7 +59,7 @@ oc image mirror --filter-by-os=".*" --keep-manifest-list "${CO_image_with_digest
 
 #2.  Build index image
 echo -e "step 2 \n\n"
-opm index add --bundles "${CO_image_with_digest}" --tag quay.io/sec-eng-special/tang-operator-index:v"${version}" -c ${CONTAINER_MGR}
+opm index add --bundles "${CO_image_with_digest}" --tag quay.io/sec-eng-special/tang-operator-index:v"${version}" -c "${CONTAINER_MGR}"
 
 #3. Push image index to quay.io/sec-eng-special/
 echo -e "step 3 \n\n"
