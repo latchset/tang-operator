@@ -48,3 +48,6 @@ scanners:
             enableUI: false
             # Defaults to true, set false to prevent auto update of ZAP plugins
             updateAddons: false
+            overrideConfigs:
+                - formhandler.fields.field(0).fieldId="namespace"
+                - formhandler.fields.field(0).value="OPERATOR_NAMESPACE_HERE"
