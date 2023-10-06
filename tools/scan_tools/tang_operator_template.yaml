@@ -17,9 +17,6 @@ general:
         type: "http_header"
         parameters:
             name: "Authorization"
-            # Ways to obtain token:
-            # oc get secret $(oc get secret | grep ^default-token | awk '{print $1}') -o json | jq -Mr '.data.token' | base64 -d
-            # oc whoami -t
             value: "Bearer AUTH_TOKEN_HERE"
     container:
         # currently supported: `podman` and `none`
@@ -27,9 +24,6 @@ general:
 
 scanners:
     zap:
-        # parameters:
-        #     executable: "ZAP_2.13.0/zap.sh"
-        # define a scan through the ZAP scanner
         apiScan:
             apis:
                 apiUrl: "API_HOST_PORT_HERE/openapi/v3/apis/daemons.redhat.com/v1alpha1"
@@ -46,8 +40,8 @@ scanners:
         miscOptions:
             # enableUI (default: false), requires a compatible runtime (e.g.: flatpak or no containment)
             enableUI: false
-            # Defaults to true, set false to prevent auto update of ZAP plugins
+            # Defaults to True, set False to prevent auto update of ZAP plugins
             updateAddons: false
             overrideConfigs:
-                - formhandler.fields.field(0).fieldId="namespace"
-                - formhandler.fields.field(0).value="OPERATOR_NAMESPACE_HERE"
+                - formhandler.fields.field(0).fieldId=namespace
+                - formhandler.fields.field(0).value=OPERATOR_NAMESPACE_HERE
