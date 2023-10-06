@@ -82,7 +82,7 @@ Tang operator-bundle are:
 - v0.0.26: Use RHEL9 Tang container version
 - v0.0.27: Update operator-sdk and supported Go version (1.19.6 and higher)
 - v0.0.28: Code refactor
--  v1.0.0: GA candidate release
+-  v1.0.0: GA release candidate
 
 ## Installation
 
