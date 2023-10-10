@@ -1,3 +1,4 @@
+---
 name: Multiarch build
 
 on:
@@ -31,7 +32,7 @@ jobs:
             goarch=amd64
           containerfiles: |
             ./Dockerfile
-  
+
       - name: Build image linux/ppc64le
         uses: redhat-actions/buildah-build@v2
         with:
@@ -52,9 +53,9 @@ jobs:
           build-args: |
             goarch=s390x
           containerfiles: |
-            ./Dockerfile  
-            
-            
+            ./Dockerfile
+
+
       - name: Check images created
         run: buildah images | grep '${{ env.IMAGE_NAME }}'
 
@@ -64,7 +65,7 @@ jobs:
           buildah manifest add ${{ env.IMAGE_NAME }} ${{ env.IMAGE_NAME }}:linux-amd64
           buildah manifest add ${{ env.IMAGE_NAME }} ${{ env.IMAGE_NAME }}:linux-ppc64le
           buildah manifest add ${{ env.IMAGE_NAME }} ${{ env.IMAGE_NAME }}:linux-s390x
-          
+
 # Authenticate to container image registry to push the image
       - name: Podman Login
         uses: redhat-actions/podman-login@v1
@@ -74,5 +75,5 @@ jobs:
           password: ${{ secrets.QUAY_PWD }}
 
       - name: Push manifest
-        run: |          
+        run: |
             podman manifest push ${{ env.IMAGE_NAME }}  ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}  --all

@@ -1,3 +1,4 @@
+---
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
@@ -8,4 +9,3 @@ spec:
   publisher: Red Hat
   sourceType: grpc
   image: quay.io/sec-eng-special/tang-operator-index:VERSION_HERE
-

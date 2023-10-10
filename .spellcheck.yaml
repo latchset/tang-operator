@@ -1,3 +1,4 @@
+---
 matrix:
 - name: Markdown
   expect_match: false
