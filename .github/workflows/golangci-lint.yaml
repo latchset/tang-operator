@@ -1,3 +1,4 @@
+---
 name: "Golang CI lint"
 on:
   push:

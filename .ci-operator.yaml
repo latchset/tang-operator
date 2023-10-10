@@ -1,3 +1,4 @@
+---
 build_root:
   image_stream_tag:
     cluster: https://api.ci-ln-j27509k-f76d1.origin-ci-int-gce.dev.openshift.com:6443
