@@ -1,4 +1,5 @@
-FROM fedora:35
+FROM fedora:latest
+RUN dnf upgrade -y
 RUN dnf install -y tang curl socat procps jq
 RUN /usr/libexec/tangd-keygen /var/db/tang
 
