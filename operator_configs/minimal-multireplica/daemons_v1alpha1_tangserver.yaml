@@ -5,6 +5,6 @@ metadata:
   name: tangserver-mini-multi
   namespace: nbde
   finalizers:
-  - finalizer.daemons.tangserver.redhat.com
+    - finalizer.daemons.tangserver.redhat.com
 spec:
   replicas: 3

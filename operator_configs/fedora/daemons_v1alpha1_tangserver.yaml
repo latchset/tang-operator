@@ -5,9 +5,8 @@ metadata:
   name: tangserver-fedora
   namespace: nbde
   finalizers:
-  - finalizer.daemons.tangserver.redhat.com
+    - finalizer.daemons.tangserver.redhat.com
 spec:
-  # Add fields here
   replicas: 1
   image: "docker.io/sarroutbi/fedora_tang_server"
   version: "latest"

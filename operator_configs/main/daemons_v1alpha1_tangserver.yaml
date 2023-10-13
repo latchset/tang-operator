@@ -5,9 +5,8 @@ metadata:
   name: tangserver
   namespace: nbde
   finalizers:
-  - finalizer.daemons.tangserver.redhat.com
+    - finalizer.daemons.tangserver.redhat.com
 spec:
-  # Add fields here
   replicas: 1
   image: "registry.redhat.io/rhel9/tang"
   version: "latest"
