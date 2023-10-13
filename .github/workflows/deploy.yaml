@@ -43,5 +43,5 @@ jobs:
     - name: Deploy and Scorecard
       run: |
         sh .github/workflows/scripts/retrieve_and_run_operator_sdk.sh \
-          "v1.31.0" "5m" "quay.io/sec-eng-special/tang-operator-bundle" \
+          "v1.32.0" "5m" "quay.io/sec-eng-special/tang-operator-bundle" \
           "${GITHUB_HEAD_REF}"
