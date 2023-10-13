@@ -17,5 +17,5 @@ spec:
         app: clevis
     spec:
       containers:
-      - name: clevis
-        image: sarroutbi/fedora_clevis:latest
+        - name: clevis
+          image: sarroutbi/fedora_clevis:latest

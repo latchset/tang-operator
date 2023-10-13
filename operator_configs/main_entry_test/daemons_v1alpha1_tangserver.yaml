@@ -5,9 +5,8 @@ metadata:
   name: tangserver
   namespace: nbde
   finalizers:
-  - finalizer.daemons.tangserver.redhat.com
+    - finalizer.daemons.tangserver.redhat.com
 spec:
-  # Add fields here
   keyPath: /var/db
   replicas: 1
   image: "docker.io/sarroutbi/ubi_tang_server"

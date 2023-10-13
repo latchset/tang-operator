@@ -5,8 +5,8 @@ metadata:
   name: tangserver-mini
   namespace: nbde
   finalizers:
-  - finalizer.daemons.tangserver.redhat.com
+    - finalizer.daemons.tangserver.redhat.com
 spec:
   replicas: 1
   hiddenKeys:
-  - sha1:       c4yrNFRUGsjIIu4I6S2XGk4MXvs
+    - sha1: "c4yrNFRUGsjIIu4I6S2XGk4MXvs"

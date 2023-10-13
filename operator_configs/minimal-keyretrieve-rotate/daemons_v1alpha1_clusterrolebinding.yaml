@@ -8,6 +8,6 @@ roleRef:
   kind: ClusterRole
   name: pod-reader-executor
 subjects:
-- kind: ServiceAccount
-  name: tang-operator-controller-manager
-  namespace: default
+  - kind: ServiceAccount
+    name: tang-operator-controller-manager
+    namespace: default
