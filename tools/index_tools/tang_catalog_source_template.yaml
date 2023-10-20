@@ -5,7 +5,7 @@ metadata:
   name: tang-operator
   namespace: openshift-marketplace
 spec:
-  displayName: tang-operator
-  publisher: Red Hat
+  displayName: "Red Hat"
+  publisher: "Red Hat"
   sourceType: grpc
   image: quay.io/sec-eng-special/tang-operator-index:VERSION_HERE
