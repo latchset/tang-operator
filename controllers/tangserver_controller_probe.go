@@ -38,7 +38,7 @@ func getReadyProbe(cr *daemonsv1alpha1.TangServer) *corev1.Probe {
 		healthScript = cr.Spec.HealthScript
 	}
 	return &corev1.Probe{
-		Handler: corev1.Handler{
+		ProbeHandler: corev1.ProbeHandler{
 			Exec: &corev1.ExecAction{
 				Command: []string{
 					healthScript,
@@ -58,7 +58,7 @@ func getLivenessProbe(cr *daemonsv1alpha1.TangServer) *corev1.Probe {
 		healthScript = cr.Spec.HealthScript
 	}
 	return &corev1.Probe{
-		Handler: corev1.Handler{
+		ProbeHandler: corev1.ProbeHandler{
 			Exec: &corev1.ExecAction{
 				Command: []string{
 					healthScript,

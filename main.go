@@ -17,6 +17,7 @@ limitations under the License.
 package main
 
 import (
+	"crypto/tls"
 	"flag"
 	"os"
 
@@ -33,6 +34,8 @@ import (
 
 	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
 	"github.com/latchset/tang-operator/controllers"
+	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
+	webhook "sigs.k8s.io/controller-runtime/pkg/webhook"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -62,16 +65,30 @@ func main() {
 	}
 	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
+	disableHTTP2 := func(c *tls.Config) {
+		c.NextProtos = []string{"http/1.1"}
+	}
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 
+	metricsServerOptions := metricsserver.Options{
+		BindAddress:   metricsAddr,
+		SecureServing: true,
+		TLSOpts:       []func(*tls.Config){disableHTTP2},
+	}
+
+	webhookServerOptions := webhook.Options{
+		TLSOpts: []func(*tls.Config){disableHTTP2},
+	}
+	webhookServer := webhook.NewServer(webhookServerOptions)
+
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme:                 scheme,
-		MetricsBindAddress:     metricsAddr,
-		Port:                   9443,
+		Metrics:                metricsServerOptions,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
 		LeaderElectionID:       "e44fa0d3.redhat.com",
+		WebhookServer:          webhookServer,
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
