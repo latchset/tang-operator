@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"crypto/tls"
 	"os"
 
 	daemonsv1alpha1 "github.com/latchset/tang-operator/api/v1alpha1"
@@ -30,6 +31,7 @@ import (
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
+	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 )
 
 const FAKE_RECORDER_BUFFER = 1000
@@ -39,10 +41,19 @@ func getOptions(scheme *runtime.Scheme) *ctrl.Options {
 	metricsAddr := "localhost:7070"
 	probeAddr := "localhost:7071"
 	enableLeaderElection := false
+	disableHTTP2 := func(c *tls.Config) {
+		c.NextProtos = []string{"http/1.1"}
+	}
+
+	metricsServerOptions := metricsserver.Options{
+		BindAddress:   metricsAddr,
+		SecureServing: true,
+		TLSOpts:       []func(*tls.Config){disableHTTP2},
+	}
+
 	return &ctrl.Options{
 		Scheme:                 scheme,
-		MetricsBindAddress:     metricsAddr,
-		Port:                   9443,
+		Metrics:                metricsServerOptions,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
 		LeaderElectionID:       "e44fa0d3.redhat.com",
