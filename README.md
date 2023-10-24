@@ -87,6 +87,7 @@ Tang operator-bundle are:
 -  v1.0.2: new GA release candidate. Fix CVE-2023-39325
 -  v1.0.3: new GA release candidate. Update all mods to latest version
 -  v1.0.4: new GA release candidate. Adjust to naming conventions
+-  v1.0.5: new GA release candidate. Use latest `kube-rbac-proxy` version
 
 ## Installation
 
@@ -108,23 +109,23 @@ operator-sdk installation is described in the [Links](#links) section.
 
 In order to deploy the latest version of the Tang operator, check latest released
 version in the [Versions](#versions) section, and install the appropriate version
-bundle. For example, in case latest version is **1.0.4**, the command to execute
+bundle. For example, in case latest version is **1.0.5**, the command to execute
 will be:
 
 ```bash
-$ operator-sdk run bundle quay.io/sec-eng-special/tang-operator-bundle:v1.0.4 --index-image=quay.io/operator-framework/opm:v1.23.0
-INFO[0008] Successfully created registry pod: quay-io-sec-eng-special-tang-operator-bundle-v1.0.4
+$ operator-sdk run bundle quay.io/sec-eng-special/tang-operator-bundle:v1.0.5 --index-image=quay.io/operator-framework/opm:v1.23.0
+INFO[0008] Successfully created registry pod: quay-io-sec-eng-special-tang-operator-bundle-v1.0.5
 INFO[0009] Created CatalogSource: tang-operator-catalog
 INFO[0009] OperatorGroup "operator-sdk-og" created
-INFO[0009] Created Subscription: tang-operator-v1.0.4-sub
-INFO[0011] Approved InstallPlan install-lqf9f for the Subscription: tang-operator-v1.0.4-sub
+INFO[0009] Created Subscription: tang-operator-v1.0.5-sub
+INFO[0011] Approved InstallPlan install-lqf9f for the Subscription: tang-operator-v1.0.5-sub
 INFO[0011] Waiting for ClusterServiceVersion to reach 'Succeeded' phase
-INFO[0012]   Waiting for ClusterServiceVersion "default/tang-operator.v1.0.4"
-INFO[0018]   Found ClusterServiceVersion "default/tang-operator.v1.0.4" phase: Pending
-INFO[0020]   Found ClusterServiceVersion "default/tang-operator.v1.0.4" phase: InstallReady
-INFO[0021]   Found ClusterServiceVersion "default/tang-operator.v1.0.4" phase: Installing
-INFO[0031]   Found ClusterServiceVersion "default/tang-operator.v1.0.4" phase: Succeeded
-INFO[0031] OLM has successfully installed "tang-operator.v1.0.4"
+INFO[0012]   Waiting for ClusterServiceVersion "default/tang-operator.v1.0.5"
+INFO[0018]   Found ClusterServiceVersion "default/tang-operator.v1.0.5" phase: Pending
+INFO[0020]   Found ClusterServiceVersion "default/tang-operator.v1.0.5" phase: InstallReady
+INFO[0021]   Found ClusterServiceVersion "default/tang-operator.v1.0.5" phase: Installing
+INFO[0031]   Found ClusterServiceVersion "default/tang-operator.v1.0.5" phase: Succeeded
+INFO[0031] OLM has successfully installed "tang-operator.v1.0.5"
 ```
 To install latest multi-arch image, execute:
 ```bash
@@ -140,10 +141,10 @@ your cluster takes long time to deploy. To do so, the option **--timeout** can b
 used (if not used, default time is 2m, which stands for two minutes):
 
 ```bash
-$ operator-sdk run bundle --timeout 3m quay.io/sec-eng-special/tang-operator-bundle:v1.0.4 --index-image=quay.io/operator-framework/opm:v1.23.0
-INFO[0008] Successfully created registry pod: quay-io-sec-eng-special-tang-operator-bundle-v1.0.4
+$ operator-sdk run bundle --timeout 3m quay.io/sec-eng-special/tang-operator-bundle:v1.0.5 --index-image=quay.io/operator-framework/opm:v1.23.0
+INFO[0008] Successfully created registry pod: quay-io-sec-eng-special-tang-operator-bundle-v1.0.5
 ...
-INFO[0031] OLM has successfully installed "tang-operator.v1.0.4"
+INFO[0031] OLM has successfully installed "tang-operator.v1.0.5"
 ```
 
 Additionally, correct Tang operator installation can be observed if an output like
@@ -153,7 +154,7 @@ the following is observed when prompting for installed pods:
 $ oc get pods
 NAME                                                READY STATUS    RESTARTS AGE
 dbbd1837106ec169542546e7ad251b95d27c3542eb0409c1e   0/1   Completed 0        82s
-quay-io-tang-operator-bundle-v1.0.4                1/1   Running   0        90s
+quay-io-tang-operator-bundle-v1.0.5                1/1   Running   0        90s
 tang-operator-controller-manager-5c9488d8dd-mgmsf   2/2   Running   0        52s
 ```
 
@@ -200,19 +201,19 @@ to be released, it is recommended to increase version appropriately.
 In this case, same version is used. Last released version can be observed in
 [Versions](#versions) section.
 
-To summarize, taking into account that the last released version is **v1.0.4**,
+To summarize, taking into account that the last released version is **v1.0.5**,
 compilation can be done with next command:
 
 ```bash
-$ make docker-build docker-push IMG="quay.io/sec-eng-special/tang-operator:v1.0.4"
+$ make docker-build docker-push IMG="quay.io/sec-eng-special/tang-operator:v1.0.5"
 ...
 Successfully built 4a88ba8e6426
-Successfully tagged sec-eng-special/tang-operator:v1.0.4
-docker push sec-eng-special/tang-operator:v1.0.4
+Successfully tagged sec-eng-special/tang-operator:v1.0.5
+docker push sec-eng-special/tang-operator:v1.0.5
 The push refers to repository [quay.io/sec-eng-special/tang-operator]
 79109912085a: Pushed
 417cb9b79ade: Layer already exists
-v1.0.4: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
+v1.0.5: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
 ```
 
 In case a new release is planned to be done, the steps to follow will be:
@@ -222,21 +223,21 @@ In case a new release is planned to be done, the steps to follow will be:
 ```bash
 $ git diff Makefile
 diff --git a/Makefile b/Makefile
-index 9a41c6a..db12a82 100644
+index 9a41c6a..db12a82 1.0.54
 --- a/Makefile
 +++ b/Makefile
 @@ -3,7 +3,7 @@
 # To re-generate a bundle for another specific version without changing the
 # standard setup, you can:
-# - use the VERSION as arg of the bundle target (e.g make bundle VERSION=1.0.4)
-# - use environment variables to overwrite this value (e.g export VERSION=1.0.4)
+# - use the VERSION as arg of the bundle target (e.g make bundle VERSION=1.0.5)
+# - use environment variables to overwrite this value (e.g export VERSION=1.0.5)
 -VERSION ?= 0.0.27
-+VERSION ?= 1.0.4
++VERSION ?= 1.0.5
 ```
 
 Apart from previous changes, it is recommended to generate a "latest" tag for tang-operator bundle:
 ```bash
-$ docker tag quay.io/sec-eng-special/tang-operator-bundle:v1.0.4 quay.io/sec-eng-special/tang-operator-bundle:latest
+$ docker tag quay.io/sec-eng-special/tang-operator-bundle:v1.0.5 quay.io/sec-eng-special/tang-operator-bundle:latest
 $ docker push quay.io/sec-eng-special/tang-operator-bundle:latest
 ```
 
@@ -246,14 +247,14 @@ Compile Tang operator code, specifying new version,
 by using **make docker-build** command:
 
 ```bash
-$ make docker-build docker-push IMG="quay.io/sec-eng-special/tang-operator:v1.0.4"
+$ make docker-build docker-push IMG="quay.io/sec-eng-special/tang-operator:v1.0.5"
 ...
-Successfully tagged sec-eng-special/tang-operator:v1.0.4
-docker push sec-eng-special/tang-operator:v1.0.4
+Successfully tagged sec-eng-special/tang-operator:v1.0.5
+docker push sec-eng-special/tang-operator:v1.0.5
 The push refers to repository [quay.io/sec-eng-special/tang-operator]
 9ff8a4099c67: Pushed
 417cb9b79ade: Layer already exists
-v1.0.4: digest: sha256:01620ab19faae54fb382a2ff285f589cf0bde6e168f14f07 size: 739
+v1.0.5: digest: sha256:01620ab19faae54fb382a2ff285f589cf0bde6e168f14f07 size: 739
 ```
 
 - <ins>Bundle push</ins>:
@@ -263,15 +264,15 @@ the bundle with **make bundle**, specifying appropriate image,
 and push it with **make bundle-build bundle-push**:
 
 ```bash
-$ make bundle IMG="quay.io/sec-eng-special/tang-operator:v1.0.4"
-$ make bundle-build bundle-push BUNDLE_IMG="quay.io/sec-eng-special/tang-operator-bundle:v1.0.4"
+$ make bundle IMG="quay.io/sec-eng-special/tang-operator:v1.0.5"
+$ make bundle-build bundle-push BUNDLE_IMG="quay.io/sec-eng-special/tang-operator-bundle:v1.0.5"
 ...
-docker push sec-eng-special/tang-operator-bundle:v1.0.4
+docker push sec-eng-special/tang-operator-bundle:v1.0.5
 The push refers to repository [quay.io/sec-eng-special/tang-operator-bundle]
 02e3768cfc56: Pushed
 df0c8060d328: Pushed
 84774958bcf4: Pushed
-v1.0.4: digest: sha256:925c2f844f941db2b53ce45cba9db7ee0be613321da8f0f05d size: 939
+v1.0.5: digest: sha256:925c2f844f941db2b53ce45cba9db7ee0be613321da8f0f05d size: 939
 make[1]: Leaving directory '/home/user/RedHat/TASKS/TANG_OPERATOR/tang-operator'
 ```
 
@@ -311,15 +312,15 @@ In order to cross compile tang-operator, prepend **GOARCH** with required archit
 **make docker-build**:
 
 ```bash
-$ GOARCH=ppc64le make docker-build docker-push IMG="quay.io/sec-eng-special/tang-operator:v1.0.4"
+$ GOARCH=ppc64le make docker-build docker-push IMG="quay.io/sec-eng-special/tang-operator:v1.0.5"
 ...
 Successfully built 4a88ba8e6426
-Successfully tagged sec-eng-special/tang-operator:v1.0.4
-docker push sec-eng-special/tang-operator:v1.0.4
+Successfully tagged sec-eng-special/tang-operator:v1.0.5
+docker push sec-eng-special/tang-operator:v1.0.5
 The push refers to repository [quay.io/sec-eng-special/tang-operator]
 79109912085a: Pushed
 417cb9b79ade: Layer already exists
-v1.0.4: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
+v1.0.5: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
 ```
 
 ## Cleanup
@@ -329,9 +330,9 @@ recommended way:
 
 ```bash
 $ operator-sdk cleanup tang-operator
-INFO[0001] subscription "tang-operator-v1.0.4-sub" deleted
+INFO[0001] subscription "tang-operator-v1.0.5-sub" deleted
 INFO[0001] customresourcedefinition "tangservers.daemons.redhat.com" deleted
-INFO[0002] clusterserviceversion "tang-operator.v1.0.4" deleted
+INFO[0002] clusterserviceversion "tang-operator.v1.0.5" deleted
 INFO[0002] catalogsource "tang-operator-catalog" deleted
 INFO[0002] operatorgroup "operator-sdk-og" deleted
 INFO[0002] Operator "tang-operator" uninstalled
@@ -402,11 +403,11 @@ NOTE: CI/CD is in a continuous "work in progress" state
 
 ## Scorecard
 
-Execution of operator-sdk scorecard tests are passing completely in version v1.0.4.
+Execution of operator-sdk scorecard tests are passing completely in version v1.0.5.
 In order to execute these tests, run next command:
 
 ```bash
-$ operator-sdk scorecard -w 60s quay.io/sec-eng-special/tang-operator-bundle:v1.0.4
+$ operator-sdk scorecard -w 60s quay.io/sec-eng-special/tang-operator-bundle:v1.0.5
 ...
 Results:
 Name: olm-status-descriptors
