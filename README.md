@@ -22,6 +22,7 @@
 - [Cross Compilation](#cross-compilation)
 - [Cleanup](#cleanup)
 - [Tests](#tests)
+- [Function Tests](#function-tests)
 - [CI/CD](#cicd)
 - [Scorecard](#scorecard)
 - [Links](#links)
@@ -366,6 +367,12 @@ $ go tool cover -html=cover.out
 Previous command will open a web browser with the different coverage reports of the different
 files that are part of the controller.
 
+## Function Tests
+
+Function tests are developed in [Tang Operator Test Suite Repository](https://github.com/RedHat-SP-Security/tang-operator-tests)
+
+Please, follow instructions in previous repository to execute tang-operator function tests
+
 ## CI/CD
 
 tang-operator uses Github Actions to perform CI/CD (Continuous Integration/Continuous Delivery).
@@ -443,3 +450,4 @@ State: pass
 [operator-sdk Installation](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)\
 [OpenShift CLI Installation](https://docs.openshift.com/container-platform/4.2/cli_reference/openshift_cli/getting-started-cli.html#cli-installing-cli_cli-developer-commands)\
 [Validating Operators using the scorecard tool](https://docs.okd.io/latest/operators/operator_sdk/osdk-scorecard.html)
+[Tang Operator Test Suite](https://github.com/RedHat-SP-Security/tang-operator-tests)
