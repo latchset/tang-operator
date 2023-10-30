@@ -485,7 +485,7 @@ func (r *TangServerReconciler) reconcileService(cr *daemonsv1alpha1.TangServer) 
 		GetLogInstance().Info("Service already exists", "Service.Namespace", serviceFound.Namespace, "Service.Name", serviceFound.Name)
 		if len(serviceFound.Status.LoadBalancer.Ingress) > 0 {
 			GetLogInstance().Info("Service Information", "Load Balancer IP", serviceFound.Status.LoadBalancer.Ingress[0].IP, "Load Balancer Hostname", serviceFound.Status.LoadBalancer.Ingress[0].Hostname)
-			cr.Status.ServiceExternalUrl = getExternalServiceUrl(cr, serviceFound.Status.LoadBalancer.Ingress[0])
+			cr.Status.ServiceExternalURL = getExternalServiceURL(cr, serviceFound.Status.LoadBalancer.Ingress[0])
 			err := r.Client.Status().Update(context.Background(), cr)
 			if err != nil {
 				GetLogInstance().Error(err, "Unable to update TangServer status with Service IP URL")

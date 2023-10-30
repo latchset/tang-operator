@@ -54,17 +54,17 @@ done
 test -z "${namespace}" && namespace="default"
 test -z "${oc_client}" && oc_client="oc"
 
-getAdvUrl() {
+getAdvURL() {
   if [ "${using_minikube}" != "yes" ];
   then
-      "${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.serviceExternalUrl' | tr -d '"'
+      "${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.serviceExternalURL' | tr -d '"'
   else
       port=$("${oc_client}" -n "${namespace}" get service -o json | jq '.items[0].spec.ports[0].nodePort')
       echo "http://$(minikube ip):${port}/adv"
   fi
 }
 
-adv_url=$(getAdvUrl)
+adv_url=$(getAdvURL)
 adv=$(wget -O - "${adv_url}" -o /dev/null)
 
 dumpFromAdvWithHash() {

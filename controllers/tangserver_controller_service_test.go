@@ -97,21 +97,21 @@ var _ = Describe("TangServer controller service", func() {
 				},
 			}
 			Expect(k8sClient.Create(ctx, tangServer)).Should(Succeed())
-			serviceUrl := getServiceUrl(tangServer)
-			Expect(len(serviceUrl) > 0)
-			serviceIpUrl := getServiceIpUrl(tangServer, TangServerTestIp)
-			Expect(len(serviceIpUrl) > 0)
-			Expect(strings.Contains(serviceIpUrl, TangServerTestIp))
+			serviceURL := getServiceURL(tangServer)
+			Expect(len(serviceURL) > 0)
+			serviceIpURL := getServiceIpURL(tangServer, TangServerTestIp)
+			Expect(len(serviceIpURL) > 0)
+			Expect(strings.Contains(serviceIpURL, TangServerTestIp))
 			loadBalancer := corev1.LoadBalancerIngress{
 				Hostname: TangServerTestHostname,
 			}
-			serviceIpExternalServiceUrl := getExternalServiceUrl(tangServer, loadBalancer)
-			Expect(strings.Contains(serviceIpExternalServiceUrl, TangServerTestHostname))
+			serviceIpExternalServiceURL := getExternalServiceURL(tangServer, loadBalancer)
+			Expect(strings.Contains(serviceIpExternalServiceURL, TangServerTestHostname))
 			loadBalancer = corev1.LoadBalancerIngress{
 				IP: TangServerTestIp,
 			}
-			serviceIpExternalServiceUrl = getExternalServiceUrl(tangServer, loadBalancer)
-			Expect(strings.Contains(serviceIpExternalServiceUrl, TangServerTestIp))
+			serviceIpExternalServiceURL = getExternalServiceURL(tangServer, loadBalancer)
+			Expect(strings.Contains(serviceIpExternalServiceURL, TangServerTestIp))
 			err := k8sClient.Delete(ctx, tangServer)
 			Expect(err, nil)
 		})

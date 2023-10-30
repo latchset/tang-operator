@@ -81,17 +81,17 @@ func getService(tangserver *daemonsv1alpha1.TangServer) *corev1.Service {
 }
 
 // getService function returns correctly created service
-func getServiceUrl(tangserver *daemonsv1alpha1.TangServer) string {
+func getServiceURL(tangserver *daemonsv1alpha1.TangServer) string {
 	return DEFAULT_SERVICE_PROTO + "://" + getServiceName(tangserver) + "." + tangserver.Namespace + ":" + fmt.Sprint(getServicePort(tangserver)) + "/adv"
 }
 
-// getServiceIpUrl function returns correctly created service
-func getServiceIpUrl(tangserver *daemonsv1alpha1.TangServer, ip string) string {
+// getServiceIpURL function returns correctly created service
+func getServiceIpURL(tangserver *daemonsv1alpha1.TangServer, ip string) string {
 	return DEFAULT_SERVICE_PROTO + "://" + ip + ":" + fmt.Sprint(getServicePort(tangserver)) + "/adv"
 }
 
-// getExternalServiceUrl function returns correctly created service
-func getExternalServiceUrl(tangserver *daemonsv1alpha1.TangServer, balancer corev1.LoadBalancerIngress) string {
+// getExternalServiceURL function returns correctly created service
+func getExternalServiceURL(tangserver *daemonsv1alpha1.TangServer, balancer corev1.LoadBalancerIngress) string {
 	if len(balancer.Hostname) > 0 {
 		return DEFAULT_SERVICE_PROTO + "://" + balancer.Hostname + ":" + fmt.Sprint(getServicePort(tangserver)) + "/adv"
 	} else {
