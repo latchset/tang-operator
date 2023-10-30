@@ -216,9 +216,9 @@ spec:
                   Replicas
                 format: int32
                 type: integer
-              serviceExternalUrl:
-                description: Tang Server Service External Url provides information
-                  about the External Service Url
+              serviceExternalURL:
+                description: Tang Server Service External URL provides information
+                  about the External Service URL
                 type: string
               tangServerError:
                 description: TangServerError collects error on Tang Operator creation
