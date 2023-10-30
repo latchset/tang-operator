@@ -29,14 +29,15 @@
 
 ## Introduction
 
-Tang operator helps on providing [NBDE](https://access.redhat.com/articles/6987053)
-for OpenShift/K8S. It deploys one or several Tang servers automatically.
+The Tang operator helps on providing [NBDE](https://access.redhat.com/articles/6987053)
+technology for OpenShift/K8S. It deploys one or several Tang servers automatically.
 The Tang server container image to launch is configurable, and will use the latest one
-available by default. It has been developed using operator-sdk.
+available by default. The Tang operator has been developed using
+[operator-sdk](https://sdk.operatorframework.io/).
 
-The tang-operator avoids having to follow all Tang installation steps, and leverages
-some of the features provided by OpenShift: multi-replica deployment, scale-in/out,
-scale up/down or traffic load balancing.
+The Tang operator avoids having to follow all Tang manual installation steps,
+and leverages some of the features provided by OpenShift: multi-replica deployment,
+scale-in/out, scale up/down or traffic load balancing.
 
 This operator also allows automation of certain operations, which are error prone
 if executed manually. Examples of this operations are:
