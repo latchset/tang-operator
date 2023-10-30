@@ -1,7 +1,14 @@
 ---
 name: 'Yamllint'
-on:
-  - pull_request
+"on":
+  push:
+    branches:
+      - main
+    paths:
+      - '**.yaml'
+  pull_request:
+    paths:
+      - '**.yaml'
 jobs:
   yamllint:
     name: 'Yamllint'
