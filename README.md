@@ -450,5 +450,5 @@ State: pass
 [Minikube Installation](https://minikube.sigs.k8s.io/docs/start/)\
 [operator-sdk Installation](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)\
 [OpenShift CLI Installation](https://docs.openshift.com/container-platform/4.2/cli_reference/openshift_cli/getting-started-cli.html#cli-installing-cli_cli-developer-commands)\
-[Validating Operators using the scorecard tool](https://docs.okd.io/latest/operators/operator_sdk/osdk-scorecard.html)
+[Validating Operators using the scorecard tool](https://docs.okd.io/latest/operators/operator_sdk/osdk-scorecard.html)\
 [Tang Operator Test Suite](https://github.com/RedHat-SP-Security/tang-operator-tests)
