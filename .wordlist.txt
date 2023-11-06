@@ -32,4 +32,7 @@ Shellcheck
 Staticcheck
 tangd
 tang-operator
+url
+Url
+URL
 yaml
