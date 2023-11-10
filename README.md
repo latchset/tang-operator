@@ -116,7 +116,7 @@ bundle. For example, in case latest version is **1.0.6**, the command to execute
 will be:
 
 ```bash
-$ operator-sdk run bundle quay.io/sec-eng-special/tang-operator-bundle:v1.0.6 --index-image=quay.io/operator-framework/opm:v1.23.0
+$ operator-sdk run bundle quay.io/sec-eng-special/tang-operator-bundle:v1.0.6
 INFO[0008] Successfully created registry pod: quay-io-sec-eng-special-tang-operator-bundle-v1.0.6
 INFO[0009] Created CatalogSource: tang-operator-catalog
 INFO[0009] OperatorGroup "operator-sdk-og" created
@@ -132,7 +132,7 @@ INFO[0031] OLM has successfully installed "tang-operator.v1.0.6"
 ```
 To install latest multi-arch image, execute:
 ```bash
-$ operator-sdk run bundle quay.io/sec-eng-special/tang-operator-bundle:multi-arch --index-image=quay.io/operator-framework/opm:v1.23.0
+$ operator-sdk run bundle quay.io/sec-eng-special/tang-operator-bundle:multi-arch
 ```
 
 If the message **OLM has successfully installed** is displayed, it is normally a
@@ -144,7 +144,7 @@ your cluster takes long time to deploy. To do so, the option **--timeout** can b
 used (if not used, default time is 2m, which stands for two minutes):
 
 ```bash
-$ operator-sdk run bundle --timeout 3m quay.io/sec-eng-special/tang-operator-bundle:v1.0.6 --index-image=quay.io/operator-framework/opm:v1.23.0
+$ operator-sdk run bundle --timeout 3m quay.io/sec-eng-special/tang-operator-bundle:v1.0.6
 INFO[0008] Successfully created registry pod: quay-io-sec-eng-special-tang-operator-bundle-v1.0.6
 ...
 INFO[0031] OLM has successfully installed "tang-operator.v1.0.6"
