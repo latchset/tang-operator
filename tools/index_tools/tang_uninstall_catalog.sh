@@ -15,8 +15,8 @@
 #   limitations under the License.
 #
 
-test -f tang_subscription.yaml && oc delete -f tang_subscription.yaml 
-test -f tang_catalog_source.yaml && oc delete -f tang_catalog_source.yaml 
+test -f tang_subscription.yaml && oc delete -f tang_subscription.yaml
+test -f tang_catalog_source.yaml && oc delete -f tang_catalog_source.yaml
 oc get csv -nopenshift-operators
 csv=$(oc get csv -n openshift-operators | grep -v NAME | head | awk '{print $1}')
 test -z "${csv}" || oc delete csv "${csv}" -n openshift-operators
