@@ -15,7 +15,7 @@
 #   limitations under the License.
 #
 counter=0
-oc apply -f config/minimal-keyretrieve
+oc apply -f operator_configs/minimal-keyretrieve
 while true;
 do
   echo "======================  $counter =================="
@@ -23,7 +23,7 @@ do
   ./tools/api_tools/key_rotate.sh -n nbde
   sleep 10
   oc -n nbde describe tangservers.daemons.redhat.com
-  oc apply -f config/minimal-keyretrieve-deletehiddenkeys
+  oc apply -f operator_configs/minimal-keyretrieve-deletehiddenkeys
   sleep 5
   oc -n nbde describe tangservers.daemons.redhat.com
   echo "====================== /$counter =================="
