@@ -219,6 +219,20 @@ The push refers to repository [quay.io/sec-eng-special/tang-operator]
 v1.0.6: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
 ```
 
+It is possible to use `podman` instead of `docker`:
+
+```bash
+$ make podman-build podman-push IMG="quay.io/sec-eng-special/tang-operator:v1.0.6"
+...
+Successfully built 4a88ba8e6426
+Successfully tagged sec-eng-special/tang-operator:v1.0.6
+podman push sec-eng-special/tang-operator:v1.0.6
+The push refers to repository [quay.io/sec-eng-special/tang-operator]
+7910991.0.6a: Pushed
+417cb9b79ade: Layer already exists
+v1.0.6: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
+```
+
 In case a new release is planned to be done, the steps to follow will be:
 
 - <ins>Modify Makefile so that it contains the new version</ins>:
@@ -234,7 +248,7 @@ index 9a41c6a..db12a82 1.0.64
 # standard setup, you can:
 # - use the VERSION as arg of the bundle target (e.g make bundle VERSION=1.0.6)
 # - use environment variables to overwrite this value (e.g export VERSION=1.0.6)
--VERSION ?= 0.0.27
+-VERSION ?= 1.0.5
 +VERSION ?= 1.0.6
 ```
 
@@ -271,6 +285,23 @@ $ make bundle IMG="quay.io/sec-eng-special/tang-operator:v1.0.6"
 $ make bundle-build bundle-push BUNDLE_IMG="quay.io/sec-eng-special/tang-operator-bundle:v1.0.6"
 ...
 docker push sec-eng-special/tang-operator-bundle:v1.0.6
+The push refers to repository [quay.io/sec-eng-special/tang-operator-bundle]
+02e3768cfc56: Pushed
+df0c8060d328: Pushed
+84774958bcf4: Pushed
+v1.0.6: digest: sha256:925c2f844f941db2b53ce45cba9db7ee0be613321da8f0f05d size: 939
+make[1]: Leaving directory '/home/user/RedHat/TASKS/TANG_OPERATOR/tang-operator'
+```
+
+In case `podman` has been used for container generation, bundle push must be done through `podman`.
+In case the operator bundle is required to be pushed, generate the bundle with **make bundle**,
+specifying appropriate image, and push it with **make podman-bundle-build podman-bundle-push**:
+
+```bash
+$ make bundle IMG="quay.io/sec-eng-special/tang-operator:v1.0.6"
+$ make podman-bundle-build podman-bundle-push BUNDLE_IMG="quay.io/sarroutb/tang-operator-bundle:v1.0.6"
+...
+podman push sec-eng-special/tang-operator-bundle:v1.0.6
 The push refers to repository [quay.io/sec-eng-special/tang-operator-bundle]
 02e3768cfc56: Pushed
 df0c8060d328: Pushed

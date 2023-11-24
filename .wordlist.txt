@@ -23,6 +23,8 @@ nbde
 NBDE
 OLM
 OpenShift
+Podman
+podman
 prepend
 README
 RHEL
