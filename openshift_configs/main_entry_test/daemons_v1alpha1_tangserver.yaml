@@ -2,12 +2,12 @@
 apiVersion: daemons.redhat.com/v1alpha1
 kind: TangServer
 metadata:
-  name: tangserver-mini
+  name: tangserver
   namespace: nbde
   finalizers:
     - finalizer.daemons.tangserver.redhat.com
 spec:
+  keyPath: /var/db
   replicas: 1
-  hiddenKeys:
-    - sha1: "c4yrNFRUGsjIIu4I6S2XGk4MXvs"
-  image: "quay.io/sec-eng-special/fedora_tang_server"
+  image: "docker.io/sarroutbi/ubi_tang_server"
+  version: "clean_exit"

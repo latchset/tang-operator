@@ -9,5 +9,5 @@ metadata:
 spec:
   # Add fields here
   replicas: 1
-  image: "registry.redhat.io/rhel9/tang"
+  image: "quay.io/sec-eng-special/fedora_tang_server"
   version: "latest"

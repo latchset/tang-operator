@@ -10,4 +10,3 @@ spec:
   replicas: 1
   hiddenKeys:
     - sha1: "c4yrNFRUGsjIIu4I6S2XGk4MXvs"
-  image: "quay.io/sec-eng-special/fedora_tang_server"

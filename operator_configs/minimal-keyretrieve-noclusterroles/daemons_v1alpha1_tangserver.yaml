@@ -8,3 +8,4 @@ metadata:
     - finalizer.daemons.tangserver.redhat.com
 spec:
   replicas: 1
+  image: "quay.io/sec-eng-special/fedora_tang_server"
