@@ -168,7 +168,7 @@ from `config` directory. Minimal installation, that just provides the number
 of replicas (1) to use, is the recommended Tang operator configuration to apply:
 
 ```bash
-$ oc apply -f config/minimal
+$ oc apply -f operator_configs/minimal
 namespace/nbde created
 tangserver.daemons.redhat.com/tangserver created
 ```
