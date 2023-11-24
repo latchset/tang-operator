@@ -9,3 +9,4 @@ metadata:
 spec:
   replicas: 1
   keyrefreshinterval: 5
+  image: "quay.io/sec-eng-special/fedora_tang_server"

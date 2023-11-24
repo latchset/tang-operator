@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clevis
+  namespace: nbde
+  labels:
+    app: clevis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clevis
+  template:
+    metadata:
+      labels:
+        app: clevis
+    spec:
+      containers:
+        - name: clevis
+          image: sarroutbi/fedora_clevis:latest
