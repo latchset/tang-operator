@@ -90,7 +90,7 @@ Tang operator-bundle are:
 -  v1.0.3: new GA release candidate. Update all mods to latest version
 -  v1.0.4: new GA release candidate. Adjust to naming conventions
 -  v1.0.5: new GA release candidate. Use latest `kube-rbac-proxy` version
--  v1.0.6: new GA release candidate. Fix Url to URL in CRD
+-  v1.0.6: GA release. Fix Url to URL in CRD. GA Released Version in OpenShift.
 
 ## Installation
 
