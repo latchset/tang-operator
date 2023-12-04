@@ -498,7 +498,7 @@ State: pass
 
 ## Links
 
-[NBDE](https://access.redhat.com/articles/6987053)\
+[NBDE Technology](https://access.redhat.com/articles/6987053)\
 [Tang-Operator: Providing NBDE in OpenShift](https://cloud.redhat.com/blog/tang-operator-providing-nbde-in-openshift)\
 [CodeReady Containers Installation](https://access.redhat.com/documentation/en-us/red_hat_codeready_containers/1.29/html/getting_started_guide/installation_gsg)\
 [Minikube Installation](https://minikube.sigs.k8s.io/docs/start/)\
