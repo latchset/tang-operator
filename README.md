@@ -29,7 +29,7 @@
 
 ## Introduction
 
-The Tang operator helps on providing [NBDE](https://access.redhat.com/articles/6987053)
+The Tang operator helps providing [NBDE](https://access.redhat.com/articles/6987053)
 technology for OpenShift/K8S. It deploys one or several Tang servers automatically.
 The Tang server container image to launch is configurable, and will use the latest one
 available by default. The Tang operator has been developed using
