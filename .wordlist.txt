@@ -37,4 +37,7 @@ tang-operator
 url
 Url
 URL
+YAML
 yaml
+YAMLLINT
+yamllint

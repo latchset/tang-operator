@@ -469,6 +469,10 @@ NOTE: CI/CD is in a continuous "work in progress" state
 Execution of operator-sdk scorecard tests are passing completely in version v1.0.7.
 In order to execute these tests, run next command:
 
+## Yamllint
+
+This Github action checks for correct syntax for .yaml files.
+
 ```bash
 $ operator-sdk scorecard -w 60s quay.io/sec-eng-special/tang-operator-bundle:v1.0.7
 ...
