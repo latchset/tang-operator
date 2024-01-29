@@ -19,7 +19,7 @@
 - [Versions](#versions)
 - [Installation](#installation)
 - [Compilation](#compilation)
-- [Cross Compilation](#cross-compilation)
+  * [Cross Compilation](#cross-compilation)
 - [Cleanup](#cleanup)
 - [Tests](#tests)
 - [Function Tests](#function-tests)
@@ -363,7 +363,7 @@ scorecard tests to pass successfully
 Remember to **modify README.md** to include the new release version, and commit changes
 performed in the operator, together with README.md and Makefile changes
 
-## Cross Compilation
+### Cross Compilation
 
 In order to cross compile tang-operator, prepend **GOARCH** with required architecture to
 **make docker-build**:
