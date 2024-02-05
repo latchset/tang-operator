@@ -98,7 +98,9 @@ Tang operator-bundle are:
 In order to install the Tang operator, you must have previously installed
 an OpenShift/K8S cluster. For small computers, **CRC** (Code Ready Containers)
 project is recommended. In case normal OpenShift cluster is used, Tang operator
-installation should not differ from the CRC one.
+installation should not differ from the CRC one. Ultimately, tang-operator has
+been included in Red Hat OpenShift catalog, named as
+[NBDE Tang Server](https://catalog.redhat.com/software/container-stacks/detail/651c310f3b4c44380c45b7c9).
 
 Instructions for **CRC** installation can be observed
 in the [Links](#links) section.
