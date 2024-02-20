@@ -468,16 +468,16 @@ This job performs static check of Golang code.
 ### Staticcheck
 The purpose of this job performs is similar to the previous one, static check of Golang code.
 
-NOTE: CI/CD is in a continuous "work in progress" state
+### Yamllint
+This Github action checks for correct syntax for .yaml files.
+
+:exclamation: CI/CD is in a continuous "work in progress" state :exclamation:
 
 ## Scorecard
 
-Execution of operator-sdk scorecard tests are passing completely in version v1.0.7.
-In order to execute these tests, run next command:
-
-## Yamllint
-
-This Github action checks for correct syntax for .yaml files.
+As described previously, scorecard test is executed as part of the CI/CD jobs.
+However, scorecard tests can be executed manually. In order to execute these tests,
+run next command:
 
 ```bash
 $ operator-sdk scorecard -w 60s quay.io/sec-eng-special/tang-operator-bundle:v1.0.7
@@ -506,6 +506,8 @@ Results:
 Name: olm-bundle-validation
 State: pass
 ```
+
+As it can be observed, execution of operator-sdk scorecard tests are passing successfully in latest released version (v1.0.7).
 
 ## Links
 
