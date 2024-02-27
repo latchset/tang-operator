@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        Arch: [ppc64le, s390x, arm64]
+        Arch: [ppc64le, s390x, arm64, riscv64, mips64, amd64]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
