@@ -385,6 +385,13 @@ The push refers to repository [quay.io/sec-eng-special/tang-operator]
 417cb9b79ade: Layer already exists
 v1.0.7: digest: sha256:c97bed08ab71556542602b008888bdf23ce4afd86228a07 size: 739
 ```
+Examples of architectures to cross-compile are:
+* `ppc64le`
+* `s390x`
+* `arm64`
+* `mips64`
+* `riscv64`
+* `amd64`
 
 ## Cleanup
 
@@ -453,8 +460,13 @@ It performs following steps:
 * Scorecard Test Execution
 
 ### Cross compilation
-This job cross compiles code in other supported architectures, in particular for `ppc64le`, `s390x`
-and `arm64`.
+This job cross compiles code in other supported architectures, in particular for next architectures:
+* `ppc64le`
+* `s390x`
+* `arm64`
+* `mips64`
+* `riscv64`
+* `amd64`
 
 ### Shellcheck
 Shellcheck job checks that existing `bash` scripts in the projects contain no fails.
