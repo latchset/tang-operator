@@ -37,8 +37,8 @@ jobs:
     - name: Status
       run: minikube status
 
-    #- name: Cluster Test
-    #  run: CLUSTER_TANG_OPERATOR_TEST=1 make test
+    - name: Cluster Test
+      run: CLUSTER_TANG_OPERATOR_TEST=1 make test
 
     - name: Deploy and Scorecard
       run: |
