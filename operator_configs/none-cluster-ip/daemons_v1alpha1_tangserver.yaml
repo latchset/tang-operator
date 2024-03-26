@@ -1,0 +1,14 @@
+---
+apiVersion: daemons.redhat.com/v1alpha1
+kind: TangServer
+metadata:
+  name: tangserver-none-cluster-ip
+  namespace: nbde
+  finalizers:
+    - finalizer.daemons.tangserver.redhat.com
+spec:
+  replicas: 1
+  image: "quay.io/sec-eng-special/fedora_tang_server"
+  version: "latest"
+  clusterIP: "None"
+  serviceType: "ClusterIP"

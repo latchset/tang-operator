@@ -48,6 +48,24 @@ func getServicePort(tangserver *daemonsv1alpha1.TangServer) uint32 {
 	return servicePort
 }
 
+// getServiceType function returns the service type depending on CR information
+func getServiceType(tangserver *daemonsv1alpha1.TangServer) corev1.ServiceType {
+	if tangserver.Spec.ServiceType == "ClusterIP" {
+		return corev1.ServiceTypeClusterIP
+	}
+	if tangserver.Spec.ServiceType == "NodePort" {
+		return corev1.ServiceTypeNodePort
+	}
+	if tangserver.Spec.ServiceType == "ExternalName" {
+		return corev1.ServiceTypeExternalName
+	}
+	return corev1.ServiceTypeLoadBalancer
+}
+
+func getClusterIP(tangserver *daemonsv1alpha1.TangServer) string {
+	return tangserver.Spec.ClusterIP
+}
+
 // getService function returns correctly created service
 func getService(tangserver *daemonsv1alpha1.TangServer) *corev1.Service {
 	GetLogInstance().Info("getService")
@@ -67,7 +85,7 @@ func getService(tangserver *daemonsv1alpha1.TangServer) *corev1.Service {
 			Labels:    labels,
 		},
 		Spec: corev1.ServiceSpec{
-			Type:     corev1.ServiceTypeLoadBalancer,
+			Type:     getServiceType(tangserver),
 			Selector: labels,
 			Ports: []corev1.ServicePort{
 				{
@@ -76,6 +94,7 @@ func getService(tangserver *daemonsv1alpha1.TangServer) *corev1.Service {
 					TargetPort: intstr.FromInt(int(getPodListenPort(tangserver))),
 				},
 			},
+			ClusterIP: getClusterIP(tangserver),
 		},
 	}
 }

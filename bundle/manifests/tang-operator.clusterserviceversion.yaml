@@ -25,7 +25,7 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    createdAt: "2024-01-09T09:15:11Z"
+    createdAt: "2024-03-26T11:07:45Z"
     operators.operatorframework.io/builder: operator-sdk-v1.33.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
   name: tang-operator.v1.0.7
@@ -50,6 +50,9 @@ spec:
       - kind: Service
         version: v1
       specDescriptors:
+      - description: ClusterIP
+        displayName: ClusterIP (empty by default)
+        path: clusterIP
       - description: HealthScript is the script to run for healthiness/readiness
         displayName: Health Script to execute
         path: healthScript
@@ -91,6 +94,9 @@ spec:
       - description: ServiceListenPort is the port where service will listen for traffic
         displayName: Port where service will listen
         path: serviceListenPort
+      - description: ServiceType
+        displayName: ServiceType (LoadBalancer by default)
+        path: serviceType
       - description: Version is the version of the TangServer container to use (empty=>latest)
         displayName: Image Version of Container to deploy
         path: version
