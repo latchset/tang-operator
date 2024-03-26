@@ -93,6 +93,16 @@ type TangServerSpec struct {
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Required Active Key Pairs (1 by default)"
 	// +optional
 	RequiredActiveKeyPairs uint32 `json:"requiredActiveKeyPairs,omitempty"`
+
+	// ServiceType
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="ServiceType (LoadBalancer by default)"
+	// +optional
+	ServiceType string `json:"serviceType,omitempty"`
+
+	// ClusterIP
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="ClusterIP (empty by default)"
+	// +optional
+	ClusterIP string `json:"clusterIP,omitempty"`
 }
 
 // ResourcesRequest contains the struct to provide resources requests to Tang Server

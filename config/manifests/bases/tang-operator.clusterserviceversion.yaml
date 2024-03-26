@@ -15,6 +15,9 @@ spec:
       kind: TangServer
       name: tangservers.daemons.redhat.com
       specDescriptors:
+      - description: ClusterIP
+        displayName: ClusterIP (empty by default)
+        path: clusterIP
       - description: HealthScript is the script to run for healthiness/readiness
         displayName: Health Script to execute
         path: healthScript
@@ -56,6 +59,9 @@ spec:
       - description: ServiceListenPort is the port where service will listen for traffic
         displayName: Port where service will listen
         path: serviceListenPort
+      - description: ServiceType
+        displayName: ServiceType (LoadBalancer by default)
+        path: serviceType
       - description: Version is the version of the TangServer container to use (empty=>latest)
         displayName: Image Version of Container to deploy
         path: version
