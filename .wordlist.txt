@@ -1,4 +1,5 @@
 CLI
+ClusterIP
 CodeReady
 CRC
 CRD
@@ -30,9 +31,11 @@ README
 RHEL
 sdk
 SDK
+ServiceType
 Shellcheck
 Staticcheck
 tangd
+TangServer
 tang-operator
 url
 Url

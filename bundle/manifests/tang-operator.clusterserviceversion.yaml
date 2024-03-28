@@ -25,10 +25,10 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    createdAt: "2024-03-26T11:07:45Z"
+    createdAt: "2024-03-28T10:31:23Z"
     operators.operatorframework.io/builder: operator-sdk-v1.33.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: tang-operator.v1.0.7
+  name: tang-operator.v1.0.8
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -328,7 +328,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: quay.io/sec-eng-special/tang-operator:v1.0.7
+                image: quay.io/sec-eng-special/tang-operator:v1.0.8
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -411,4 +411,4 @@ spec:
   maturity: alpha
   provider:
     name: Red Hat
-  version: 1.0.7
+  version: 1.0.8
