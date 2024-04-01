@@ -13,6 +13,8 @@ Golang
 grcov
 healthcheck
 keypath
+Killercoda
+killercoda
 llvm
 Makefile
 Markdown
