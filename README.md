@@ -526,6 +526,7 @@ As it can be observed, execution of operator-sdk scorecard tests are passing suc
 
 [NBDE Technology](https://access.redhat.com/articles/6987053)\
 [Tang-Operator: Providing NBDE in OpenShift](https://cloud.redhat.com/blog/tang-operator-providing-nbde-in-openshift)\
+[Tang-Operator demo on Killercoda](https://killercoda.com/sarroutb/scenario/tang-operator)\
 [CodeReady Containers Installation](https://access.redhat.com/documentation/en-us/red_hat_codeready_containers/1.29/html/getting_started_guide/installation_gsg)\
 [Minikube Installation](https://minikube.sigs.k8s.io/docs/start/)\
 [operator-sdk Installation](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)\
