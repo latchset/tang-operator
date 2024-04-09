@@ -445,6 +445,8 @@ Please, follow instructions in previous repository to execute tang-operator func
 
 ## CI/CD
 
+:exclamation: CI/CD is in a continuous "work in progress" state :exclamation:
+
 tang-operator uses Github Actions to perform CI/CD (Continuous Integration/Continuous Delivery).
 There are different Github actions that will perform different tasks:
 
@@ -483,8 +485,6 @@ The purpose of this job performs is similar to the previous one, static check of
 
 ### Yamllint
 This Github action checks for correct syntax for .yaml files.
-
-:exclamation: CI/CD is in a continuous "work in progress" state :exclamation:
 
 ## Scorecard
 
