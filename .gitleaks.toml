@@ -1,0 +1,7 @@
+[allowlist]
+  description = "Global Allowlist"
+
+  # Ignore based on any subset of the file path
+  paths = [
+    '''e2e_test''',
+  ]
