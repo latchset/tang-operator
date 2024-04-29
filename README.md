@@ -6,6 +6,7 @@
 
 ## Status
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/latchset/tang-operator?label=version)](https://packagist.org/packages/latchset/tang-operator)\
 [![Default compilation, tests and deploy](https://github.com/latchset/tang-operator/actions/workflows/deploy.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/deploy.yaml)\
 [![Cross compilation](https://github.com/latchset/tang-operator/actions/workflows/cross_compile.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/cross_compile.yaml)\
 [![Golang CI lint](https://github.com/latchset/tang-operator/actions/workflows/golangci-lint.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/golangci-lint.yaml)\
