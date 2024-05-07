@@ -15,7 +15,7 @@
 #
 set -x -e
 
-OPERATOR_SDK_DEFAULT_RELEASE_VERSION="v1.32.0"
+OPERATOR_SDK_DEFAULT_RELEASE_VERSION="v1.33.0"
 DEFAULT_BUNDLE_IMG="quay.io/sec-eng-special/tang-operator-bundle"
 DEFAULT_TIMEOUT="5m"
 DEFAULT_GITHUB_BRANCH="main"
@@ -101,6 +101,6 @@ mv "operator-sdk_${OS}_${ARCH}" "$(pwd)/operator-sdk"
 chmod +x "$(pwd)/operator-sdk"
 "$(pwd)"/operator-sdk olm install --timeout "${TIMEOUT}"
 "$(pwd)"/operator-sdk olm status
-"$(pwd)"/operator-sdk run bundle --timeout "${TIMEOUT}" "${BUNDLE_IMG_VERSION}"
+"$(pwd)"/operator-sdk run bundle --verbose --timeout "${TIMEOUT}" "${BUNDLE_IMG_VERSION}"
 "$(pwd)"/operator-sdk olm status
 "$(pwd)"/operator-sdk scorecard --wait-time="${TIMEOUT}" "${BUNDLE_IMG_VERSION}"
