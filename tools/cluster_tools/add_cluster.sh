@@ -39,14 +39,14 @@ function usage() {
   fi
 }
 
-while getopts "f:c:n:h" arg
+while getopts "c:f:n:h" arg
 do
   case "${arg}" in
-    f) CONFIG_FILE=${OPTARG}
-       echo "CONFIG_FILE=${CONFIG_FILE}"
-       ;;
     c) CONTEXT=${OPTARG}
        echo "CONTEXT=${CONTEXT}"
+       ;;
+    f) CONFIG_FILE=${OPTARG}
+       echo "CONFIG_FILE=${CONFIG_FILE}"
        ;;
     n) NAMESPACE=${OPTARG}
        echo "NAMESPACE=${NAMESPACE}"
