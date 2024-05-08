@@ -4,7 +4,11 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - '**.sh'
   pull_request:
+    paths-ignore:
+      - '**.sh'
 jobs:
   check-spelling:
     runs-on: ubuntu-latest
