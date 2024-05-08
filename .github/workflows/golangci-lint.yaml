@@ -6,10 +6,12 @@ on:
       - main
     paths-ignore:
       - '**.md'
+      - '**.sh'
       - '.wordlist.txt'
   pull_request:
     paths-ignore:
       - '**.md'
+      - '**.sh'
       - '.wordlist.txt'
 
 permissions:

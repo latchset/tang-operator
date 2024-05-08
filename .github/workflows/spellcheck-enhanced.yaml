@@ -3,7 +3,11 @@ name: "Spellcheck Enhanced"
 "on":
   push:
     branches: [main]
+    paths-ignore:
+      - '**.sh'
   pull_request:
+    paths-ignore:
+      - '**.sh'
 jobs:
   spell-check:
     name: "Language tool & Misspell check"
