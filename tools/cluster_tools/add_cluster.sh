@@ -21,8 +21,22 @@ NAMESPACE=""
 alias cp='cp -rfv'
 
 function usage() {
-  echo "$1 -f config-file [-c context] [-n namespace]"
-  return "$2"
+  local sourced=1
+  echo ""
+  {
+    [[ -n $ZSH_VERSION && $ZSH_EVAL_CONTEXT =~ :file$ ]] ||
+    [[ -n $BASH_VERSION ]] && [[ $0 != "${BASH_SOURCE[0]}" ]]
+  } && sourced=1 || sourced=0
+  if [ "${sourced}" -eq 0 ];
+  then
+    echo "$1 -f config-file [-c context] [-n namespace]"
+    echo ""
+    exit "$2"
+  else
+    echo "${BASH_ARGV[0]} -f config-file [-c context] [-n namespace]"
+    echo ""
+    return "$2"
+  fi
 }
 
 while getopts "f:c:n:h" arg
@@ -37,16 +51,16 @@ do
     n) NAMESPACE=${OPTARG}
        echo "NAMESPACE=${NAMESPACE}"
        ;;
-    h) usage "$0" 0
+    h) usage "$0" 0 || return 0
        ;;
-    *) usage "$0" 1
+    *) usage "$0" 1 || return 1
        ;;
   esac
 done
 
 if [ -z "${CONFIG_FILE}" ];
 then
-  usage "$0" 1
+  usage "$0" 1 || return 1
 fi
 
 CONFIG_FILE_PATH=$(readlink -f "${CONFIG_FILE}")
