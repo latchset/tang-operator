@@ -101,6 +101,6 @@ mv "operator-sdk_${OS}_${ARCH}" "$(pwd)/operator-sdk"
 chmod +x "$(pwd)/operator-sdk"
 "$(pwd)"/operator-sdk olm install --timeout "${TIMEOUT}"
 "$(pwd)"/operator-sdk olm status
-"$(pwd)"/operator-sdk run bundle --verbose --timeout "${TIMEOUT}" "${BUNDLE_IMG_VERSION}"
+"$(pwd)"/operator-sdk run bundle --timeout "${TIMEOUT}" "${BUNDLE_IMG_VERSION}"
 "$(pwd)"/operator-sdk olm status
 "$(pwd)"/operator-sdk scorecard --wait-time="${TIMEOUT}" "${BUNDLE_IMG_VERSION}"
