@@ -72,7 +72,7 @@ Tang operator-bundle are:
 - v0.0.14: Fix issue on non 8080 service port deployment
 - v0.0.15: Add resource request/limits
 - v0.0.16: Fix scale up issues
-- v0.0.17: Key rotation/deletion management via spec file
+- v0.0.17: Key rotation/deletion management through spec file
 - v0.0.18: Advertise only signing keys
 - v0.0.19: Add Events writing with important information
 - v0.0.20: Use tangd-healthcheck only for aliveness
