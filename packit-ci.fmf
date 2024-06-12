@@ -1,0 +1,36 @@
+summary: CI for PR's to main branch
+
+
+prepare:
+  - how: shell
+    script:
+     - ln -s $(pwd) /var/tmp/tang-operator_sources || true
+     - systemctl disable --now dnf-makecache.service || true
+     - systemctl disable --now dnf-makecache.timer || true
+     - dnf makecache
+
+environment:
+  TANG_IMAGE: "quay.io/sec-eng-special/fedora_tang_server"
+  UPSTREAM_OPERATOR: "true"
+  REPO_CLONE: "tang"
+
+discover:
+  - name: Configure_test_system
+    how: fmf
+    url: https://github.com/RedHat-SP-Security/common-cloud-orchestration
+    ref: main
+    test:
+      - /Setup/setup_local_cluster
+  - name: Run_tests
+    how: fmf
+    url: https://github.com/RedHat-SP-Security/tang-operator-tests
+    ref: main
+    test:
+      - /Setup/install_upstream_tang-operator
+      - /Setup/creating_test_namespace
+      - /Sanity
+      - /Setup/clean_cluster
+
+execute:
+    how: tmt
+
