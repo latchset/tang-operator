@@ -29,7 +29,7 @@
 
 ## Introduction
 
-The Tang operator helps providing [NBDE](https://access.redhat.com/articles/6987053)
+The Tang operator helps to provide [NBDE](https://access.redhat.com/articles/6987053)
 technology for OpenShift/K8S. It deploys one or several Tang servers automatically.
 The Tang server container image to launch is configurable, and will use the latest one
 available by default. The Tang operator has been developed using
@@ -39,7 +39,7 @@ The Tang operator avoids having to follow all Tang manual installation steps,
 and leverages some of the features provided by OpenShift: multi-replica deployment,
 scale-in/out, scale up/down or traffic load balancing.
 
-This operator also allows automation of certain operations, which are error prone
+This operator also allows automation of certain operations, which are error-prone
 if executed manually. Examples of these operations are:
 - server deployment and configuration
 - key rotation
@@ -79,7 +79,7 @@ Tang operator-bundle are:
 - v0.0.21: Use tangd-healthcheck for aliveness and readiness, separating intervals
 - v0.0.22: Remove personal accounts and use organization ones
 - v0.0.23: Selective hidden keys deletion
-- v0.0.24: Execute Tang container pod as non root user
+- v0.0.24: Execute Tang container pod as non-root user
 - v0.0.25: Allow key handling without cluster role configuration
 - v0.0.26: Use RHEL9 Tang container version
 - v0.0.27: Update operator-sdk and supported Go version (1.19.6 and higher)
@@ -472,10 +472,10 @@ This job cross compiles code in other supported architectures, in particular for
 * `amd64`
 
 ### Shellcheck
-Shellcheck job checks that existing `bash` scripts in the projects contain no fails.
+Job that helps to check that existing `bash` scripts in the projects contain no fails.
 
 ### Spellcheck
-Spellcheck job checks for spell correctness in documentation (in particular, for Markdown files).
+Specific job that checks for spell correctness in documentation (in particular, for Markdown files).
 
 ### Golang CI lint
 This job performs static check of Golang code.
