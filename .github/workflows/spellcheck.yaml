@@ -16,7 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Check Spelling
-        uses: rojopolis/spellcheck-github-actions@0.38.0
+        uses: rojopolis/spellcheck-github-actions@0.40.0
         with:
           config_path: .spellcheck.yaml
           task_name: Markdown
