@@ -57,10 +57,11 @@ test -z "${oc_client}" && oc_client="oc"
 getAdvURL() {
   if [ "${using_minikube}" != "yes" ];
   then
-      "${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.serviceExternalURL' | tr -d '"'
+    "${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | \
+      jq '.items[0].status.serviceExternalURL' | tr -d '"'
   else
-      port=$("${oc_client}" -n "${namespace}" get service -o json | jq '.items[0].spec.ports[0].nodePort')
-      echo "http://$(minikube ip):${port}/adv"
+    port=$("${oc_client}" -n "${namespace}" get service -o json | jq '.items[0].spec.ports[0].nodePort')
+    echo "http://$(minikube ip):${port}/adv"
   fi
 }
 
@@ -68,10 +69,10 @@ adv_url=$(getAdvURL)
 adv=$(wget -O - "${adv_url}" -o /dev/null)
 
 dumpFromAdvWithHash() {
-    local adv="$1"
-    local hash="$2"
-    jose fmt --json "${adv}" -g payload -y -o- | jose jwk use -i- -r -u verify -o- \
-        | jose jwk thp -i- -a "${hash}"    
+  local adv="$1"
+  local hash="$2"
+  jose fmt --json "${adv}" -g payload -y -o- | jose jwk use -i- -r -u verify -o- \
+    | jose jwk thp -i- -a "${hash}"
 }
 
 echo "===ADV (URL:${adv_url})==="
