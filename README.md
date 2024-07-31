@@ -201,7 +201,7 @@ Note the **Running** state for the `tangserver` pods.
 ## Compilation
 
 Requirements for tang-operator compilation is as follows:
-* Go compiler (v1.19.6+). Recommended version: v1.22.2.
+* Go compiler (v1.19.6+). Recommended version: v1.22.5.
 * Docker (v24.0.7+ recommended). Podman (v4.9.0+ recommended) can be used as an alternative to Docker.
 
 Compilation of Tang operator needs to be performed in top directory, by executing
