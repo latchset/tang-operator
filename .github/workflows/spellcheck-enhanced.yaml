@@ -1,5 +1,5 @@
 ---
-name: "Spellcheck Enhanced"
+name: "Enhanced Spellcheck"
 "on":
   push:
     branches: [main]
