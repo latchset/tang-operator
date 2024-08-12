@@ -8,6 +8,7 @@
 
 [![Default compilation, tests and deploy](https://github.com/latchset/tang-operator/actions/workflows/deploy.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/deploy.yaml)\
 [![Cross compilation](https://github.com/latchset/tang-operator/actions/workflows/cross_compile.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/cross_compile.yaml)\
+[![Enhanced Spellcheck](https://github.com/latchset/tang-operator/actions/workflows/spellcheck-enhanced.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/spellcheck-enhanced.yaml)\
 [![Golang CI lint](https://github.com/latchset/tang-operator/actions/workflows/golangci-lint.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/golangci-lint.yaml)\
 [![Staticcheck](https://github.com/latchset/tang-operator/actions/workflows/staticcheck.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/staticcheck.yaml)\
 [![Shellcheck](https://github.com/latchset/tang-operator/actions/workflows/shellcheck.yaml/badge.svg)](https://github.com/latchset/tang-operator/actions/workflows/shellcheck.yaml)\
